@@ -45,6 +45,7 @@ const urls = {
   plDraftImplementation: 'https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2',
   esDataActGuide: 'https://datos.gob.es/sites/default/files/2025-09/ley-datos-en.pdf',
   esDataActChapterV: 'https://www.boe.es/buscar/doc.php?id=BOE-A-2026-9079',
+  esCnmcAepdDataActAgreement2026: 'https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-18409',
   itAgcomDataActPtpct2026: 'https://www.agcom.it/sites/default/files/media/allegato/2026/Allegato%20A%20alla%20delibera%20n.%2047-26-CONS%20Piano%20triennale%20di%20prevenzione%20della%20corruzione%20e%20della%20trasparenza%202026-2028.pdf',
   itAgcomAnnualReport2025: 'https://www.agcom.it/sites/default/files/documenti/relazione_annuale/RELAZIONE%20ANNUALE%202025_0.pdf',
   beBiptDataAct: 'https://www.bipt.be/sectors/digital/the-data-act/the-data-act',
@@ -406,6 +407,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The Royal Decree refers to coordination with the competent authority designated for Data Act Chapter V, but it does not itself identify Spain’s full Article 37 data coordinator or establish a complaint route or penalty schedule.',
+  }),
+  esCnmcAepdDataActAgreement2026: source({
+    id: 'es-boe-cnmc-aepd-data-act-cooperation-2026',
+    label: 'BOE · CNMC/AEPD cooperation agreement · Data Act Article 37 scope',
+    url: urls.esCnmcAepdDataActAgreement2026,
+    sourceType: 'joint-guidance',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The BOE-published 2026 cooperation agreement states that CNMC and AEPD will cooperate, as competent authorities in electronic communications and personal-data matters respectively, in supervising and applying Regulation (EU) 2023/2854 under Article 37, especially cloud-service switching and data interoperability; it does not itself establish a complete domestic penalty schedule or general public complaint form.',
   }),
   itAgcomDataActPtpct2026: source({
     id: 'it-agcom-data-act-ptpct-2026',
@@ -2291,8 +2301,18 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   es: {
     coverage: 'partial',
     implementationStage: 'not_located',
-    coverageNote: '西班牙官方 Data Act 指南已入库；个人数据边界主管机构已按 Data Act Article 37(3) 记录。2026 年 Real Decreto 328/2026 提及 Data Act Chapter V 的已指定主管机关，但未给出完整 Article 37 数据协调员、投诉入口或国内罚则，因此仍不升级为最终一般主管机关记录。',
-    additionalSources: [sources.esDataActGuide, sources.esDataActChapterV],
+    coverageNote: '西班牙官方 Data Act 指南已入库；BOE 2026-18409 合作协议进一步明确 CNMC 与 AEPD 按 Data Act Article 37 参与监督和适用，尤其涉及数据处理服务切换与数据互操作。该协议并未单独建立完整数据协调员、一般投诉入口或国内罚则，因此这些字段仍保持 pending/not_located。',
+    competentAuthorities: [
+      {
+        name: '西班牙国家市场与竞争委员会',
+        nameEn: 'National Markets and Competition Commission (CNMC)',
+        role: 'competent_authority',
+        scope: 'BOE 2026-18409 说明 CNMC 作为通信电子领域主管机关，与 AEPD 按 Data Act Article 37 合作监督和适用 Regulation (EU) 2023/2854，特别涉及数据处理服务切换与数据互操作；该协议不等同于完整数据协调员指定。',
+        sourceUrl: urls.esCnmcAepdDataActAgreement2026,
+        evidence: evidence([urls.esCnmcAepdDataActAgreement2026, urls.esDataActChapterV], 'verified'),
+      },
+    ],
+    additionalSources: [sources.esDataActGuide, sources.esDataActChapterV, sources.esCnmcAepdDataActAgreement2026],
   },
   ie: {
     coverage: 'partial',

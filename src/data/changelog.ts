@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-es-cnmc-aepd-data-act-cooperation',
+    date: '2026-11-21',
+    countryId: 'es',
+    kind: 'changed',
+    summary: '纳入 BOE 2026-18409：CNMC 与 AEPD 按 Data Act Article 37 参与监督和适用，重点涉及数据处理服务切换与数据互操作；该合作协议不构成完整数据协调员指定、一般投诉入口或国内罚则，因此后者仍保持未确认状态。',
+    sourceUrls: ['https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-18409'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-cz-draft-bill-detail',
     date: '2026-11-21',
     countryId: 'cz',

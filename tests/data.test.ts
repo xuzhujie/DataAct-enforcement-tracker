@@ -122,7 +122,7 @@ test('the second country batch separates enacted Denmark and Finland from partia
   assert.ok(finland.sources.some((source) => source.id === 'fi-data-supervision-law'))
 })
 
-test('the evidence refresh separates Spain Data Act guidance from the BOE DSA cooperation text', () => {
+test('the evidence refresh separates Spain Data Act guidance from DSA-only material', () => {
   const spain = COUNTRY_RECORDS.find((item) => item.id === 'es')!
   const italy = COUNTRY_RECORDS.find((item) => item.id === 'it')!
   const belgium = COUNTRY_RECORDS.find((item) => item.id === 'be')!
@@ -130,8 +130,9 @@ test('the evidence refresh separates Spain Data Act guidance from the BOE DSA co
 
   assert.equal(DATA_AS_OF, '2026-11-21')
   assert.ok(spain.sources.some((source) => source.id === 'es-data-act-guide' && source.sourceType === 'research-lead'))
-  assert.ok(spain.sources.every((source) => source.id !== 'es-boe-cnmc-aepd-cooperation'))
-  assert.match(spain.coverageNote ?? '', /Data Act 指南|未确认|主管机关/)
+  assert.ok(spain.sources.some((source) => source.id === 'es-boe-cnmc-aepd-data-act-cooperation-2026' && source.sourceType === 'joint-guidance'))
+  assert.ok(spain.competentAuthorities.some((authority) => authority.nameEn.includes('National Markets and Competition Commission')))
+  assert.match(spain.coverageNote ?? '', /CNMC|AEPD|Data Act|未确认/)
 
   assert.ok(italy.sources.some((source) => source.id === 'it-agcom-data-act-ptpct-2026' && source.sourceType === 'research-lead'))
   assert.ok(italy.sources.some((source) => source.id === 'it-agcom-annual-report-2025-data-act' && source.sourceType === 'research-lead'))
