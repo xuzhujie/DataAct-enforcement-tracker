@@ -264,9 +264,10 @@ test('new official signals keep proposed authorities and live Swedish intake vis
   assert.equal(getCountryEvidenceStatus(belgium, 'authority'), 'pending')
   assert.equal(getCountryEvidenceStatus(czechia, 'authority'), 'pending')
   assert.equal(getCountryEvidenceStatus(czechia, 'complaint_route'), 'pending')
-  assert.equal(getCountryEvidenceStatus(ireland, 'authority'), 'pending')
+  assert.equal(getCountryEvidenceStatus(ireland, 'authority'), 'verified')
   assert.equal(getCountryEvidenceStatus(ireland, 'complaint_route'), 'pending')
   assert.equal(getCountryEvidenceStatus(ireland, 'penalty_schedule'), 'pending')
+  assert.ok(ireland.competentAuthorities.every((authority) => !authority.nameEn.includes('expected') && authority.evidence.evidenceStatus === 'verified'))
   assert.equal(getCountryEvidenceStatus(romania, 'authority'), 'pending')
   assert.equal(getCountryEvidenceStatus(sweden, 'authority'), 'verified')
   assert.equal(getCountryEvidenceStatus(sweden, 'complaint_route'), 'verified')
@@ -727,11 +728,11 @@ test('maintenance report aggregates evidence gaps, review due items, and source 
   assert.equal(report.registry.actualEnforcementCaseCount, 0)
   assert.equal(report.registry.validation.passed, true)
   assert.deepEqual(report.evidence.authority, {
-    verified: 9,
-    pending: 8,
+    verified: 10,
+    pending: 7,
     not_located: 10,
     not_applicable: 0,
-    needsFollowUpCountryIds: ['be', 'bg', 'hr', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es'],
+    needsFollowUpCountryIds: ['be', 'bg', 'hr', 'cz', 'ee', 'fr', 'gr', 'hu', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es'],
   })
   assert.equal(report.evidence.complaint_route.verified, 7)
   assert.equal(report.evidence.complaint_route.pending, 4)

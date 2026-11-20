@@ -34,6 +34,15 @@ export const CHANGE_LOG: ChangeLogEntry[] = [
     evidenceStatus: 'pending',
   },
   {
+    id: '2026-11-21-ie-authority-designation',
+    date: '2026-11-21',
+    countryId: 'ie',
+    kind: 'changed',
+    summary: '爱尔兰企业部官方页面确认政府决定已指定 CCPC 与 ComReg 为 Data Act 主管机关，CCPC 为 Data Coordinator；主管机构升级为 verified，但完整法定权限、投诉程序和罚则仍保持 pending。',
+    sourceUrls: ['https://enterprise.gov.ie/en/legislation/general-scheme-of-the-data-bill-2025.html', 'https://www.ccpc.ie/enforcement-and-regulation/data-regulation/eu-data-act', 'https://www.comreg.ie/industry/electronic-communications/eu-data-act/'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-pt-implementation-signals',
     date: '2026-11-21',
     countryId: 'pt',

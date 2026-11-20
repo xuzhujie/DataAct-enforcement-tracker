@@ -518,7 +518,7 @@ const sources = {
     sourceType: 'statute',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
-    note: 'The General Scheme describes government decisions to designate CCPC and ComReg, with CCPC as Data Coordinator; legislation is still required before treating the framework as final law.',
+    note: 'The Department states that government decisions of 8 October 2024 and 16 December 2025 designated CCPC and ComReg as Data Act competent authorities, with CCPC as Data Coordinator; the General Scheme remains necessary to confer the full statutory powers and sanctions framework.',
   }),
   ieGovDataBillPdf: source({
     id: 'ie-general-scheme-data-bill-2025-pdf',
@@ -536,7 +536,7 @@ const sources = {
     sourceType: 'research-lead',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
-    note: 'ComReg expects to be a competent authority and says implementing legislation is expected; scope and final powers remain subject to that legislation.',
+    note: 'ComReg is one of the authorities identified by the Department’s government-designation record; its complete statutory enforcement powers remain subject to the Data Bill.',
   }),
   ieCcpcDataAct: source({
     id: 'ie-ccpc-data-act',
@@ -545,7 +545,7 @@ const sources = {
     sourceType: 'authority',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
-    note: 'CCPC says it expects to be a competent authority under the Data Act and that Irish legislation confirming its powers is still expected; the record therefore keeps the authority evidence pending rather than final.',
+    note: 'CCPC is identified by the Department as the Data Coordinator and a competent authority under the government designation decisions; Irish legislation confirming its full powers and sanctions process is still required.',
   }),
   ltEiminDataActDraft: source({
     id: 'lt-eimin-data-act-draft',
@@ -1918,23 +1918,23 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   ie: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '爱尔兰企业部 General Scheme、CCPC 与 ComReg 官方材料确认 CCPC/ComReg 的拟议主管分工；草案 Head 13/15 设想投诉程序，Head 20/33 设定拟议罚则上限，但实施法尚未最终确定，故相关投诉与罚则均按 pending 记录。',
+    coverageNote: '爱尔兰企业部官方材料确认政府决定已指定 CCPC/ComReg 为 Data Act 主管机关，并由 CCPC 担任 Data Coordinator；国内法仍需赋予完整调查、投诉与制裁权限，因此草案 Head 13/15 投诉程序及 Head 20/33 罚则上限继续按 pending 记录。',
     competentAuthorities: [
       {
-        name: '爱尔兰竞争与消费者保护委员会（拟议）',
-        nameEn: 'Competition and Consumer Protection Commission (CCPC) (expected)',
+        name: '爱尔兰竞争与消费者保护委员会',
+        nameEn: 'Competition and Consumer Protection Commission (CCPC)',
         role: 'data_coordinator',
-        scope: 'CCPC 预计成为爱尔兰 Data Act 主管机关和数据协调员；最终权限取决于实施法。',
+        scope: '政府决定已指定 CCPC 为 Data Act 主管机关和数据协调员；完整调查、投诉和制裁权限仍取决于国内实施法。',
         sourceUrl: urls.ieCcpcDataAct,
-        evidence: evidence([urls.ieCcpcDataAct, urls.ieGovDataBill], 'pending'),
+        evidence: evidence([urls.ieCcpcDataAct, urls.ieGovDataBill], 'verified'),
       },
       {
-        name: '爱尔兰通信监管委员会（拟议）',
-        nameEn: 'Commission for Communications Regulation (ComReg) (expected)',
+        name: '爱尔兰通信监管委员会',
+        nameEn: 'Commission for Communications Regulation (ComReg)',
         role: 'competent_authority',
-        scope: 'ComReg 预计承担 Data Act 主管机关职能，尤其是通信/数据处理服务相关范围；完整权限取决于实施法。',
+        scope: '政府决定已指定 ComReg 为 Data Act 主管机关，尤其涉及通信和数据处理服务相关范围；完整调查、投诉和制裁权限仍取决于国内实施法。',
         sourceUrl: urls.ieComregDataAct,
-        evidence: evidence([urls.ieComregDataAct, urls.ieGovDataBill], 'pending'),
+        evidence: evidence([urls.ieComregDataAct, urls.ieGovDataBill], 'verified'),
       },
     ],
     complaintRoutes: [
