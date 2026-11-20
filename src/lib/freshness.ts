@@ -3,6 +3,10 @@ import type { SourceFreshness } from '../data/types'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
+export function getCurrentIsoDate(now = new Date()): string {
+  return now.toISOString().slice(0, 10)
+}
+
 function parseIsoDate(value?: string): number | null {
   if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null
   const [year, month, day] = value.split('-').map(Number)

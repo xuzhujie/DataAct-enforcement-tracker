@@ -295,7 +295,8 @@
 .source-card { display: grid; gap: 6px; min-height: 87px; padding: 11px; border: 1px solid #e3e9f1; border-radius: 7px; color: #345377; background: #fbfcfe; text-decoration: none; }
 .source-card:hover { border-color: #a9c3ec; background: #f6f9ff; }
 .source-card__label { display: inline-flex; align-items: flex-start; gap: 4px; color: #1e62d0; font-size: 11px; font-weight: 750; line-height: 1.35; }
-.source-card small { color: #8592a4; font-size: 9px; }
+.source-card__meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; color: #8592a4; font-size: 9px; }
+.source-card__meta .status-tag { min-height: 19px; padding: 0 5px; font-size: 8px; }
 .source-freshness { font-weight: 750; }
 .source-freshness--current { color: var(--teal); }
 .source-freshness--review { color: #a56b18; }
@@ -322,8 +323,20 @@
 .queue-detail--partial > svg { color: #b77d1d; }
 .queue-detail__stage { display: flex; align-items: center; gap: 8px; color: #7b8798; font-size: 10px; }
 .queue-detail__stage strong { color: #9b6414; font-size: 11px; }
+.queue-detail__sources { display: grid; width: 100%; gap: 7px; }
+.queue-detail__sources a { justify-content: space-between; flex-wrap: wrap; }
+.queue-detail__sources a > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.queue-detail__sources .status-tag { min-height: 19px; padding: 0 5px; font-size: 8px; }
 .queue-detail a { display: inline-flex; align-items: center; gap: 4px; color: var(--blue); font-size: 11px; font-weight: 700; text-decoration: none; }
 .queue-detail a:hover { text-decoration: underline; }
+.country-field-status { display: grid; width: 100%; gap: 9px; margin-top: 3px; }
+.country-field-status__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.country-field-card { display: grid; gap: 7px; min-width: 0; padding: 11px; border: 1px solid #eadfbf; border-radius: 7px; background: rgba(255, 255, 255, .68); }
+.country-field-card__topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.country-field-card__topline > span { display: inline-flex; align-items: center; gap: 5px; color: #718197; font-size: 10px; font-weight: 750; }
+.country-field-card__topline svg { color: #9c7b35; }
+.country-field-card strong { overflow-wrap: anywhere; color: var(--ink); font-size: 12px; line-height: 1.35; }
+.country-field-card p { margin: 0; color: #748399; font-size: 10px; line-height: 1.5; }
 
 .case-register { overflow: hidden; }
 .case-table { min-width: 1060px; }
@@ -462,6 +475,7 @@
   .country-detail__header { flex-direction: column; }
   .secondary-button { width: 100%; }
   .detail-meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .country-field-status__grid { grid-template-columns: 1fr; }
   .penalty-grid { grid-template-columns: 1fr; }
   .source-grid { grid-template-columns: 1fr; }
   .monitor-grid { grid-template-columns: 1fr; padding-right: 14px; padding-left: 14px; }

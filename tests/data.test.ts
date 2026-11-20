@@ -7,10 +7,13 @@ import { buildCountryReference, DEFAULT_COUNTRY_FILTERS, filterCountries, filter
 import { buildJsonExport, buildMarkdownExport } from '../src/lib/export'
 import { sortTimelineEvents } from '../src/lib/view-model'
 import { CHANGE_LOG, filterChangeLog } from '../src/data/changelog'
-import { getSourceFreshness } from '../src/lib/freshness'
+import { getCurrentIsoDate, getSourceFreshness } from '../src/lib/freshness'
 import { buildEnforcementMonitors } from '../src/data/monitoring'
 import { buildReviewQueue, filterReviewQueue } from '../src/data/review-queue'
 import { buildEnforcementCaseRegister, DEFAULT_ENFORCEMENT_CASE_FILTERS, filterEnforcementCases } from '../src/data/cases'
+import { buildSourceManifest, validateRegistry } from '../src/data/registry-validation'
+import { buildSourceHealthReport, isReachableHttpStatus } from '../src/data/source-health'
+import { getCountryEvidenceStatus } from '../src/lib/field-status'
 import type { EnforcementCase } from '../src/data/types'
 
 test('Germany keeps EU application and German implementation dates separate', () => {
@@ -79,7 +82,7 @@ test('the second country batch separates enacted Denmark and Finland from partia
   const denmark = COUNTRY_RECORDS.find((item) => item.id === 'dk')!
   const finland = COUNTRY_RECORDS.find((item) => item.id === 'fi')!
 
-  assert.equal(italy.coverage, 'queue')
+  assert.equal(italy.coverage, 'partial')
   assert.equal(italy.implementationStage, 'not_located')
   assert.ok(italy.sources.some((source) => source.id === 'it-agcom-data-act-ptpct-2026'))
   assert.match(italy.coverageNote ?? '', /主管机关|罚则/)
@@ -156,16 +159,16 @@ test('new partial records retain draft implementation evidence without final leg
   }
 })
 
-test('the remaining EU queue is separated into fourteen official partial records and nine research queues', () => {
-  const expectedPartial = ['at', 'be', 'cz', 'fr', 'hu', 'ie', 'lt', 'mt', 'pl', 'pt', 'ro', 'sk', 'es', 'se']
-  const expectedQueue = ['bg', 'hr', 'cy', 'ee', 'gr', 'it', 'lv', 'lu', 'si']
+test('the remaining EU records distinguish twenty-two partial records from five deeply verified countries', () => {
+  const expectedPartial = ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'mt', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se']
+  const expectedQueue: string[] = []
 
   assert.deepEqual(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').map((country) => country.id), expectedPartial)
   assert.deepEqual(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').map((country) => country.id), expectedQueue)
-  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 4)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 5)
   assert.equal(COUNTRY_RECORDS.length, 27)
 
-  for (const countryId of ['ie', 'lt', 'pt', 'ro', 'se']) {
+  for (const countryId of ['ie', 'pt', 'ro', 'se']) {
     const country = COUNTRY_RECORDS.find((item) => item.id === countryId)!
     assert.equal(country.competentAuthorities.length, 0)
     assert.equal(country.complaintRoutes.length, 0)
@@ -176,8 +179,11 @@ test('the remaining EU queue is separated into fourteen official partial records
   const malta = COUNTRY_RECORDS.find((country) => country.id === 'mt')!
   assert.equal(malta.coverage, 'partial')
   assert.equal(malta.implementationStage, 'enacted')
+  assert.equal(malta.implementingAct, 'Fair Access to and Use of Data Regulations, 2025 · L.N. 222 of 2025')
+  assert.equal(malta.implementingActUrl, 'https://legislation.mt/eli/ln/2025/222/eng')
   assert.ok(malta.competentAuthorities.some((authority) => authority.nameEn.includes('MDIA')))
   assert.ok(malta.competentAuthorities.some((authority) => authority.nameEn.includes('Malta Communications Authority')))
+  assert.ok(malta.complaintRoutes.some((route) => route.url.includes('regulatory-complaints')))
   assert.equal(malta.penaltySchedule.length, 0)
 
   for (const countryId of ['cz', 'hu', 'sk']) {
@@ -195,11 +201,68 @@ test('the remaining EU queue is separated into fourteen official partial records
   assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'hu')?.sources.some((source) => source.id === 'hu-naih-annual-report-2025'))
   assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'sk')?.sources.some((source) => source.id === 'sk-mirri-data-act-law'))
 
-  for (const country of COUNTRY_RECORDS.filter((item) => item.coverage === 'queue')) {
-    assert.equal(country.competentAuthorities.length, 0)
-    assert.equal(country.complaintRoutes.length, 0)
-    assert.equal(country.penaltySchedule.length, 0)
+  assert.ok(COUNTRY_RECORDS.every((country) => country.sources.some((source) => source.sourceType !== 'eu-regulation' && source.sourceType !== 'eu-country-list')))
+})
+
+test('the next country evidence batch records official implementation signals without inventing final enforcement facts', () => {
+  const bulgaria = COUNTRY_RECORDS.find((country) => country.id === 'bg')!
+  const croatia = COUNTRY_RECORDS.find((country) => country.id === 'hr')!
+  const cyprus = COUNTRY_RECORDS.find((country) => country.id === 'cy')!
+  const malta = COUNTRY_RECORDS.find((country) => country.id === 'mt')!
+  const lithuania = COUNTRY_RECORDS.find((country) => country.id === 'lt')!
+
+  assert.equal(bulgaria.coverage, 'partial')
+  assert.equal(bulgaria.implementationStage, 'legislative')
+  assert.ok(bulgaria.sources.some((source) => source.id === 'bg-midt-data-act'))
+
+  assert.equal(croatia.coverage, 'partial')
+  assert.equal(croatia.implementationStage, 'legislative')
+  assert.ok(croatia.sources.some((source) => source.id === 'hr-mpudt-data-act-plan'))
+
+  assert.equal(cyprus.coverage, 'partial')
+  assert.ok(cyprus.competentAuthorities.some((authority) => authority.nameEn.includes('Deputy Ministry of Research, Innovation and Digital Policy')))
+  assert.equal(cyprus.complaintRoutes.length, 0)
+  assert.equal(cyprus.penaltySchedule.length, 0)
+
+  assert.equal(lithuania.coverage, 'deep')
+  assert.ok(lithuania.competentAuthorities.some((authority) => authority.nameEn.includes('Communications Regulatory Authority of the Republic of Lithuania')))
+  assert.ok(lithuania.complaintRoutes.some((route) => route.url.includes('duomenu-akto-prieziura')))
+  assert.equal(lithuania.penaltySchedule.length, 2)
+
+  assert.equal(malta.coverage, 'partial')
+  assert.ok(malta.complaintRoutes.some((route) => route.url.includes('regulatory-complaints')))
+  assert.ok(malta.sources.some((source) => source.id === 'mt-legal-notice-222-2025'))
+  assert.equal(malta.enforcementSummary.publishedPenaltyStatus, 'not_located')
+})
+
+test('each country keeps unresolved enforcement fields explicit instead of using zero as a proxy for missing evidence', () => {
+  for (const country of COUNTRY_RECORDS) {
+    if (country.enforcementSummary.publishedPenaltyStatus !== 'verified') {
+      assert.equal(country.enforcementSummary.publishedPenaltyCount, null)
+      assert.equal(country.enforcementSummary.publishedPenaltyAmountEur, null)
+    }
+
+    for (const enforcementCase of country.enforcementCases) {
+      assert.ok(enforcementCase.sourceUrls.length > 0)
+      assert.equal(enforcementCase.evidence.evidenceStatus, 'verified')
+    }
   }
+})
+
+test('partial countries expose field-level evidence status without upgrading overall coverage', () => {
+  const cyprus = COUNTRY_RECORDS.find((country) => country.id === 'cy')!
+  const malta = COUNTRY_RECORDS.find((country) => country.id === 'mt')!
+
+  assert.equal(cyprus.coverage, 'partial')
+  assert.equal(getCountryEvidenceStatus(cyprus, 'authority'), 'verified')
+  assert.equal(getCountryEvidenceStatus(cyprus, 'complaint_route'), 'not_located')
+  assert.equal(getCountryEvidenceStatus(cyprus, 'penalty_schedule'), 'not_located')
+  assert.equal(getCountryEvidenceStatus(cyprus, 'published_penalty'), 'pending')
+
+  assert.equal(getCountryEvidenceStatus(malta, 'authority'), 'verified')
+  assert.equal(getCountryEvidenceStatus(malta, 'complaint_route'), 'verified')
+  assert.equal(getCountryEvidenceStatus(malta, 'penalty_schedule'), 'not_located')
+  assert.equal(getCountryEvidenceStatus(malta, 'published_penalty'), 'not_located')
 })
 
 test('Germany legal facts retain source URLs, freshness, and evidence state', () => {
@@ -246,10 +309,9 @@ test('country register covers all 27 EU member states without inventing implemen
 
   assert.deepEqual(COUNTRY_RECORDS.map((country) => country.iso2), expectedIso2)
   assert.equal(COUNTRY_RECORDS.length, 27)
-  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 4)
-  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').length, 14)
-  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').length, 9)
-  assert.ok(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').every((country) => country.competentAuthorities.length === 0 && country.complaintRoutes.length === 0 && country.penaltySchedule.length === 0))
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 5)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').length, 22)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').length, 0)
 })
 
 test('every EU country exposes the three hardware issue lenses with explicit pending status when national mapping is incomplete', () => {
@@ -269,21 +331,21 @@ test('every EU country exposes the three hardware issue lenses with explicit pen
 test('coverage metrics keep deep, partial, and queue countries separate', () => {
   const metrics = getCoverageMetrics(COUNTRY_RECORDS)
 
-  assert.equal(metrics.deepCount, 4)
-  assert.equal(metrics.partialCount, 14)
-  assert.equal(metrics.queueCount, 9)
+  assert.equal(metrics.deepCount, 5)
+  assert.equal(metrics.partialCount, 22)
+  assert.equal(metrics.queueCount, 0)
   assert.equal(metrics.totalTrackedCountries, 27)
 })
 
 test('country registry filters are composable and keep missing facts distinct from verified absence', () => {
-  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial' }).map((country) => country.id), ['at', 'be', 'cz', 'fr', 'hu', 'ie', 'lt', 'mt', 'pl', 'pt', 'ro', 'sk', 'es', 'se'])
-  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, implementationStage: 'enacted' }).map((country) => country.id), ['de', 'dk', 'fi', 'mt', 'nl'])
-  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 6)
-  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, complaintRoute: 'present' }).length, 4)
-  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, penaltySchedule: 'present' }).length, 4)
-  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'not_located' }).map((country) => country.id), ['de', 'dk', 'fi', 'nl'])
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial' }).map((country) => country.id), ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'mt', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se'])
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, implementationStage: 'enacted' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 8)
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, complaintRoute: 'present' }).length, 6)
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, penaltySchedule: 'present' }).length, 5)
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'not_located' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'verified' }).length, 0)
-  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), ['be', 'cz', 'fr', 'hu', 'ie', 'lt', 'pl', 'pt', 'ro', 'sk', 'es', 'se'])
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), ['be', 'bg', 'hr', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se'])
 })
 
 test('formatters keep legal dates readable and statuses explicit', () => {
@@ -460,8 +522,8 @@ test('review queue assigns deterministic priority, due dates, target fields, and
   assert.ok(franceItem.targetFields.includes('主管机关'))
   assert.ok(franceItem.targetFields.includes('国内法定罚则'))
 
-  assert.equal(bulgariaItem.priority, 'medium')
-  assert.equal(bulgariaItem.nextReviewAt, '2027-02-18')
+  assert.equal(bulgariaItem.priority, 'high')
+  assert.equal(bulgariaItem.nextReviewAt, '2026-12-20')
   assert.equal(bulgariaItem.due, false)
 
   assert.equal(filterReviewQueue(items, { countryId: 'fr', priority: 'all', due: 'all' }).length, 1)
@@ -481,6 +543,7 @@ test('JSON and Markdown exports include the selected country review queue', () =
 })
 
 test('source freshness distinguishes current, review, stale, unknown, and future dates', () => {
+  assert.equal(getCurrentIsoDate(new Date('2026-11-20T12:00:00.000Z')), '2026-11-20')
   assert.equal(getSourceFreshness('2026-11-19', '2026-11-20').status, 'current')
   assert.equal(getSourceFreshness('2026-09-01', '2026-11-20').status, 'review')
   assert.equal(getSourceFreshness('2026-05-01', '2026-11-20').status, 'stale')
@@ -507,4 +570,89 @@ test('queue exports do not inherit Germany-specific legal claims', () => {
   assert.doesNotMatch(markdown, /France Germany/)
   assert.doesNotMatch(markdown, /DADG §15/)
   assert.match(markdown, /## 法定罚款档位/)
+})
+
+test('registry validation accepts the current EU-27 evidence set and produces a deduplicated source manifest', () => {
+  assert.deepEqual(validateRegistry(COUNTRY_RECORDS), [])
+
+  const manifest = buildSourceManifest(COUNTRY_RECORDS)
+  assert.ok(manifest.length > 40)
+  assert.equal(new Set(manifest.map((entry) => entry.url)).size, manifest.length)
+
+  const germanyEntry = manifest.find((entry) => entry.url.includes('bundesnetzagentur.de/DE/Fachthemen/Digitales/DataAct/start.html'))
+  assert.ok(germanyEntry)
+  assert.ok(germanyEntry.countryIds.includes('de'))
+  assert.ok(germanyEntry.sourceIds.includes('bnetza-data-act'))
+})
+
+test('registry validation rejects missing source traceability instead of silently passing incomplete records', () => {
+  const brokenGermany = { ...COUNTRY_RECORDS.find((country) => country.id === GERMANY_ID)!, sources: [] }
+  const issues = validateRegistry([brokenGermany, ...COUNTRY_RECORDS.filter((country) => country.id !== GERMANY_ID)])
+
+  assert.ok(issues.some((issue) => issue.path === 'de.sources'))
+  assert.ok(issues.some((issue) => issue.message.includes('source')))
+})
+
+test('registry validation rejects incomplete evidence and non-official case sources', () => {
+  const germany = COUNTRY_RECORDS.find((country) => country.id === GERMANY_ID)!
+  const researchLead = {
+    ...germany.sources[0],
+    id: 'research-lead-fixture',
+    url: 'https://research.example.invalid/data-act-fixture',
+    sourceType: 'research-lead' as const,
+  }
+  const brokenGermany = {
+    ...germany,
+    sources: [...germany.sources, researchLead],
+    competentAuthorities: [{
+      ...germany.competentAuthorities[0],
+      evidence: { ...germany.competentAuthorities[0].evidence, sourceUrls: [], lastVerifiedAt: 'not-a-date' },
+    }],
+    enforcementCases: [{
+      id: 'fixture-case',
+      countryId: GERMANY_ID,
+      authorityName: 'Fixture authority',
+      decisionDate: 'not-a-date',
+      entity: 'Fixture entity',
+      issue: 'device_access' as const,
+      measure: 'Fixture decision',
+      amountEur: -1,
+      status: 'final' as const,
+      sourceUrls: [researchLead.url],
+      evidence: { sourceUrls: [researchLead.url], lastVerifiedAt: '2026-11-20', evidenceStatus: 'verified' as const },
+    }],
+  }
+
+  const issues = validateRegistry([brokenGermany, ...COUNTRY_RECORDS.filter((country) => country.id !== GERMANY_ID)])
+
+  assert.ok(issues.some((issue) => issue.path.includes('competentAuthorities') && issue.message.includes('source URLs')))
+  assert.ok(issues.some((issue) => issue.path.includes('competentAuthorities') && issue.message.includes('ISO')))
+  assert.ok(issues.some((issue) => issue.path.includes('enforcementCases') && issue.message.includes('date')))
+  assert.ok(issues.some((issue) => issue.path.includes('enforcementCases') && issue.message.includes('non-negative')))
+  assert.ok(issues.some((issue) => issue.path.includes('enforcementCases') && issue.message.includes('official')))
+
+  const falseZeroGermany = {
+    ...germany,
+    enforcementSummary: { ...germany.enforcementSummary, publishedPenaltyStatus: 'verified' as const },
+  }
+  const falseZeroIssues = validateRegistry([falseZeroGermany, ...COUNTRY_RECORDS.filter((country) => country.id !== GERMANY_ID)])
+  assert.ok(falseZeroIssues.some((issue) => issue.path === 'de.enforcementSummary' && issue.message.includes('count, amount, or official case')))
+})
+
+test('source-health reports treat redirects as reachable and keep HTTP failures explicit', () => {
+  assert.equal(isReachableHttpStatus(200), true)
+  assert.equal(isReachableHttpStatus(307), true)
+  assert.equal(isReachableHttpStatus(403), false)
+  assert.equal(isReachableHttpStatus(null), false)
+
+  const report = buildSourceHealthReport('2026-11-20T00:00:00.000Z', [
+    { url: 'https://example.test/ok', label: 'ok', countryIds: ['de'], status: 200, ok: true, finalUrl: 'https://example.test/ok', contentType: 'text/html' },
+    { url: 'https://example.test/redirect', label: 'redirect', countryIds: ['mt'], status: 307, ok: true, finalUrl: 'https://example.test/redirect', contentType: null },
+    { url: 'https://example.test/blocked', label: 'blocked', countryIds: ['lt'], status: 403, ok: false, finalUrl: 'https://example.test/blocked', contentType: 'text/html', error: 'HTTP 403' },
+  ], [])
+
+  assert.equal(report.total, 3)
+  assert.equal(report.okCount, 2)
+  assert.equal(report.failedCount, 1)
+  assert.equal(report.passed, false)
 })

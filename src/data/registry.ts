@@ -82,6 +82,19 @@ const urls = {
   skMirriDataAct: 'https://mirri.gov.sk/wp-content/uploads/2026/04/OP-MIRRI_SR_01_05_2026.pdf',
   skMirriDataActLaw: 'https://mirri.gov.sk/aktuality/splnomocnenec-vlady-pre-ai/umela-inteligencia-zlepsuje-fungovanie-verejnych-sluzieb/',
   siDigitalisation: 'https://www.gov.si/en/topics/digitalisation-of-society/',
+  bgMidtDataAct: 'https://midt.gov.bg/bg/digital-transformation/data/management',
+  hrMpudtDataActPlan: 'https://narodne-novine.nn.hr/clanci/sluzbeni/2026_03_26_291.html',
+  cyDataActAuthority: 'https://www.gov.cy/media/sites/59/2026/05/4959-15-5-2026-PARARTIMA-4o-MEROS-I.pdf',
+  eeDataActDraft: 'https://eelnoud.valitsus.ee/main/mount/docList/96471890-ca8a-4d9d-9317-0ab26b4a6179?activity=3',
+  grDataActResources: 'https://ai.gov.gr/resources/',
+  lvDataActCabinet: 'https://likumi.lv/ta/id/361419',
+  luCnpdDataAct: 'https://cnpd.public.lu/fr/actualites/national/2024/06/conference-data-act.html',
+  siDataActDraft: 'https://www.gov.si/novice/2026-05-04-javna-obravnava-osnutka-zakona-za-implementacijo-akta-o-podatkih/',
+  ltRrtDataActSupervision: 'https://rrt.lt/veiklos-sritys/skaitmenine-erdve/duomenu-akto-prieziura/rrt-prieziura',
+  ltRrtDataActUse: 'https://rrt.lt/veiklos-sritys/skaitmenine-erdve/duomenu-akto-prieziura/da-naudojimas',
+  ltDataActLaw: 'https://www.e-tar.lt/portal/lt/legalAct/7d678490760b11f1b53dfa020e517810',
+  mtLegalNotice: 'https://legislation.mt/eli/ln/2025/222/eng',
+  mtRegulatoryComplaints: 'https://mdia.gov.mt/services/regulatory-complaints/',
 }
 
 export const EU_COUNTRIES_SOURCE_URL = urls.euCountries
@@ -492,6 +505,33 @@ const sources = {
     evidenceStatus: 'verified',
     note: 'The ministry identifies the planned RRT competence while the domestic implementation remains legislative.',
   }),
+  ltRrtDataActSupervision: source({
+    id: 'lt-rrt-data-act-supervision',
+    label: 'Lithuania RRT · Data Act supervision',
+    url: urls.ltRrtDataActSupervision,
+    sourceType: 'authority',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'RRT identifies itself as the competent authority and describes its supervision, investigation, and enforcement remit under the Data Act.',
+  }),
+  ltRrtDataActUse: source({
+    id: 'lt-rrt-data-act-use',
+    label: 'Lithuania RRT · using the Data Act / complaints',
+    url: urls.ltRrtDataActUse,
+    sourceType: 'complaint-form',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'RRT’s user-facing page gives the route for questions or complaints about connected-product data access, sharing with third parties, and switching data-processing services.',
+  }),
+  ltDataActLaw: source({
+    id: 'lt-data-act-law',
+    label: 'Lithuania e-TAR · Law XV-1077 implementing the EU Data Act',
+    url: urls.ltDataActLaw,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'Law XV-1077 was adopted on 25 June 2026, published on 2 July 2026, and entered into force on 1 August 2026; it sets RRT powers, complaint procedure, and turnover-based sanction ceilings.',
+  }),
   mtMdiaDataAct: source({
     id: 'mt-mdia-data-act',
     label: 'Malta Digital Innovation Authority · The Data Act',
@@ -509,6 +549,24 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'MCA records Legal Notice 222/2025 and its competence for switching/interoperability provisions; this record does not yet fill the complete domestic penalty schedule.',
+  }),
+  mtLegalNotice: source({
+    id: 'mt-legal-notice-222-2025',
+    label: 'Malta Legislation · L.N. 222 of 2025 Fair Access to and Use of Data Regulations',
+    url: urls.mtLegalNotice,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The legal notice designates MDIA and MCA, appoints MDIA as Data Coordinator, and provides complaint and enforcement routes; it does not itself state one fixed numeric penalty cap.',
+  }),
+  mtRegulatoryComplaints: source({
+    id: 'mt-regulatory-complaints',
+    label: 'Malta Digital Innovation Authority · regulatory complaints',
+    url: urls.mtRegulatoryComplaints,
+    sourceType: 'complaint-form',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'MDIA’s formal regulatory complaint procedure explicitly includes Data Act complaints and links to the official submission form.',
   }),
   ptDigitalStrategy: source({
     id: 'pt-digital-strategy-data-act',
@@ -546,6 +604,15 @@ const sources = {
     evidenceStatus: 'pending',
     note: 'Official national regulator entry point retained for follow-up; a Data Act-specific designation was not located in this review.',
   }),
+  bgMidtDataAct: source({
+    id: 'bg-midt-data-act',
+    label: 'Bulgaria Ministry of Innovation and Digital Transformation · data management / Data Act',
+    url: urls.bgMidtDataAct,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The ministry page identifies Regulation (EU) 2023/2854 and says implementation measures are provided in a draft amendment to the Access to Public Information Act; it is legislative-status evidence, not proof of a final authority or penalty ceiling.',
+  }),
   hrDga: source({
     id: 'hr-dga-research-lead',
     label: 'Croatia data.gov.hr · Data Governance Act implementation',
@@ -555,6 +622,15 @@ const sources = {
     evidenceStatus: 'verified',
     note: 'This page concerns the Data Governance Act, not a final Data Act authority; it is retained only as a national data-law research lead.',
   }),
+  hrMpudtDataActPlan: source({
+    id: 'hr-mpudt-data-act-plan',
+    label: 'Croatia Ministry of Justice and Public Administration · 2026 EU alignment plan',
+    url: urls.hrMpudtDataActPlan,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official 2026 plan lists a national act implementing Regulation (EU) 2023/2854; the plan is not treated as an enacted law, authority designation, complaint portal, or penalty schedule.',
+  }),
   cyDd2030: source({
     id: 'cy-dd2030-data-policy-lead',
     label: 'Cyprus Deputy Ministry · DD-2030 country report',
@@ -563,6 +639,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The report discusses a possible data-policy unit covering the Data Act and Data Governance Act; it does not establish a final statutory designation.',
+  }),
+  cyDataActAuthority: source({
+    id: 'cy-data-act-authority',
+    label: 'Cyprus Council of Ministers · Data Act national competent authority decision',
+    url: urls.cyDataActAuthority,
+    sourceType: 'authority',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'Decision 98.600 of 17 September 2025 designates the Deputy Ministry of Research, Innovation and Digital Policy as the national competent authority under Article 37; a public complaint form and domestic penalty ceiling remain separately unlocated.',
   }),
   czMpoDataAct: source({
     id: 'cz-mpo-data-act',
@@ -600,6 +685,15 @@ const sources = {
     evidenceStatus: 'verified',
     note: 'Official contact page for the free-flow/DGA context; it is not treated as a final Data Act designation.',
   }),
+  eeDataActDraft: source({
+    id: 'ee-data-act-draft',
+    label: 'Estonian Government EIS · Data Act legislative file',
+    url: urls.eeDataActDraft,
+    sourceType: 'research-lead',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official legislative file records the Estonian Ministry of Economic Affairs and Communications as the responsible ministry for the Data Act proposal; it does not establish a current national authority, complaint route, or domestic penalty ceiling.',
+  }),
   grAiGov: source({
     id: 'gr-ai-gov-data-lead',
     label: 'Greece AI.gov.gr · national digital/data policy lead',
@@ -608,6 +702,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'pending',
     note: 'Official digital-policy entry point retained for Data Act follow-up; a Data Act-specific authority was not located in this review.',
+  }),
+  grDataActResources: source({
+    id: 'gr-data-act-resources',
+    label: 'Greece AI.gov.gr · Data Act resource index',
+    url: urls.grDataActResources,
+    sourceType: 'research-lead',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official resource index lists Regulation (EU) 2023/2854; it is retained as country-specific policy evidence, not as proof of a final enforcement authority or domestic penalty schedule.',
   }),
   huNaihDigitalLegislation: source({
     id: 'hu-naih-eu-digital-legislation',
@@ -636,6 +739,15 @@ const sources = {
     evidenceStatus: 'pending',
     note: 'Official data-protection authority entry point retained for follow-up; no Data Act-specific designation was located in this review.',
   }),
+  lvDataActCabinet: source({
+    id: 'lv-data-act-cabinet',
+    label: 'Latvia Cabinet of Ministers · Data Act implementation responsibilities',
+    url: urls.lvDataActCabinet,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official cabinet protocol records a Data Act implementation report, assigns institutions to prepare national regulatory projects, and sets a 30 December 2026 target; it does not establish a final authority, complaint route, or penalty ceiling.',
+  }),
   luCnpdDga: source({
     id: 'lu-cnpd-dga-research-lead',
     label: 'Luxembourg CNPD · Data Governance Act information',
@@ -644,6 +756,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The page concerns CNPD’s DGA role; it is intentionally not used as proof of a Luxembourg Data Act authority, complaint route, or penalty schedule.',
+  }),
+  luCnpdDataAct: source({
+    id: 'lu-cnpd-data-act',
+    label: 'Luxembourg CNPD · Data Act conference information',
+    url: urls.luCnpdDataAct,
+    sourceType: 'research-lead',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official CNPD page records a national Data Act information event; it is a policy lead only and does not establish a final enforcement authority, complaint route, or penalty ceiling.',
   }),
   skMirriDataAct: source({
     id: 'sk-mirri-data-act-coordination',
@@ -671,6 +792,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'pending',
     note: 'Official digitalisation entry point retained for follow-up; a Data Act-specific authority was not located in this review.',
+  }),
+  siDataActDraft: source({
+    id: 'si-data-act-draft',
+    label: 'Slovenia Ministry of Digital Transformation · Data Act implementation bill consultation',
+    url: urls.siDataActDraft,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official consultation page identifies a draft implementation law and proposed AKOS / Information Commissioner roles; the consultation draft is not treated as final law or final penalty schedule.',
   }),
 }
 
@@ -1339,6 +1469,112 @@ const finland: CountryRecord = {
   lastVerifiedAt: DATA_AS_OF,
 }
 
+const lithuaniaAuthorities: AuthorityRecord[] = [
+  {
+    name: '立陶宛共和国通信监管局',
+    nameEn: 'Communications Regulatory Authority of the Republic of Lithuania (RRT)',
+    role: 'data_coordinator',
+    scope: '立陶宛 Data Act 主管机关、数据协调员、投诉受理、调查与执行；个人数据保护仍由 GDPR 主管机关负责。',
+    sourceUrl: urls.ltRrtDataActSupervision,
+    evidence: evidence([urls.ltRrtDataActSupervision, urls.ltDataActLaw], 'verified'),
+  },
+]
+
+const lithuaniaComplaintRoutes: ComplaintRoute[] = [
+  {
+    id: 'lt-data-act-complaint',
+    label: 'RRT Data Act 使用与投诉入口',
+    scope: '联网产品数据访问、向第三方提供数据、数据处理服务切换及疑似 Data Act 违规。',
+    url: urls.ltRrtDataActUse,
+    submissionMode: 'RRT 官方页面提供投诉/问题提交路径；需按页面指引提交事实和材料',
+    status: 'verified',
+    evidence: evidence([urls.ltRrtDataActUse, urls.ltRrtDataActSupervision, urls.ltDataActLaw], 'verified'),
+  },
+]
+
+const lithuaniaPenaltySchedule: PenaltyTier[] = [
+  {
+    label: '2% EU turnover / 2% daily periodic fine',
+    maximum: '最高为违法者上一财年欧盟营业额的 2%；部分持续违法可按平均日欧盟营业额最高 2% 计算周期性罚款。',
+    legalBasis: 'Lietuvos Respublikos įstatymas XV-1077 §17(1)–(2)',
+    scope: 'Data Act 违规的一般上限及 §16(1)(2) 所列行为。',
+    sourceUrl: urls.ltDataActLaw,
+    conditionalTurnoverCap: true,
+    evidence: evidence([urls.ltDataActLaw], 'verified'),
+  },
+  {
+    label: '1% EU turnover / 1% daily periodic fine',
+    maximum: '最高为违法者上一财年欧盟营业额的 1%；部分持续违法或信息义务违规可按平均日欧盟营业额最高 1% 计算周期性罚款。',
+    legalBasis: 'Lietuvos Respublikos įstatymas XV-1077 §17(3)–(4)',
+    scope: '§16(1)(3)–(4) 所列行为及错误、不完整或误导性信息义务。',
+    sourceUrl: urls.ltDataActLaw,
+    conditionalTurnoverCap: true,
+    evidence: evidence([urls.ltDataActLaw], 'verified'),
+  },
+]
+
+const lithuaniaIssueSources = [urls.ltRrtDataActSupervision, urls.ltRrtDataActUse, urls.ltDataActLaw, urls.euDataAct]
+const lithuaniaIssues = standardDeviceIssues('Lietuvos Respublikos įstatymas XV-1077 §§12、16–18；RRT 负责 Data Act 监督、投诉、调查与制裁', lithuaniaIssueSources)
+
+const lithuaniaTimeline: TimelineEvent[] = [
+  {
+    date: DATA_AS_OF,
+    label: '当前记录核验',
+    description: 'RRT 官方监督页面和立陶宛实施法已确认主管机关、投诉框架与法定罚款上限；截至当前核验未定位到公开 Data Act 罚款决定。',
+    kind: 'verification',
+    sourceUrl: urls.ltRrtDataActSupervision,
+    evidence: evidence([urls.ltRrtDataActSupervision, urls.ltDataActLaw], 'verified'),
+  },
+  {
+    date: '2026-08-01',
+    label: '立陶宛 Data Act 实施法生效',
+    description: 'Law XV-1077 于 2026-08-01 生效，规定 RRT 的监督、投诉、调查和制裁权限。',
+    kind: 'authority',
+    sourceUrl: urls.ltDataActLaw,
+    evidence: evidence([urls.ltDataActLaw], 'verified'),
+  },
+]
+
+const lithuaniaSources = [
+  sources.euDataAct,
+  sources.euCountries,
+  sources.ltDataActLaw,
+  sources.ltRrtDataActSupervision,
+  sources.ltRrtDataActUse,
+  sources.ltEiminDataActDraft,
+  sources.ltEiminDataActPage,
+]
+
+const lithuania: CountryRecord = {
+  id: 'lt',
+  name: '立陶宛',
+  nameEn: 'Lithuania',
+  iso2: 'LT',
+  flag: '🇱🇹',
+  coverage: 'deep',
+  implementationStage: 'enacted',
+  implementingAct: 'Lietuvos Respublikos įstatymas XV-1077 · Law on implementation of the EU Data Act',
+  implementingActUrl: urls.ltDataActLaw,
+  applicableFrom: '2025-09-12',
+  nationalActEffectiveFrom: '2026-08-01',
+  competentAuthorities: lithuaniaAuthorities,
+  complaintRoutes: lithuaniaComplaintRoutes,
+  penaltySchedule: lithuaniaPenaltySchedule,
+  enforcementSummary: {
+    publishedPenaltyStatus: 'not_located',
+    publishedPenaltyCount: null,
+    publishedPenaltyAmountEur: null,
+    note: '截至当前核验，在已审阅的 RRT 监督页面和立陶宛实施法中未定位到已公开的 Data Act 罚款决定；法定罚款上限与实际处罚分开记录。',
+    lastVerifiedAt: DATA_AS_OF,
+    sourceUrls: [urls.ltRrtDataActSupervision, urls.ltDataActLaw],
+  },
+  enforcementCases: [],
+  issues: lithuaniaIssues,
+  timeline: lithuaniaTimeline,
+  sources: lithuaniaSources,
+  lastVerifiedAt: DATA_AS_OF,
+}
+
 const euQueueSource = sources.euDataAct
 const euCountryListSource = sources.euCountries
 
@@ -1388,6 +1624,9 @@ interface QueueCountryOptions {
   coverage?: CountryRecord['coverage']
   implementationStage?: ImplementationStage
   coverageNote?: string
+  implementingAct?: string
+  implementingActUrl?: string
+  publishedPenaltyStatus?: VerificationStatus
   additionalSources?: SourceRecord[]
   competentAuthorities?: AuthorityRecord[]
   complaintRoutes?: ComplaintRoute[]
@@ -1404,11 +1643,13 @@ const queueCountry = (record: Pick<CountryRecord, 'id' | 'name' | 'nameEn' | 'is
     coverage: options.coverage ?? 'queue',
     implementationStage: options.implementationStage ?? 'not_located',
     coverageNote: options.coverageNote,
+    implementingAct: options.implementingAct,
+    implementingActUrl: options.implementingActUrl,
     competentAuthorities: options.competentAuthorities ?? [],
     complaintRoutes: options.complaintRoutes ?? [],
     penaltySchedule: options.penaltySchedule ?? [],
     enforcementSummary: {
-      publishedPenaltyStatus: 'pending',
+      publishedPenaltyStatus: options.publishedPenaltyStatus ?? 'pending',
       publishedPenaltyCount: null,
       publishedPenaltyAmountEur: null,
       note: options.coverageNote
@@ -1427,7 +1668,9 @@ const queueCountry = (record: Pick<CountryRecord, 'id' | 'name' | 'nameEn' | 'is
 
 const queueCountryOptions: Record<string, QueueCountryOptions> = {
   it: {
-    coverageNote: '意大利 AGCOM 官方年度报告仍将 Data Act 主管机关指定描述为需要由国内立法完成的事项；本次未找到最终数据协调员、专门投诉入口或国内罚则方案。',
+    coverage: 'partial',
+    implementationStage: 'not_located',
+    coverageNote: '意大利 AGCOM 官方 2026–2028 透明度计划将 Data Act 纳入监管范围；本次仍未找到最终数据协调员、专门投诉入口或国内罚则方案。',
     additionalSources: [sources.itAgcomDataActPtpct2026],
   },
   be: {
@@ -1485,7 +1728,10 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   mt: {
     coverage: 'partial',
     implementationStage: 'enacted',
-    coverageNote: '马耳他官方页面显示 MDIA 为一般 Data Act 主管机关/数据协调员，MCA 负责切换与互操作条款；本次已确认 competence split，但完整投诉入口和国内罚则仍待核验。',
+    implementingAct: 'Fair Access to and Use of Data Regulations, 2025 · L.N. 222 of 2025',
+    implementingActUrl: urls.mtLegalNotice,
+    publishedPenaltyStatus: 'not_located',
+    coverageNote: '马耳他 L.N. 222/2025 与 MDIA 官方页面确认 MDIA/MCA 的 competence split、数据协调员和正式投诉程序；本次仍未在实施通知中定位到一个固定数值的 Data Act 国内罚款上限，IDPC 的个人数据边界保留。',
     competentAuthorities: [
       {
         name: '马耳他数字创新局',
@@ -1503,8 +1749,27 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         sourceUrl: urls.mtMcaDataAct,
         evidence: evidence([urls.mtMcaDataAct, urls.mtMdiaDataAct], 'verified'),
       },
+      {
+        name: '信息与数据保护专员',
+        nameEn: 'Information and Data Protection Commissioner (IDPC)',
+        role: 'data_protection',
+        scope: 'Data Act 中涉及个人数据保护的监督边界；不等同于 MDIA/MCA 的一般或切换/互操作主管权限。',
+        sourceUrl: urls.mtMdiaDataAct,
+        evidence: evidence([urls.mtMdiaDataAct, urls.mtLegalNotice], 'verified'),
+      },
     ],
-    additionalSources: [sources.mtMdiaDataAct, sources.mtMcaDataAct],
+    complaintRoutes: [
+      {
+        id: 'mt-mdia-regulatory-complaint',
+        label: 'MDIA Data Act 正式监管投诉',
+        scope: 'MDIA competence 范围内的 Data Act 权利或义务涉嫌违反；MCA 负责的 Articles 23–31、34–35 仍需走 MCA 对应入口。',
+        url: urls.mtRegulatoryComplaints,
+        submissionMode: 'MDIA Regulatory Complaints Form（官方 Servizz.gov 提交表单）',
+        status: 'verified',
+        evidence: evidence([urls.mtRegulatoryComplaints, urls.mtMdiaDataAct, urls.mtLegalNotice], 'verified'),
+      },
+    ],
+    additionalSources: [sources.mtMdiaDataAct, sources.mtMcaDataAct, sources.mtLegalNotice, sources.mtRegulatoryComplaints],
   },
   pt: {
     coverage: 'partial',
@@ -1525,16 +1790,31 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
     additionalSources: [sources.sePtsDataAct],
   },
   bg: {
-    coverageNote: '本轮未定位到保加利亚 Data Act 专门主管机关、投诉入口或国内罚则；保留 CRC 官方入口作为下一轮研究线索。',
-    additionalSources: [sources.bgCrc],
+    coverage: 'partial',
+    implementationStage: 'legislative',
+    coverageNote: '保加利亚创新与数字化转型部官方 Data Act 页面确认实施措施拟通过《公共信息获取法》修法落地；本轮仍未定位最终主管机关、投诉入口或国内罚则。',
+    additionalSources: [sources.bgCrc, sources.bgMidtDataAct],
   },
   hr: {
-    coverageNote: '本轮仅定位到克罗地亚 Data Governance Act 实施页面；该材料不等同于 Data Act 主管机关指定，专门入口与罚则待研究。',
-    additionalSources: [sources.hrDga],
+    coverage: 'partial',
+    implementationStage: 'legislative',
+    coverageNote: '克罗地亚官方 2026 欧盟法对齐计划列出 Data Act 实施法；本轮仍未定位最终主管机关、投诉入口或国内罚则，Data Governance Act 页面仅作背景线索。',
+    additionalSources: [sources.hrDga, sources.hrMpudtDataActPlan],
   },
   cy: {
-    coverageNote: '塞浦路斯官方 DD-2030 报告讨论可能覆盖 Data Act 的数据政策单元，但未形成最终指定；主管机关、入口和罚则待研究。',
-    additionalSources: [sources.cyDd2030],
+    coverage: 'partial',
+    coverageNote: '塞浦路斯部长会议第 98.600 号决定已按 Data Act Article 37 指定研究、创新与数字政策副部为国家主管机关；本轮仍未定位公开投诉入口与国内罚款上限。',
+    competentAuthorities: [
+      {
+        name: '研究、创新与数字政策副部',
+        nameEn: 'Deputy Ministry of Research, Innovation and Digital Policy',
+        role: 'competent_authority',
+        scope: '塞浦路斯 Data Act 国家主管机关；负责 Regulation (EU) 2023/2854 的国家层面实施与执行协调。',
+        sourceUrl: urls.cyDataActAuthority,
+        evidence: evidence([urls.cyDataActAuthority], 'verified'),
+      },
+    ],
+    additionalSources: [sources.cyDd2030, sources.cyDataActAuthority],
   },
   cz: {
     coverage: 'partial',
@@ -1543,12 +1823,15 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
     additionalSources: [sources.czRvisDataActDraft, sources.czCtuDataActFlyer, sources.czMpoDataAct],
   },
   ee: {
-    coverageNote: '本轮定位到爱沙尼亚 TTJA 关于非个人数据自由流动/DGA 的官方入口；Data Act 专门指定、投诉和罚则仍未定位。',
-    additionalSources: [sources.eeTtjaFreeFlow],
+    coverage: 'partial',
+    implementationStage: 'legislative',
+    coverageNote: '爱沙尼亚政府 EIS 官方立法档案确认经济事务与通信部负责 Data Act 提案跟进；本轮仍未定位现行专门主管机关、投诉入口或国内罚则。',
+    additionalSources: [sources.eeTtjaFreeFlow, sources.eeDataActDraft],
   },
   gr: {
-    coverageNote: '本轮保留希腊官方数字政策入口作为研究线索；尚未定位 Data Act 专门主管机关、投诉入口或国内罚则。',
-    additionalSources: [sources.grAiGov],
+    coverage: 'partial',
+    coverageNote: '希腊 AI.gov.gr 官方资源索引已明确列出 Regulation (EU) 2023/2854；本轮仍未定位 Data Act 专门主管机关、投诉入口或国内罚则。',
+    additionalSources: [sources.grAiGov, sources.grDataActResources],
   },
   hu: {
     coverage: 'partial',
@@ -1557,12 +1840,15 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
     additionalSources: [sources.huNaihAnnualReport2025, sources.huNaihDigitalLegislation],
   },
   lv: {
-    coverageNote: '本轮保留拉脱维亚数据保护机关官方入口作为边界研究线索；Data Act 专门指定、投诉和罚则仍未定位。',
-    additionalSources: [sources.lvDvi],
+    coverage: 'partial',
+    implementationStage: 'legislative',
+    coverageNote: '拉脱维亚内阁官方议定书记录 Data Act 实施报告与国内监管项目准备工作，并设定 2026-12-30 目标；最终主管机关、投诉入口和国内罚则仍待核验。',
+    additionalSources: [sources.lvDvi, sources.lvDataActCabinet],
   },
   lu: {
-    coverageNote: '卢森堡 CNPD 官方页面确认的是 DGA 相关角色，不作为 Data Act 主管机关证据；Data Act 专门指定、投诉和罚则待研究。',
-    additionalSources: [sources.luCnpdDga],
+    coverage: 'partial',
+    coverageNote: '卢森堡 CNPD 官方页面记录 Data Act 实务活动，但本轮仍未定位 Data Act 专门主管机关、投诉入口或国内罚则；DGA 角色不作为 Data Act 指定证据。',
+    additionalSources: [sources.luCnpdDga, sources.luCnpdDataAct],
   },
   sk: {
     coverage: 'partial',
@@ -1571,8 +1857,10 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
     additionalSources: [sources.skMirriDataActLaw, sources.skMirriDataAct],
   },
   si: {
-    coverageNote: '本轮保留斯洛文尼亚 GOV.SI 数字化官方入口作为研究线索；Data Act 专门指定、投诉和罚则仍未定位。',
-    additionalSources: [sources.siDigitalisation],
+    coverage: 'partial',
+    implementationStage: 'draft',
+    coverageNote: '斯洛文尼亚数字转型部官方咨询公告已发布 Data Act 实施法草案，并提出 AKOS 与信息专员的职责；草案尚非最终法，投诉入口和最终罚则仍待核验。',
+    additionalSources: [sources.siDigitalisation, sources.siDataActDraft],
   },
 }
 
@@ -1612,6 +1900,7 @@ export const COUNTRY_RECORDS: CountryRecord[] = [
     if (country.iso2 === 'NL') return netherlands
     if (country.iso2 === 'DK') return denmark
     if (country.iso2 === 'FI') return finland
+    if (country.iso2 === 'LT') return lithuania
     return queueCountry(country, queueCountryOptions[country.id])
   }),
 ]

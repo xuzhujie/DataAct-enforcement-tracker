@@ -2,6 +2,7 @@ import { ArrowUpRight, Link2 } from 'lucide-react'
 import type { SourceRecord } from '../data/types'
 import { formatDate } from '../lib/format'
 import { getSourceFreshness } from '../lib/freshness'
+import StatusTag from './StatusTag'
 
 const freshnessLabels = {
   current: '新鲜',
@@ -24,7 +25,10 @@ export default function SourceList({ sources }: { sources: SourceRecord[] }) {
         {sources.map((source) => (
           <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="source-card">
             <span className="source-card__label">{source.label} <ArrowUpRight aria-hidden="true" size={13} /></span>
-            <small>{source.sourceType} · <span className={`source-freshness source-freshness--${getSourceFreshness(source.lastVerifiedAt).status}`}>{freshnessLabels[getSourceFreshness(source.lastVerifiedAt).status]}</span> · {formatDate(source.lastVerifiedAt)}</small>
+            <div className="source-card__meta">
+              <span>{source.sourceType} · <span className={`source-freshness source-freshness--${getSourceFreshness(source.lastVerifiedAt).status}`}>{freshnessLabels[getSourceFreshness(source.lastVerifiedAt).status]}</span> · {formatDate(source.lastVerifiedAt)}</span>
+              <StatusTag status={source.evidenceStatus} />
+            </div>
             {source.note && <p>{source.note}</p>}
           </a>
         ))}

@@ -4,6 +4,7 @@ import type { CountryRecord, IssueType } from '../data/types'
 import { formatDate } from '../lib/format'
 import { buildCountryReference, formatImplementationStage } from '../lib/view-model'
 import ComplaintRoutes from './ComplaintRoutes'
+import CountryFieldStatus from './CountryFieldStatus'
 import EnforcementCaseRegister from './EnforcementCaseRegister'
 import IssueMatrix from './IssueMatrix'
 import PenaltyLadder from './PenaltyLadder'
@@ -115,9 +116,14 @@ export default function CountryDetail({ record, activeIssues, initialTab = 'over
             <p>{record.coverage === 'partial' ? '部分核验只代表已找到的官方线索，不等于完整的国内实施、投诉或执法核验。' : '队列备注只代表已找到的官方线索，不等于完整的国内实施、投诉或执法核验。'}</p>
             <div className="queue-detail__stage"><span>实施阶段</span><strong>{formatImplementationStage(record.implementationStage)}</strong></div>
             <StatusTag status="pending" />
+            <CountryFieldStatus record={record} />
             <div className="queue-detail__sources">
               {record.sources.map((source) => (
-                <a key={source.id} href={source.url} target="_blank" rel="noreferrer">{source.label} <ArrowUpRight size={13} /></a>
+                <a key={source.id} href={source.url} target="_blank" rel="noreferrer">
+                  <span>{source.label}</span>
+                  <StatusTag status={source.evidenceStatus} />
+                  <ArrowUpRight size={13} />
+                </a>
               ))}
             </div>
           </div>

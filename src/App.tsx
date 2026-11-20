@@ -21,6 +21,7 @@ import { buildEnforcementMonitors } from './data/monitoring'
 import { buildReviewQueue } from './data/review-queue'
 import { getCountryMetrics, getCoverageMetrics } from './data/metrics'
 import { DEFAULT_COUNTRY_FILTERS, filterCountries } from './lib/view-model'
+import { getCurrentIsoDate } from './lib/freshness'
 
 const ALL_ISSUES: IssueType[] = ['device_access', 'third_party_sharing', 'second_hand_transfer']
 
@@ -36,7 +37,7 @@ export default function App() {
   )
   const filteredCountries = useMemo(() => filterCountries(COUNTRY_RECORDS, registryFilters), [registryFilters])
   const coverageMetrics = useMemo(() => getCoverageMetrics(COUNTRY_RECORDS), [])
-  const reviewQueue = useMemo(() => buildReviewQueue(COUNTRY_RECORDS), [])
+  const reviewQueue = buildReviewQueue(COUNTRY_RECORDS, getCurrentIsoDate())
 
   function toggleIssue(issue: IssueType) {
     setActiveIssues((current) => current.includes(issue) ? current.filter((item) => item !== issue) : [...current, issue])

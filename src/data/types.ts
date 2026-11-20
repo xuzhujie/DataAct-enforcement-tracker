@@ -14,7 +14,7 @@ export interface SourceRecord {
   id: string
   label: string
   url: string
-  sourceType: 'authority' | 'complaint-form' | 'statute' | 'eu-regulation' | 'joint-guidance' | 'eu-country-list' | 'research-lead'
+  sourceType: 'authority' | 'official-decision' | 'complaint-form' | 'statute' | 'eu-regulation' | 'joint-guidance' | 'eu-country-list' | 'research-lead'
   lastVerifiedAt: string
   evidenceStatus: VerificationStatus
   note?: string

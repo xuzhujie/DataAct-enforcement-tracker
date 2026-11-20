@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "tsx --test tests/data.test.ts",
+    "test": "node --import tsx/esm --test tests/data.test.ts",
+    "validate:registry": "node --import tsx/esm scripts/validate-registry.ts",
+    "check:sources": "node --import tsx/esm scripts/check-sources.ts",
     "build": "tsc -b && vite build",
     "lint": "tsc -b",
     "preview": "vite preview"
