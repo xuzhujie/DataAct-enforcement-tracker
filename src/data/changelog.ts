@@ -7,6 +7,24 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-ro-ancom-draft-detail',
+    date: '2026-11-21',
+    countryId: 'ro',
+    kind: 'changed',
+    summary: '补入罗马尼亚 ANCOM 官方 Data Act 实施法咨询稿：草案拟由 ANCOM 担任主管机关/数据协调员、ANSPDCP 负责个人数据边界；第 7 条拟定投诉程序，第 19 条提出 RON 100,000、欧盟营业额 5%/重复违法 10%上限，第 25 条拟设每日 RON 30,000 行政罚款。草案尚未生效，主管、投诉和罚则均保持 pending，实际处罚仍为 0 条。',
+    sourceUrls: ['https://www.ancom.ro/despre-noi/media/comunicate-de-presa/data-act-proiectul-de-lege-pentru-aplicarea-regulilor-privind-accesul-la-datele-generate-de-produsele-conectate-si-serviciile-conexe-in-consultare-publica/', 'https://www.ancom.ro/wp-content/uploads/2026/07/Consultare_Lege_aplicare_Regulament_UE_2023_2854.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-it-agcom-perimeter',
+    date: '2026-11-21',
+    countryId: 'it',
+    kind: 'changed',
+    summary: '补充意大利 AGCOM 官方 2026–2028 透明度计划：该计划称 Data Act 已纳入 AGCOM 的监管、执法和协调范围；因 AGCOM 2025 年报仍称部分主管机关指定待国家立法，AGCOM 仅以 pending 监管范围信号入库，投诉入口、国内罚则和实际处罚仍未定位。',
+    sourceUrls: ['https://www.agcom.it/sites/default/files/media/allegato/2026/Allegato%20A%20alla%20delibera%20n.%2047-26-CONS%20Piano%20triennale%20di%20prevenzione%20della%20corruzione%20e%20della%20trasparenza%202026-2028.pdf', 'https://www.agcom.it/sites/default/files/documenti/relazione_annuale/RELAZIONE%20ANNUALE%202025_0.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-lu-bill-8809',
     date: '2026-11-21',
     countryId: 'lu',

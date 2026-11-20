@@ -17,6 +17,7 @@ export const GERMANY_ID = 'de'
 const urls = {
   euDataAct: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R2854',
   euCountries: 'https://european-union.europa.eu/principles-countries-history/eu-countries_en',
+  euDpaMembers: 'https://www.edpb.europa.eu/about-edpb/our-members_en',
   bnetzaDataAct: 'https://www.bundesnetzagentur.de/DE/Fachthemen/Digitales/DataAct/start.html',
   complaintPortal: 'https://www.bundesnetzagentur.de/DE/Fachthemen/Digitales/DataAct/Beschwerdeportal/start.html',
   complaintAccess: 'https://www.bundesnetzagentur.de/_tools/_forms/05_Digitalisierung/DataAct/Form01_Beschwerde_II_III/node.html',
@@ -77,7 +78,8 @@ const urls = {
   mtIdpcComplaint: 'https://idpc.org.mt/file-a-complaint/',
   ptDigitalStrategy: 'https://bo.digital.gov.pt/api/assets/etic/3e169348-73f6-416c-9d96-bed5bf4e9171/',
   ptDataActExecutionPlan: 'https://diariodarepublica.pt/dr/detalhe/resolucao-conselho-ministros/214-2025-992879810',
-  roAncomDataAct: 'https://www.ancom.ro/en/about-us/media-en/press-releases/data-act-draft-law-on-the-application-of-rules-regarding-access-to-data-generated-by-connected-products-and-related-services-open-for-public-consultation/',
+  roAncomDataAct: 'https://www.ancom.ro/despre-noi/media/comunicate-de-presa/data-act-proiectul-de-lege-pentru-aplicarea-regulilor-privind-accesul-la-datele-generate-de-produsele-conectate-si-serviciile-conexe-in-consultare-publica/',
+  roAncomDataActBill: 'https://www.ancom.ro/wp-content/uploads/2026/07/Consultare_Lege_aplicare_Regulament_UE_2023_2854.pdf',
   sePtsDataAct: 'https://www.pts.se/internet-och-telefoni/dataforordningen/',
   sePtsComplaint: 'https://da-klagomal.pts.se/',
   seGovernmentInquiry: 'https://www.regeringen.se/contentassets/3fa2e0b39110403490045e3418eb8d2c/okad-och-rattvis-tillgang-till-data-sou-2025118.pdf',
@@ -141,6 +143,15 @@ const sources = {
     sourceType: 'eu-country-list',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
+  }),
+  euDpaMembers: source({
+    id: 'eu-edpb-national-dpa-members',
+    label: 'European Data Protection Board · national supervisory authorities',
+    url: urls.euDpaMembers,
+    sourceType: 'authority',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The EDPB member list identifies each EU Member State national data-protection supervisory authority. Data Act Article 37(3) assigns that authority responsibility for the Data Act insofar as personal-data protection is concerned; this source does not establish the general Data Coordinator.',
   }),
   bnetzaDataAct: source({
     id: 'bnetza-data-act',
@@ -361,7 +372,7 @@ const sources = {
     sourceType: 'research-lead',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
-    note: 'The official plan places the Data Act within AGCOM’s regulatory perimeter, but the reviewed passage does not establish a completed national Data Act coordinator designation, complaint route, or domestic penalty schedule.',
+    note: 'The official plan states that the Data Act has expanded AGCOM’s regulatory, enforcement and coordination perimeter; AGCOM’s 2025 annual report is retained alongside it because formal national designation remains pending for parts of the Data Act.',
   }),
   itAgcomAnnualReport2025: source({
     id: 'it-agcom-annual-report-2025-data-act',
@@ -710,7 +721,16 @@ const sources = {
     sourceType: 'statute',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
-    note: 'The consultation draft proposes ANCOM as competent authority and Data Coordinator and ANSPDCP for personal-data matters; it is not recorded as enacted law.',
+    note: 'ANCOM opened the official public consultation for the Romanian Data Act application bill; the consultation page identifies ANCOM, ANSPDCP and the proposed sanction framework, but it is not recorded as enacted law.',
+  }),
+  roAncomDataActBill: source({
+    id: 'ro-ancom-data-act-bill',
+    label: 'ANCOM · Romanian Data Act application bill (consultation draft)',
+    url: urls.roAncomDataActBill,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The consultation draft proposes ANCOM as competent authority and Data Coordinator, ANSPDCP for personal-data matters, an ANCOM complaint procedure, and draft RON / EU-turnover sanction ceilings; it is not recorded as enacted law.',
   }),
   sePtsDataAct: source({
     id: 'se-pts-data-act',
@@ -1758,6 +1778,35 @@ const lithuania: CountryRecord = {
 const euQueueSource = sources.euDataAct
 const euCountryListSource = sources.euCountries
 
+const dataProtectionAuthority = (name: string, nameEn: string): AuthorityRecord => ({
+  name,
+  nameEn,
+  role: 'data_protection',
+  scope: 'Data Act Article 37(3) assigns the national GDPR supervisory authority responsibility for the Data Act insofar as personal-data protection is concerned. This record does not establish the country’s general Data Coordinator or full non-personal-data enforcement mandate.',
+  sourceUrl: urls.euDpaMembers,
+  evidence: evidence([urls.euDataAct, urls.euDpaMembers], 'verified'),
+})
+
+const queueDataProtectionAuthorities: Record<string, AuthorityRecord> = {
+  be: dataProtectionAuthority('比利时数据保护局', 'Belgian Data Protection Authority (APD-GBA)'),
+  bg: dataProtectionAuthority('保加利亚个人数据保护委员会', 'Commission for Personal Data Protection (CPDP)'),
+  hr: dataProtectionAuthority('克罗地亚个人数据保护机构', 'Croatian Personal Data Protection Agency (AZOP)'),
+  cy: dataProtectionAuthority('塞浦路斯个人数据保护专员办公室', 'Cypriot Data Protection Authority'),
+  cz: dataProtectionAuthority('捷克个人数据保护局', 'Czech Office for Personal Data Protection (UOOU)'),
+  ee: dataProtectionAuthority('爱沙尼亚数据保护监察局', 'Estonian Data Protection Inspectorate (AKI)'),
+  fr: dataProtectionAuthority('法国国家信息与自由委员会', 'French Data Protection Authority (CNIL)'),
+  gr: dataProtectionAuthority('希腊个人数据保护局', 'Hellenic Data Protection Authority (HDPA)'),
+  hu: dataProtectionAuthority('匈牙利国家数据保护与信息自由局', 'Hungarian National Authority for Data Protection and Freedom of Information (NAIH)'),
+  ie: dataProtectionAuthority('爱尔兰数据保护委员会', 'Data Protection Commission (DPC)'),
+  it: dataProtectionAuthority('意大利个人数据保护局', 'Garante per la protezione dei dati personali'),
+  lv: dataProtectionAuthority('拉脱维亚数据国家监察局', 'Data State Inspectorate (DVI)'),
+  lt: dataProtectionAuthority('立陶宛国家数据保护监察局', 'State Data Protection Inspectorate (VDAI)'),
+  pl: dataProtectionAuthority('波兰个人数据保护局', 'Personal Data Protection Office (UODO)'),
+  sk: dataProtectionAuthority('斯洛伐克共和国个人数据保护局', 'Office for Personal Data Protection of the Slovak Republic'),
+  es: dataProtectionAuthority('西班牙数据保护局', 'Spanish Data Protection Agency (AEPD)'),
+  se: dataProtectionAuthority('瑞典隐私保护局', 'Swedish Authority for Privacy Protection (IMY)'),
+}
+
 const pendingHardwareIssues = (sourceUrls: string[]): IssueRecord[] => {
   const evidenceUrls = [...new Set(sourceUrls)]
   const sharedEvidenceSummary = '欧盟 Data Act 已提供相关条款框架；该国的主管机关、国内实施法与执行口径尚未完成本轮核验，因此不据此判断本国已确认的争议结论。'
@@ -1816,7 +1865,9 @@ interface QueueCountryOptions {
 }
 
 const queueCountry = (record: Pick<CountryRecord, 'id' | 'name' | 'nameEn' | 'iso2' | 'flag'>, options: QueueCountryOptions = {}): CountryRecord => {
-  const sourceUrls = [euQueueSource.url, ...(options.additionalSources ?? []).map((sourceRecord) => sourceRecord.url)]
+  const countryDataProtectionAuthority = queueDataProtectionAuthorities[record.id]
+  const countrySources = [euQueueSource, euCountryListSource, sources.euDpaMembers, ...(options.additionalSources ?? [])]
+  const sourceUrls = countrySources.map((sourceRecord) => sourceRecord.url)
 
   return {
     ...record,
@@ -1825,7 +1876,7 @@ const queueCountry = (record: Pick<CountryRecord, 'id' | 'name' | 'nameEn' | 'is
     coverageNote: options.coverageNote,
     implementingAct: options.implementingAct,
     implementingActUrl: options.implementingActUrl,
-    competentAuthorities: options.competentAuthorities ?? [],
+    competentAuthorities: [...(options.competentAuthorities ?? []), ...(countryDataProtectionAuthority ? [countryDataProtectionAuthority] : [])],
     complaintRoutes: options.complaintRoutes ?? [],
     penaltySchedule: options.penaltySchedule ?? [],
     enforcementSummary: {
@@ -1841,7 +1892,7 @@ const queueCountry = (record: Pick<CountryRecord, 'id' | 'name' | 'nameEn' | 'is
     enforcementCases: [],
     issues: options.issues ?? pendingHardwareIssues(sourceUrls),
     timeline: options.timeline ?? [],
-    sources: [euQueueSource, euCountryListSource, ...(options.additionalSources ?? [])],
+    sources: countrySources,
     lastVerifiedAt: DATA_AS_OF,
   }
 }
@@ -1851,6 +1902,16 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
     coverage: 'partial',
     implementationStage: 'legislative',
     coverageNote: '意大利 AGCOM 官方 2025 年度报告明确写明，国家立法者仍需指定 Data Act 第 23–31、34–35 条的主管机关；2026–2028 透明度计划将 Data Act 纳入监管范围，但最终数据协调员、专门投诉入口和国内罚则方案仍未确认。',
+    competentAuthorities: [
+      {
+        name: '意大利通信管理局（监管范围信号，待法定确认）',
+        nameEn: 'Italian Communications Authority (AGCOM) (regulatory-perimeter signal; pending statutory confirmation)',
+        role: 'competent_authority',
+        scope: 'AGCOM 2026–2028 官方透明度计划将 Data Act 纳入其监管、执法和协调范围；AGCOM 2025 年报同时说明部分 Data Act 主管机关指定仍待国家立法者完成，因此不视为最终 Article 37 指定。',
+        sourceUrl: urls.itAgcomDataActPtpct2026,
+        evidence: evidence([urls.itAgcomDataActPtpct2026, urls.itAgcomAnnualReport2025], 'pending'),
+      },
+    ],
     additionalSources: [sources.itAgcomDataActPtpct2026, sources.itAgcomAnnualReport2025],
   },
   be: {
@@ -1975,7 +2036,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   es: {
     coverage: 'partial',
     implementationStage: 'not_located',
-    coverageNote: '西班牙官方 Data Act 指南已入库；2026 年 Real Decreto 328/2026 提及 Data Act Chapter V 的已指定主管机关，但未给出完整 Article 37 数据协调员、投诉入口或国内罚则，因此仍不升级为最终主管机关记录。',
+    coverageNote: '西班牙官方 Data Act 指南已入库；个人数据边界主管机构已按 Data Act Article 37(3) 记录。2026 年 Real Decreto 328/2026 提及 Data Act Chapter V 的已指定主管机关，但未给出完整 Article 37 数据协调员、投诉入口或国内罚则，因此仍不升级为最终一般主管机关记录。',
     additionalSources: [sources.esDataActGuide, sources.esDataActChapterV],
   },
   ie: {
@@ -2177,7 +2238,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   ro: {
     coverage: 'partial',
     implementationStage: 'draft',
-    coverageNote: '罗马尼亚 ANCOM 官方咨询稿拟指定 ANCOM 为主管机关/数据协调员、ANSPDCP 处理个人数据边界；仍是公开咨询草案，不填入最终权限或罚则。',
+    coverageNote: '罗马尼亚 ANCOM 官方咨询稿拟指定 ANCOM 为主管机关/数据协调员、ANSPDCP 处理个人数据边界；草案第 7 条拟由 ANCOM 决定投诉程序，第 19 条拟设 RON 5,000–60,000、重复违法最高 RON 100,000，以及欧盟营业额 5%（重复违法最高 10%）的罚款，第 25 条另拟每日最高 RON 30,000 的行政罚款。草案仍在公开咨询阶段，不填入最终权限或罚则。',
     competentAuthorities: [
       {
         name: '国家通信管理与监管局（拟议）',
@@ -2185,7 +2246,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         role: 'data_coordinator',
         scope: '2026-07 公开咨询草案拟由 ANCOM 负责 Data Act 实施、监督、合规核验并行使国家数据协调员职能；尚未成为最终国内法。',
         sourceUrl: urls.roAncomDataAct,
-        evidence: evidence([urls.roAncomDataAct], 'pending'),
+        evidence: evidence([urls.roAncomDataAct, urls.roAncomDataActBill], 'pending'),
       },
       {
         name: '国家个人数据处理监督机构（拟议）',
@@ -2193,10 +2254,50 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         role: 'data_protection',
         scope: '咨询草案拟由 ANSPDCP 负责 Data Act 实施中的个人数据保护监督边界；尚未成为最终国内法。',
         sourceUrl: urls.roAncomDataAct,
-        evidence: evidence([urls.roAncomDataAct], 'pending'),
+        evidence: evidence([urls.roAncomDataAct, urls.roAncomDataActBill], 'pending'),
       },
     ],
-    additionalSources: [sources.roAncomDataAct],
+    complaintRoutes: [
+      {
+        id: 'ro-ancom-data-act-complaint-pending',
+        label: 'ANCOM Data Act 投诉程序（草案）',
+        scope: '咨询草案第 5(4)(i)、第 7 条拟由 ANCOM 受理其权限范围内的 Data Act 投诉，并通过 ANCOM 决定确定投诉程序；目前未发现已生效的 Data Act 专用在线投诉表单。',
+        url: urls.roAncomDataActBill,
+        submissionMode: '草案拟由 ANCOM 决定投诉提交方式；现阶段仅有公开咨询意见提交渠道，不视为已生效执法投诉入口',
+        status: 'pending',
+        evidence: evidence([urls.roAncomDataAct, urls.roAncomDataActBill], 'pending'),
+      },
+    ],
+    penaltySchedule: [
+      {
+        label: '一般违法：警告或 RON 5,000–60,000；重复违法最高 RON 100,000（草案）',
+        maximum: '最高 RON 100,000（重复违法；一般区间为 RON 5,000–60,000）',
+        legalBasis: '罗马尼亚 Data Act 实施法咨询草案第 18 条、第 19(2)(a)–(b) 条',
+        scope: '草案第 18 条列举的 Data Act 违法行为；具体档位取决于违法情节及是否重复违法。',
+        sourceUrl: urls.roAncomDataActBill,
+        conditionalTurnoverCap: false,
+        evidence: evidence([urls.roAncomDataActBill, urls.roAncomDataAct], 'pending'),
+      },
+      {
+        label: '营业额挂钩罚款（草案）',
+        maximum: '最高为欧盟营业额的 5%；重复违法最高 10%（适用于营业额超过 RON 3,000,000 的主体）',
+        legalBasis: '罗马尼亚 Data Act 实施法咨询草案第 19(2)(c) 条',
+        scope: '适用于营业额超过 RON 3,000,000 的主体；营业额按 Data Act Article 40(3)(f) 计算。',
+        sourceUrl: urls.roAncomDataActBill,
+        conditionalTurnoverCap: true,
+        evidence: evidence([urls.roAncomDataActBill, urls.roAncomDataAct], 'pending'),
+      },
+      {
+        label: '不履行措施的按日行政罚款（草案）',
+        maximum: '最高 RON 30,000 / 日',
+        legalBasis: '罗马尼亚 Data Act 实施法咨询草案第 25(1) 条',
+        scope: '用于促使主体向 ANCOM 提供信息、提供数据、执行纠正措施或接受检查。',
+        sourceUrl: urls.roAncomDataActBill,
+        conditionalTurnoverCap: false,
+        evidence: evidence([urls.roAncomDataActBill, urls.roAncomDataAct], 'pending'),
+      },
+    ],
+    additionalSources: [sources.roAncomDataAct, sources.roAncomDataActBill],
   },
   se: {
     coverage: 'partial',
@@ -2239,18 +2340,18 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   bg: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '保加利亚创新与数字化转型部官方 Data Act 页面确认实施措施拟通过《公共信息获取法》修法落地；本轮仍未定位最终主管机关、投诉入口或国内罚则。',
+    coverageNote: '保加利亚创新与数字化转型部官方 Data Act 页面确认实施措施拟通过《公共信息获取法》修法落地；个人数据边界主管机构已按 Data Act Article 37(3) 记录，完整国家数据协调员、投诉入口或国内罚则仍未确认。',
     additionalSources: [sources.bgCrc, sources.bgMidtDataAct],
   },
   hr: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '克罗地亚官方 2026 欧盟法对齐计划列出 Data Act 实施法；本轮仍未定位最终主管机关、投诉入口或国内罚则，Data Governance Act 页面仅作背景线索。',
+    coverageNote: '克罗地亚官方 2026 欧盟法对齐计划列出 Data Act 实施法；个人数据边界主管机构已按 Data Act Article 37(3) 记录，完整国家数据协调员、投诉入口或国内罚则仍未确认，Data Governance Act 页面仅作背景线索。',
     additionalSources: [sources.hrDga, sources.hrMpudtDataActPlan],
   },
   cy: {
     coverage: 'partial',
-    coverageNote: '塞浦路斯部长会议第 98.600 号决定已按 Data Act Article 37 指定研究、创新与数字政策副部为国家主管机关；本轮仍未定位公开投诉入口与国内罚款上限。',
+    coverageNote: '塞浦路斯部长会议第 98.600 号决定已按 Data Act Article 37 指定研究、创新与数字政策副部为国家主管机关；个人数据边界主管机构也已按 Article 37(3) 记录，本轮仍未定位公开投诉入口与国内罚款上限。',
     competentAuthorities: [
       {
         name: '研究、创新与数字政策副部',
@@ -2293,24 +2394,24 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   ee: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '爱沙尼亚政府 EIS 官方立法档案确认经济事务与通信部负责 Data Act 提案跟进；本轮仍未定位现行专门主管机关、投诉入口或国内罚则。',
+    coverageNote: '爱沙尼亚政府 EIS 官方立法档案确认经济事务与通信部负责 Data Act 提案跟进；个人数据边界主管机构已按 Data Act Article 37(3) 记录，现行完整主管机关、投诉入口或国内罚则仍未确认。',
     additionalSources: [sources.eeTtjaFreeFlow, sources.eeDataActDraft],
   },
   gr: {
     coverage: 'partial',
-    coverageNote: '希腊 AI.gov.gr 官方资源索引已明确列出 Regulation (EU) 2023/2854；本轮仍未定位 Data Act 专门主管机关、投诉入口或国内罚则。',
+    coverageNote: '希腊 AI.gov.gr 官方资源索引已明确列出 Regulation (EU) 2023/2854；个人数据边界主管机构已按 Data Act Article 37(3) 记录，完整 Data Act 主管机关、投诉入口或国内罚则仍未确认。',
     additionalSources: [sources.grAiGov, sources.grDataActResources],
   },
   hu: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '匈牙利 NAIH 2025 年度报告说明 Data Act 实施法案 T/13050 已提交但未在 2025 年通过，主管机关尚未最终指定；KSH/NAIH 的拟议分工不作为最终权限、投诉入口或国内罚则。',
+    coverageNote: '匈牙利 NAIH 2025 年度报告说明 Data Act 实施法案 T/13050 已提交但未在 2025 年通过；个人数据边界主管机构已按 Data Act Article 37(3) 记录，完整主管机关、投诉入口或国内罚则仍未确认，KSH/NAIH 的拟议分工不作为最终权限。',
     additionalSources: [sources.huNaihAnnualReport2025, sources.huNaihDigitalLegislation],
   },
   lv: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '拉脱维亚内阁官方议定书记录 Data Act 实施报告与国内监管项目准备工作，并设定 2026-12-30 目标；最终主管机关、投诉入口和国内罚则仍待核验。',
+    coverageNote: '拉脱维亚内阁官方议定书记录 Data Act 实施报告与国内监管项目准备工作，并设定 2026-12-30 目标；个人数据边界主管机构已按 Data Act Article 37(3) 记录，完整主管机关、投诉入口和国内罚则仍待核验。',
     additionalSources: [sources.lvDvi, sources.lvDataActCabinet],
   },
   lu: {
@@ -2388,7 +2489,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   sk: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '斯洛伐克 MIRRI 官方材料说明正在准备 Data Act 实施法，并由相关政府数据/AI 组织协调立法工作；最终主管机关、投诉入口和国内罚则仍未确认。',
+    coverageNote: '斯洛伐克 MIRRI 官方材料说明正在准备 Data Act 实施法，并由相关政府数据/AI 组织协调立法工作；个人数据边界主管机构已按 Data Act Article 37(3) 记录，完整主管机关、投诉入口和国内罚则仍未确认。',
     additionalSources: [sources.skMirriDataActLaw, sources.skMirriDataAct],
   },
   si: {
