@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-se-government-assignment',
+    date: '2026-11-21',
+    countryId: 'se',
+    kind: 'changed',
+    summary: '补入瑞典政府官方任命记录：政府已将 PTS 指定为 Data Act Article 37 主管机关，适用于 2025–2026；补充实施法与罚款上限仍保持 pending。',
+    sourceUrls: ['https://www.regeringen.se/regeringsuppdrag/2025/11/uppdrag-till-post--och-telestyrelsen-att-vara-behorig-myndighet-enligt-eus-dataforordning/', 'https://www.pts.se/internet-och-telefoni/dataforordningen/'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-pt-implementation-signals',
     date: '2026-11-21',
     countryId: 'pt',

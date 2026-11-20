@@ -269,6 +269,8 @@ test('new official signals keep proposed authorities and live Swedish intake vis
   assert.equal(getCountryEvidenceStatus(sweden, 'authority'), 'verified')
   assert.equal(getCountryEvidenceStatus(sweden, 'complaint_route'), 'verified')
   assert.equal(sweden.implementationStage, 'legislative')
+  assert.ok(sweden.sources.some((source) => source.id === 'se-government-assignment-pts-data-act'))
+  assert.ok(sweden.competentAuthorities[0].evidence.sourceUrls.includes('https://www.regeringen.se/regeringsuppdrag/2025/11/uppdrag-till-post--och-telestyrelsen-att-vara-behorig-myndighet-enligt-eus-dataforordning/'))
   assert.equal(getCountryEvidenceStatus(sweden, 'penalty_schedule'), 'pending')
   assert.ok(poland.competentAuthorities.some((authority) => authority.nameEn.includes('UKE')))
   assert.equal(getCountryEvidenceStatus(poland, 'authority'), 'pending')

@@ -78,6 +78,7 @@ const urls = {
   sePtsDataAct: 'https://www.pts.se/internet-och-telefoni/dataforordningen/',
   sePtsComplaint: 'https://da-klagomal.pts.se/',
   seGovernmentInquiry: 'https://www.regeringen.se/contentassets/3fa2e0b39110403490045e3418eb8d2c/okad-och-rattvis-tillgang-till-data-sou-2025118.pdf',
+  seGovernmentAssignment: 'https://www.regeringen.se/regeringsuppdrag/2025/11/uppdrag-till-post--och-telestyrelsen-att-vara-behorig-myndighet-enligt-eus-dataforordning/',
   bgCrc: 'https://crc.bg/en/',
   hrDga: 'https://data.gov.hr/dga-novi-zakon',
   cyDd2030: 'https://www.gov.cy/media/sites/13/2025/06/DD-2030-Cyprus-Report.pdf',
@@ -705,6 +706,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The inquiry proposes Swedish supplementary legislation and penalty levels; it is a proposal, not enacted national law.',
+  }),
+  seGovernmentAssignment: source({
+    id: 'se-government-assignment-pts-data-act',
+    label: 'Swedish Government · assignment to PTS as Data Act competent authority',
+    url: urls.seGovernmentAssignment,
+    sourceType: 'authority',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The Government assigned PTS to act as the competent authority under Article 37 for 2025 and 2026; the assignment strengthens the authority record but does not itself enact the supplementary penalty legislation.',
   }),
   bgCrc: source({
     id: 'bg-crc-research-lead',
@@ -2116,7 +2126,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         role: 'data_coordinator',
         scope: '瑞典 Data Act 主管机关；在补充立法生效前，正式执法权限仍受页面所述限制。',
         sourceUrl: urls.sePtsDataAct,
-        evidence: evidence([urls.sePtsDataAct], 'verified'),
+        evidence: evidence([urls.sePtsDataAct, urls.seGovernmentAssignment], 'verified'),
       },
     ],
     complaintRoutes: [
@@ -2141,7 +2151,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.seGovernmentInquiry], 'pending'),
       },
     ],
-    additionalSources: [sources.sePtsDataAct, sources.sePtsComplaint, sources.seGovernmentInquiry],
+    additionalSources: [sources.sePtsDataAct, sources.sePtsComplaint, sources.seGovernmentInquiry, sources.seGovernmentAssignment],
   },
   bg: {
     coverage: 'partial',
