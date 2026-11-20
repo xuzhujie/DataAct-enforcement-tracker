@@ -13,6 +13,7 @@ import { buildReviewQueue, filterReviewQueue } from '../src/data/review-queue'
 import { buildEnforcementCaseRegister, DEFAULT_ENFORCEMENT_CASE_FILTERS, filterEnforcementCases } from '../src/data/cases'
 import { buildSourceManifest, validateRegistry } from '../src/data/registry-validation'
 import { buildSourceHealthReport, isReachableHttpStatus } from '../src/data/source-health'
+import { buildMaintenanceReport } from '../src/data/maintenance-report'
 import { getCountryEvidenceStatus } from '../src/lib/field-status'
 import type { EnforcementCase } from '../src/data/types'
 
@@ -686,4 +687,44 @@ test('source-health reports treat redirects as reachable and keep HTTP failures 
   assert.equal(report.okCount, 2)
   assert.equal(report.failedCount, 1)
   assert.equal(report.passed, false)
+})
+
+test('maintenance report aggregates evidence gaps, review due items, and source health without mutating the registry', () => {
+  const sourceHealth = buildSourceHealthReport('2026-11-21T00:00:00.000Z', [
+    { url: 'https://example.test/ok', label: 'ok', countryIds: ['de'], status: 200, ok: true, finalUrl: 'https://example.test/ok', contentType: 'text/html' },
+    { url: 'https://example.test/blocked', label: 'blocked', countryIds: ['lt'], status: 403, ok: false, finalUrl: 'https://example.test/blocked', contentType: 'text/html', error: 'HTTP 403' },
+  ], [])
+  const report = buildMaintenanceReport(COUNTRY_RECORDS, DATA_AS_OF, '2026-11-21T00:00:00.000Z', {
+    registryIssues: validateRegistry(COUNTRY_RECORDS),
+    sourceHealth,
+  })
+
+  assert.equal(report.schemaVersion, 1)
+  assert.equal(report.registry.countryCount, 27)
+  assert.equal(report.registry.coverage.deepCount, 5)
+  assert.equal(report.registry.coverage.partialCount, 22)
+  assert.equal(report.registry.actualEnforcementCaseCount, 0)
+  assert.equal(report.registry.validation.passed, true)
+  assert.deepEqual(report.evidence.authority, {
+    verified: 9,
+    pending: 5,
+    not_located: 13,
+    not_applicable: 0,
+    needsFollowUpCountryIds: ['be', 'bg', 'hr', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es'],
+  })
+  assert.equal(report.evidence.complaint_route.verified, 7)
+  assert.equal(report.evidence.penalty_schedule.verified, 5)
+  assert.equal(report.evidence.published_penalty.not_located, 6)
+  assert.equal(report.reviewQueue.total, 27)
+  assert.equal(report.reviewQueue.items.length, 27)
+  assert.deepEqual(report.sourceHealth?.failedSources.map((source) => source.url), ['https://example.test/blocked'])
+  assert.equal(report.sourceHealth?.failedCount, 1)
+
+  const staleFranceReport = buildMaintenanceReport(
+    COUNTRY_RECORDS.map((country) => country.id === 'fr' ? { ...country, lastVerifiedAt: '2026-01-01' } : country),
+    '2026-11-21',
+    '2026-11-21T00:00:00.000Z',
+  )
+  assert.ok(staleFranceReport.reviewQueue.dueCountryIds.includes('fr'))
+  assert.ok(staleFranceReport.reviewQueue.highPriorityDueCount >= 1)
 })

@@ -18,13 +18,16 @@ npm run lint
 npm run build
 npm run validate:registry
 npm run check:sources -- --output source-health.json
+npm run report:maintenance -- --source-health source-health.json --output maintenance-report.json
 ```
 
 `validate:registry` is deterministic and checks the EU-27 shape, source metadata, nested evidence references, issue lenses, implementation metadata, and case/source integrity. `check:sources` fetches each unique official URL twice at most, follows redirects, and writes a machine-readable report. It intentionally fails on network errors and non-2xx/3xx responses; a 403 or anti-bot response is a maintenance signal, not permission to silently downgrade or overwrite verified data.
 
+`report:maintenance` builds a second machine-readable artifact: it summarizes coverage, field-level evidence gaps, actual case count, due review items, and any source-health failures. Its `asOf` value defaults to the current UTC date for review scheduling; use `--as-of YYYY-MM-DD` to reproduce a historical report. This review date is separate from the registry evidence snapshot date. The command is a reporting step only; it never writes legal facts back into the registry.
+
 ## Weekly monitoring
 
-`.github/workflows/data-act-source-monitor.yml` runs every Monday at 02:00 UTC and can also be started with `workflow_dispatch`. It validates the registry, checks all unique source URLs, uploads `source-health.json`, and creates or comments on one open GitHub issue titled `Data Act source check failed` when a run fails. The workflow does not mutate the registry or publish unverified facts.
+`.github/workflows/data-act-source-monitor.yml` runs every Monday at 02:00 UTC and can also be started with `workflow_dispatch`. It validates the registry, checks all unique source URLs, builds `maintenance-report.json`, and uploads both reports as an artifact. A failed source check creates or comments on the open issue `Data Act source check failed`; a due review queue creates or comments on `Data Act tracker maintenance review due`. The workflow does not mutate the registry or publish unverified facts.
 
 The latest network-enabled run (2026-11-21) reached `76/84` URLs. Eight official endpoints remain maintenance signals: two Lithuanian EIMIN pages, the Romanian ANCOM consultation page, the Lithuanian e-TAR law page, two Cyprus government PDFs, the Irish government General Scheme page, and the French Legifrance PDF. Several return anti-bot `403` responses and one has intermittent network failure. The monitor keeps these failures visible; it does not replace primary evidence with an unverified mirror.
 

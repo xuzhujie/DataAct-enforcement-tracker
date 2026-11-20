@@ -3,3 +3,4 @@ dist/
 .superpowers/
 .DS_Store
 source-health.json
+maintenance-report.json
