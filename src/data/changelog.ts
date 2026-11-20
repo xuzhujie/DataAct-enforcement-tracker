@@ -7,6 +7,33 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-ie-draft-complaints-penalties',
+    date: '2026-11-21',
+    countryId: 'ie',
+    kind: 'changed',
+    summary: '爱尔兰企业部 General Scheme 进一步补充：Head 13/15 的 CCPC/ComReg 投诉程序与 Head 20/33 的 4% 欧盟营业额、€500,000 自然人拟议上限以 pending 入库；正式实施法和实际处罚仍未确认。',
+    sourceUrls: ['https://enterprise.gov.ie/en/legislation/general-scheme-of-the-data-bill-2025.html', 'https://enterprise.gov.ie/en/legislation/legislation-files/general-scheme-of-the-data-bill-2025.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-se-proposed-penalties',
+    date: '2026-11-21',
+    countryId: 'se',
+    kind: 'changed',
+    summary: '瑞典政府调查 SOU 2025:118 提出 PTS 补充法及行政罚款最高 2,000 万 SEK、自然人最高 10,000 SEK；因尚未确认生效法，罚则保持 pending。',
+    sourceUrls: ['https://www.regeringen.se/contentassets/3fa2e0b39110403490045e3418eb8d2c/okad-och-rattvis-tillgang-till-data-sou-2025118.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-pl-draft-complaint-route',
+    date: '2026-11-21',
+    countryId: 'pl',
+    kind: 'changed',
+    summary: '波兰政府通过的 Data Act 实施法案项目明确说明用户可向 UKE 投诉；因仍处于立法阶段且未定位生效在线入口，投诉程序按 pending 记录。',
+    sourceUrls: ['https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2', 'https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-mt-penalties',
     date: '2026-11-21',
     countryId: 'mt',

@@ -59,7 +59,8 @@ const urls = {
   fiLawPdf: 'https://www.finlex.fi/api/media/statute/896586/mainPdf/main.pdf?timestamp=2025-12-11T05%3A12%3A12.000Z',
   fiSupervision: 'https://traficom.fi/en/data-economy-and-data-intermediation/supervision-data-act',
   fiContact: 'https://www.traficom.fi/en/contact-details/our-customer-service/customer-service-data-ai-and-data-governance-regulations',
-  ieGovDataBill: 'https://www.gov.ie/en/department-of-enterprise-tourism-and-employment/publications/general-scheme-of-the-data-bill-2025/',
+  ieGovDataBill: 'https://enterprise.gov.ie/en/legislation/general-scheme-of-the-data-bill-2025.html',
+  ieGovDataBillPdf: 'https://enterprise.gov.ie/en/legislation/legislation-files/general-scheme-of-the-data-bill-2025.pdf',
   ieComregDataAct: 'https://www.comreg.ie/industry/electronic-communications/eu-data-act/',
   ieCcpcDataAct: 'https://www.ccpc.ie/enforcement-and-regulation/data-regulation/eu-data-act',
   ltEiminDataActDraft: 'https://eimin.lrv.lt/en/structure-and-contacts/news-1/eimin-drafts-law-on-implementation-of-eu-data-act-SPEd/',
@@ -76,6 +77,7 @@ const urls = {
   roAncomDataAct: 'https://www.ancom.ro/en/about-us/media-en/press-releases/data-act-draft-law-on-the-application-of-rules-regarding-access-to-data-generated-by-connected-products-and-related-services-open-for-public-consultation/',
   sePtsDataAct: 'https://www.pts.se/internet-och-telefoni/dataforordningen/',
   sePtsComplaint: 'https://da-klagomal.pts.se/',
+  seGovernmentInquiry: 'https://www.regeringen.se/contentassets/3fa2e0b39110403490045e3418eb8d2c/okad-och-rattvis-tillgang-till-data-sou-2025118.pdf',
   bgCrc: 'https://crc.bg/en/',
   hrDga: 'https://data.gov.hr/dga-novi-zakon',
   cyDd2030: 'https://www.gov.cy/media/sites/13/2025/06/DD-2030-Cyprus-Report.pdf',
@@ -497,6 +499,15 @@ const sources = {
     evidenceStatus: 'verified',
     note: 'The General Scheme describes government decisions to designate CCPC and ComReg, with CCPC as Data Coordinator; legislation is still required before treating the framework as final law.',
   }),
+  ieGovDataBillPdf: source({
+    id: 'ie-general-scheme-data-bill-2025-pdf',
+    label: 'Ireland Department of Enterprise · General Scheme of the Data Bill 2025 (PDF)',
+    url: urls.ieGovDataBillPdf,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The draft heads contain proposed complaint procedures and financial sanction ceilings; they are not enacted Irish law.',
+  }),
   ieComregDataAct: source({
     id: 'ie-comreg-data-act',
     label: 'ComReg · EU Data Act',
@@ -685,6 +696,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'PTS provides a dedicated complaint e-service and warns that its ability to act is limited pending supplementary Swedish legislation; it is recorded as a live intake route, not as proof of full enforcement powers.',
+  }),
+  seGovernmentInquiry: source({
+    id: 'se-government-inquiry-data-act',
+    label: 'Swedish Government Inquiry SOU 2025:118 · Data Act supplementary legislation',
+    url: urls.seGovernmentInquiry,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The inquiry proposes Swedish supplementary legislation and penalty levels; it is a proposal, not enacted national law.',
   }),
   bgCrc: source({
     id: 'bg-crc-research-lead',
@@ -1835,6 +1855,17 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.plDraftImplementation], 'pending'),
       },
     ],
+    complaintRoutes: [
+      {
+        id: 'pl-uke-data-act-complaint-draft',
+        label: 'UKE Data Act 投诉程序（草案）',
+        scope: '政府通过的实施法案项目说明用户可就数据访问、合同限制或拒绝分享等 Data Act 事项向 UKE 提交投诉；正式在线入口尚未定位。',
+        url: urls.plDraftImplementation,
+        submissionMode: '政府项目描述的拟议投诉程序；尚无已确认的生效法定或在线提交入口',
+        status: 'pending',
+        evidence: evidence([urls.plDraftImplementation, urls.plDataActBill], 'pending'),
+      },
+    ],
     additionalSources: [sources.plDataActBill, sources.plDraftImplementation],
   },
   es: {
@@ -1846,7 +1877,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   ie: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '爱尔兰 CCPC 与 ComReg 官方页面均说明其预计承担 Data Act 主管职能；CCPC 页面（截至 2026-09）和 ComReg 页面均确认实施法及完整权限尚未最终确定，因此主管机关按 pending 记录，暂不填入正式投诉入口或国内罚则。',
+    coverageNote: '爱尔兰企业部 General Scheme、CCPC 与 ComReg 官方材料确认 CCPC/ComReg 的拟议主管分工；草案 Head 13/15 设想投诉程序，Head 20/33 设定拟议罚则上限，但实施法尚未最终确定，故相关投诉与罚则均按 pending 记录。',
     competentAuthorities: [
       {
         name: '爱尔兰竞争与消费者保护委员会（拟议）',
@@ -1865,7 +1896,56 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.ieComregDataAct, urls.ieGovDataBill], 'pending'),
       },
     ],
-    additionalSources: [sources.ieGovDataBill, sources.ieComregDataAct, sources.ieCcpcDataAct],
+    complaintRoutes: [
+      {
+        id: 'ie-ccpc-data-act-complaint-draft',
+        label: 'CCPC Data Act 投诉程序（草案）',
+        scope: 'General Scheme Head 13 设想向 CCPC（Data Coordinator）提交 Data Act 投诉；该程序尚未成为生效法定入口。',
+        url: urls.ieGovDataBillPdf,
+        submissionMode: 'General Scheme Head 13 拟议流程；尚未定位已生效的公开 Data Act 在线表单',
+        status: 'pending',
+        evidence: evidence([urls.ieGovDataBillPdf, urls.ieCcpcDataAct], 'pending'),
+      },
+      {
+        id: 'ie-comreg-data-act-complaint-draft',
+        label: 'ComReg Data Act 投诉程序（草案）',
+        scope: 'General Scheme Head 15 设想 ComReg 接收并评估其权限范围内的 Data Act 投诉；该程序尚未成为生效法定入口。',
+        url: urls.ieGovDataBillPdf,
+        submissionMode: 'General Scheme Head 15 拟议流程；尚未定位已生效的公开 Data Act 在线表单',
+        status: 'pending',
+        evidence: evidence([urls.ieGovDataBillPdf, urls.ieComregDataAct], 'pending'),
+      },
+    ],
+    penaltySchedule: [
+      {
+        label: 'General Scheme Head 20(3) / Head 33 · 4% EU turnover（草案）',
+        maximum: '草案拟规定，对实体施加的 Data Act 行政财务制裁最高不超过违法主体上一财年欧盟营业额的 4%；该上限尚未成为爱尔兰生效国内法。',
+        legalBasis: 'General Scheme of the Data Bill 2025 Head 20(3) · Head 33',
+        scope: 'CCPC 与 ComReg 拟议行政财务制裁；最终分类、程序和生效上限待正式法案。',
+        sourceUrl: urls.ieGovDataBillPdf,
+        conditionalTurnoverCap: true,
+        evidence: evidence([urls.ieGovDataBillPdf], 'pending'),
+      },
+      {
+        label: 'General Scheme Head 20(4) · €500,000 natural-person cap（草案）',
+        maximum: '草案拟规定，对自然人就 Data Act 违规施加的行政财务制裁最高不超过 €500,000；尚未成为生效国内法。',
+        legalBasis: 'General Scheme of the Data Bill 2025 Head 20(4)',
+        scope: 'CCPC 与 ComReg 拟议行政财务制裁中的自然人上限。',
+        sourceUrl: urls.ieGovDataBillPdf,
+        conditionalTurnoverCap: false,
+        evidence: evidence([urls.ieGovDataBillPdf], 'pending'),
+      },
+      {
+        label: 'DPC / GDPR Art. 83(5) · €20m / 4%（草案说明）',
+        maximum: '草案说明指出，Data Act 第 II、III、V 章个人数据事项可由 DPC 按 GDPR Art. 83(5) 适用最高 €20,000,000 或全球年度营业额 4%（取较高者）；该记录是边界说明，不是实际处罚。',
+        legalBasis: 'Data Act Art. 40(4) · GDPR Art. 83(5) · General Scheme explanatory note',
+        scope: '涉及个人数据处理的 Data Act Chapters II、III、V；正式国内程序仍待实施法。',
+        sourceUrl: urls.ieGovDataBillPdf,
+        conditionalTurnoverCap: true,
+        evidence: evidence([urls.ieGovDataBillPdf, urls.euDataAct], 'pending'),
+      },
+    ],
+    additionalSources: [sources.ieGovDataBill, sources.ieGovDataBillPdf, sources.ieComregDataAct, sources.ieCcpcDataAct],
   },
   lt: {
     coverage: 'partial',
@@ -1999,7 +2079,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   se: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '瑞典 PTS 官方页面已确认政府指定 PTS 为 Data Act 主管机关，并提供专门投诉电子服务；页面同时说明补充立法前 PTS 的处置能力有限，完整国内罚则仍待核验。',
+    coverageNote: '瑞典 PTS 官方页面已确认主管机关并提供专门投诉电子服务；政府调查报告 SOU 2025:118 提出补充法与罚款上限，但补充立法尚未最终生效，罚则仍按 pending 记录。',
     competentAuthorities: [
       {
         name: '瑞典邮政与电信管理局',
@@ -2021,7 +2101,18 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.sePtsDataAct, urls.sePtsComplaint], 'verified'),
       },
     ],
-    additionalSources: [sources.sePtsDataAct, sources.sePtsComplaint],
+    penaltySchedule: [
+      {
+        label: 'SOU 2025:118 · proposed administrative fine up to SEK 20m',
+        maximum: '政府调查报告拟议：经营主体行政罚款最高 20,000,000 瑞典克朗；不从事经营活动的自然人最高 10,000 瑞典克朗。该数额属于立法提案，尚非生效国内法上限。',
+        legalBasis: 'SOU 2025:118 Summary, pp. 27–28 · proposed Supplementary Act',
+        scope: 'PTS 拟议 Data Act 监督与行政罚款权限；最终生效法可能调整。',
+        sourceUrl: urls.seGovernmentInquiry,
+        conditionalTurnoverCap: false,
+        evidence: evidence([urls.seGovernmentInquiry], 'pending'),
+      },
+    ],
+    additionalSources: [sources.sePtsDataAct, sources.sePtsComplaint, sources.seGovernmentInquiry],
   },
   bg: {
     coverage: 'partial',
