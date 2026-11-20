@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-cz-pending-contact',
+    date: '2026-11-21',
+    countryId: 'cz',
+    kind: 'changed',
+    summary: '捷克 CTU Data Act 官方传单提供收文邮箱/电话并说明其拟议监督角色；因正式法定投诉权限和在线入口尚未确认，渠道以 pending 联系记录入库。',
+    sourceUrls: ['https://ctu.gov.cz/sites/default/files/obsah/soubory-ke-stazeni/Letaky/DataAkt_23_10_25.pdf', 'https://ctu.gov.cz/evropsky-sbor-pro-datove-inovace'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-ie-draft-complaints-penalties',
     date: '2026-11-21',
     countryId: 'ie',

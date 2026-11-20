@@ -2155,6 +2155,17 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.czCtuDataActFutureRole, urls.czRvisDataActDraft], 'pending'),
       },
     ],
+    complaintRoutes: [
+      {
+        id: 'cz-ctu-data-act-contact-pending',
+        label: 'ČTÚ Data Act 联系渠道（非已确认投诉表单）',
+        scope: 'CTU 官方 Data Act 传单提供收文邮箱和电话，并说明 CTU 将参与 Data Act 监督；正式法定投诉权限和在线入口仍待确认。',
+        url: urls.czCtuDataActFlyer,
+        submissionMode: '官方收文邮箱/电话（podatelna@ctu.gov.cz）；当前仅记录为 pending 联系渠道，不视为已生效 Data Act 投诉表单',
+        status: 'pending',
+        evidence: evidence([urls.czCtuDataActFlyer, urls.czCtuDataActFutureRole, urls.czRvisDataActDraft], 'pending'),
+      },
+    ],
     additionalSources: [sources.czRvisDataActDraft, sources.czCtuDataActFlyer, sources.czCtuDataActFutureRole, sources.czMpoDataAct],
   },
   ee: {
