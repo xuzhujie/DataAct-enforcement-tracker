@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-lu-bill-8809',
+    date: '2026-11-21',
+    countryId: 'lu',
+    kind: 'changed',
+    summary: '补入卢森堡议会法案 8809 官方文本：草案拟由 ILR、政府数据主权专员和 CNPD 分工负责 Data Act，并在第 12 条写入投诉权、第 13 条设置 €100,000 / €500,000 / €1,000,000 三档罚款；法案尚未生效，均保持 pending。',
+    sourceUrls: ['https://wdocs-pub.chd.lu/docs/Dossiers_parlementaires/8809/20260728_Depot.pdf', 'https://www.chd.lu/fr/dossier/8809'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-si-draft-penalties',
     date: '2026-11-21',
     countryId: 'si',
