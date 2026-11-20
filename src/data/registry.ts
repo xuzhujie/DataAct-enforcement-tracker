@@ -40,6 +40,7 @@ const urls = {
   plDataActBill: 'https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm',
   plDraftImplementation: 'https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2',
   esDataActGuide: 'https://datos.gob.es/sites/default/files/2025-09/ley-datos-en.pdf',
+  esDataActChapterV: 'https://www.boe.es/buscar/doc.php?id=BOE-A-2026-9079',
   itAgcomDataActPtpct2026: 'https://www.agcom.it/sites/default/files/media/allegato/2026/Allegato%20A%20alla%20delibera%20n.%2047-26-CONS%20Piano%20triennale%20di%20prevenzione%20della%20corruzione%20e%20della%20trasparenza%202026-2028.pdf',
   itAgcomAnnualReport2025: 'https://www.agcom.it/sites/default/files/documenti/relazione_annuale/RELAZIONE%20ANNUALE%202025_0.pdf',
   beBiptDataAct: 'https://www.bipt.be/sectors/digital/the-data-act/the-data-act',
@@ -331,6 +332,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'Official explanatory guide to the Data Act; it does not by itself establish Spain’s final competent authority, complaint portal, domestic penalty ceiling, or public enforcement decisions.',
+  }),
+  esDataActChapterV: source({
+    id: 'es-boe-data-act-chapter-v',
+    label: 'BOE · Real Decreto 328/2026 · Data Act Chapter V coordination reference',
+    url: urls.esDataActChapterV,
+    sourceType: 'research-lead',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The Royal Decree refers to coordination with the competent authority designated for Data Act Chapter V, but it does not itself identify Spain’s full Article 37 data coordinator or establish a complaint route or penalty schedule.',
   }),
   itAgcomDataActPtpct2026: source({
     id: 'it-agcom-data-act-ptpct-2026',
@@ -1902,8 +1912,8 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   es: {
     coverage: 'partial',
     implementationStage: 'not_located',
-    coverageNote: '西班牙官方 Data Act 指南已入库，但本次没有把 DSA 协作文本当作 Data Act 主管机关证据；完整全国协调员、投诉入口和国内罚则仍待单独核验。',
-    additionalSources: [sources.esDataActGuide],
+    coverageNote: '西班牙官方 Data Act 指南已入库；2026 年 Real Decreto 328/2026 提及 Data Act Chapter V 的已指定主管机关，但未给出完整 Article 37 数据协调员、投诉入口或国内罚则，因此仍不升级为最终主管机关记录。',
+    additionalSources: [sources.esDataActGuide, sources.esDataActChapterV],
   },
   ie: {
     coverage: 'partial',

@@ -25,6 +25,15 @@ export const CHANGE_LOG: ChangeLogEntry[] = [
     evidenceStatus: 'pending',
   },
   {
+    id: '2026-11-21-es-chapter-v-signal',
+    date: '2026-11-21',
+    countryId: 'es',
+    kind: 'changed',
+    summary: '西班牙 BOE 2026 年 Real Decreto 328/2026 提到 Data Act Chapter V 的已指定主管机关，但未给出完整 Article 37 数据协调员、投诉入口或国内罚则；作为 research-lead 入库，不升级为最终主管机关。',
+    sourceUrls: ['https://www.boe.es/buscar/doc.php?id=BOE-A-2026-9079', 'https://datos.gob.es/sites/default/files/2025-09/ley-datos-en.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-pt-implementation-signals',
     date: '2026-11-21',
     countryId: 'pt',

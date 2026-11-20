@@ -354,6 +354,7 @@ test('France, Poland, and Spain are partial records with explicit implementation
   assert.equal(spain.implementationStage, 'not_located')
   assert.match(spain.coverageNote ?? '', /Data Act 指南|未确认|主管机关/)
   assert.ok(spain.sources.some((source) => source.id === 'es-data-act-guide'))
+  assert.ok(spain.sources.some((source) => source.id === 'es-boe-data-act-chapter-v' && source.sourceType === 'research-lead'))
 })
 
 test('country register covers all 27 EU member states without inventing implementation facts', () => {
