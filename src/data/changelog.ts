@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-lv-source-quality-correction',
+    date: '2026-11-21',
+    countryId: 'lv',
+    kind: 'changed',
+    summary: '复核拉脱维亚证据时发现原先引用的 likumi.lv 内阁议定书页面无法确认 Data Act 内容，已移除其“已核验实施责任”表述，改用 VARAM 官方页面作为政策/协调 research lead；该来源不再用于证明主管机关、投诉入口或国内罚则，相关字段继续保持 pending/not_located。',
+    sourceUrls: ['https://www.varam.gov.lv/lv/jaunums/latvija-divus-gadus-vadis-ziemelvalstu-un-baltijas-valstu-darba-grupu-es-digitala-regulejuma-jautajumos'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-fr-ddadue-parliamentary-status',
     date: '2026-11-21',
     countryId: 'fr',

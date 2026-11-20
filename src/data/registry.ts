@@ -115,7 +115,7 @@ const urls = {
   cyDataActAuthority: 'https://www.gov.cy/media/sites/59/2026/05/4959-15-5-2026-PARARTIMA-4o-MEROS-I.pdf',
   eeDataActDraft: 'https://eelnoud.valitsus.ee/main/mount/docList/96471890-ca8a-4d9d-9317-0ab26b4a6179?activity=3',
   grDataActResources: 'https://ai.gov.gr/resources/',
-  lvDataActCabinet: 'https://likumi.lv/ta/id/361419',
+  lvVaramDataAct: 'https://www.varam.gov.lv/lv/jaunums/latvija-divus-gadus-vadis-ziemelvalstu-un-baltijas-valstu-darba-grupu-es-digitala-regulejuma-jautajumos',
   luCnpdDataAct: 'https://cnpd.public.lu/fr/actualites/national/2024/06/conference-data-act.html',
   luDataActBillPdf: 'https://wdocs-pub.chd.lu/docs/Dossiers_parlementaires/8809/20260728_Depot.pdf',
   siDataActDraft: 'https://www.gov.si/novice/2026-05-04-javna-obravnava-osnutka-zakona-za-implementacijo-akta-o-podatkih/',
@@ -1023,14 +1023,14 @@ const sources = {
     evidenceStatus: 'pending',
     note: 'Official data-protection authority entry point retained for follow-up; no Data Act-specific designation was located in this review.',
   }),
-  lvDataActCabinet: source({
-    id: 'lv-data-act-cabinet',
-    label: 'Latvia Cabinet of Ministers · Data Act implementation responsibilities',
-    url: urls.lvDataActCabinet,
-    sourceType: 'statute',
+  lvVaramDataAct: source({
+    id: 'lv-varam-data-act',
+    label: 'Latvian Ministry of Smart Administration and Regional Development · Data Act implementation cooperation',
+    url: urls.lvVaramDataAct,
+    sourceType: 'research-lead',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
-    note: 'The official cabinet protocol records a Data Act implementation report, assigns institutions to prepare national regulatory projects, and sets a 30 December 2026 target; it does not establish a final authority, complaint route, or penalty ceiling.',
+    note: 'The official ministry page identifies implementation of the Data Act as a focus of the Nordic-Baltic digital-regulation cooperation group; it is a policy/coordination signal only and does not establish a final authority, complaint route, or penalty ceiling.',
   }),
   luCnpdDga: source({
     id: 'lu-cnpd-dga-research-lead',
@@ -2755,8 +2755,8 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   lv: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '拉脱维亚内阁官方议定书记录 Data Act 实施报告与国内监管项目准备工作，并设定 2026-12-30 目标；个人数据边界主管机构已按 Data Act Article 37(3) 记录，完整主管机关、投诉入口和国内罚则仍待核验。',
-    additionalSources: [sources.lvDvi, sources.lvDataActCabinet],
+    coverageNote: '拉脱维亚 VARAM 官方页面确认 Data Act 属于北欧—波罗的海数字监管合作的实施重点，但该页面只是政策/协调信号，不构成最终主管机关、投诉入口或罚则依据；个人数据边界主管机构已按 Data Act Article 37(3) 记录，其余字段仍待核验。',
+    additionalSources: [sources.lvDvi, sources.lvVaramDataAct],
   },
   lu: {
     coverage: 'partial',
