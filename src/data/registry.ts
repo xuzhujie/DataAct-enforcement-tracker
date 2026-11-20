@@ -39,6 +39,8 @@ const urls = {
   frDdADueLegislativeDossier: 'https://www.assemblee-nationale.fr/dyn/17/dossiers/DLR5L17N53140',
   frLegifranceDdADue: 'https://www.legifrance.gouv.fr/contenu/Media/files/autour-de-la-loi/legislatif-et-reglementaire/actualite-legislative/2025/pjl_ecom2524721l_cm_10.11.2025.pdf',
   frArcepDataAct: 'https://www.arcep.fr/fileadmin/cru-1769533491/user_upload/01-26-version-francaise.pdf',
+  frSenateDdADueReport: 'https://www.senat.fr/rap/l25-347/l25-347_mono.html',
+  frAssemblyArcepDataAct2026: 'https://www.assemblee-nationale.fr/dyn/opendata/AVISANR5L17B3337-tIII.html',
   plDataActBill: 'https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm',
   plDataActBillPdf: 'https://api.sejm.gov.pl/sejm/term10/prints/3266/3266.pdf',
   plDataActSenatePrint: 'https://www.senat.gov.pl/prace/druki/record,14878.html',
@@ -52,6 +54,7 @@ const urls = {
   beBiptApplication: 'https://www.bipt.be/sectors/digital/the-data-act/application-of-the-data-act',
   beDraftImplementation: 'https://news.belgium.be/nl/uitvoering-van-de-europese-dataverordening',
   beBiptWorkPlan2026: 'https://www.bipt.be/file/cc73d96153bbd5448a56f19d925d05b1379c7f21/311983cf576c38aa435b5f7c7e775a0411faa01c/2026-werkplan.pdf',
+  beParliamentaryDataActImplementation: 'https://www.lachambre.be/site/wwwcfm/flwb/flwbcheckpdf.cfm?docn=56K1282007&language=fr',
   atRtrDataAct: 'https://www.rtr.at/TKP/was_wir_tun/telekommunikation/weitere-regulierungsthemen/data-act/der-data-act.de.html',
   atRtrTimeline: 'https://www.rtr.at/TKP/was_wir_tun/telekommunikation/weitere-regulierungsthemen/data-act/zeitplan.de.html',
   atRtrDataAccess: 'https://www.rtr.at/TKP/was_wir_tun/telekommunikation/weitere-regulierungsthemen/data-act/datenzugang-und-datennutzung.de.html',
@@ -356,6 +359,24 @@ const sources = {
     evidenceStatus: 'verified',
     note: 'Arcep states that the DDADUE draft would extend its Data Act data-sharing, investigation, sanction, and dispute-settlement powers; the designation remains pending until the draft legislation is final.',
   }),
+  frSenateDdADueReport: source({
+    id: 'fr-senate-ddadue-data-act-report-2026',
+    label: 'French Senate · DDADUE report on Arcep Data Act authority and sanctions',
+    url: urls.frSenateDdADueReport,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The Senate legislative report explains that Article 25 of the bill would designate Arcep for the Data Act except Chapter VII and describes the proposed 3% / 5% worldwide-turnover sanction ceiling; the report concerns a bill and is not proof of promulgation or entry into force.',
+  }),
+  frAssemblyArcepDataAct2026: source({
+    id: 'fr-assembly-arcep-data-act-2026',
+    label: 'French National Assembly · 2027 budget opinion on Arcep and Data Act',
+    url: urls.frAssemblyArcepDataAct2026,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The National Assembly report records that the DDADUE bill was adopted at first reading by the Senate on 18 February 2026 and would designate Arcep as competent for Data Act-related transfers; it is legislative-status evidence, not final law.',
+  }),
   plDataActBill: source({
     id: 'pl-data-act-bill',
     label: 'Poland Ministry of Digital Affairs · Data Act bill adopted by Sejm',
@@ -471,6 +492,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The work plan records that legal texts still need adaptation for the Data Act; it is status evidence, not a final Belgian implementing statute or penalty schedule.',
+  }),
+  beParliamentaryDataActImplementation: source({
+    id: 'be-parliamentary-data-act-implementation-2026',
+    label: 'Belgian Chamber · 2026 policy note on Data Act implementation',
+    url: urls.beParliamentaryDataActImplementation,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official Chamber document records that BIPT and the Federal Public Service Economy prepared the legislative adaptations needed for BIPT to become the Data Act competent authority and that the legislative process is still being followed; it is not a promulgated implementing law.',
   }),
   atRtrDataAct: source({
     id: 'at-rtr-data-act',
@@ -2202,7 +2232,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   be: {
     coverage: 'partial',
     implementationStage: 'draft',
-    coverageNote: '比利时 BIPT 官方页面说明联邦政府拟将 Data Act 的协调与监督权限交给 BIPT；政府 2026-03-27 公告仍是提交咨询的实施法草案，尚未在本次来源集合中确认最终生效法、正式投诉入口或国内罚则。',
+    coverageNote: '比利时 BIPT 官方页面和议会材料说明联邦政府拟将 Data Act 的协调与监督权限交给 BIPT；2026-03-27 政府公告仍是提交咨询的实施法草案，议会材料也说立法程序仍在推进，尚未确认最终生效法、正式投诉入口或国内罚则。',
     competentAuthorities: [
       {
         name: '比利时邮政与电信研究所',
@@ -2210,7 +2240,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         role: 'data_coordinator',
         scope: '联邦政府拟议的 Data Act 协调与监督机构；最终法定指定仍待实施法完成。',
         sourceUrl: urls.beBiptDataAct,
-        evidence: evidence([urls.beBiptDataAct, urls.beDraftImplementation], 'pending'),
+        evidence: evidence([urls.beBiptDataAct, urls.beDraftImplementation, urls.beParliamentaryDataActImplementation], 'pending'),
       },
     ],
     complaintRoutes: [
@@ -2221,10 +2251,10 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         url: urls.beBiptDataAct,
         submissionMode: '发送至 info@bipt.be；当前仅记录为 pending 一般咨询渠道，不视为已生效 Data Act 投诉表单',
         status: 'pending',
-        evidence: evidence([urls.beBiptDataAct, urls.beDraftImplementation], 'pending'),
+        evidence: evidence([urls.beBiptDataAct, urls.beDraftImplementation, urls.beParliamentaryDataActImplementation], 'pending'),
       },
     ],
-    additionalSources: [sources.beBiptDataAct, sources.beBiptApplication, sources.beDraftImplementation, sources.beBiptWorkPlan2026],
+    additionalSources: [sources.beBiptDataAct, sources.beBiptApplication, sources.beDraftImplementation, sources.beBiptWorkPlan2026, sources.beParliamentaryDataActImplementation],
   },
   at: {
     coverage: 'partial',
@@ -2244,8 +2274,8 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   },
   fr: {
     coverage: 'partial',
-    implementationStage: 'draft',
-    coverageNote: '已找到法国 CNIL、ARCEP、参议院/国民议会立法 dossier 与 DDADUE 官方材料：DDADUE 草案第 35-1 条拟由 ARCEP 负责 Data Act（不含第 VII 章）、受理相关投诉并适用 3%/5% 营业额罚款上限及 €150,000/€375,000 兜底；官方立法 dossier 仍显示文本处于议会审议链条，草案尚未形成公布生效法，故主管机构、投诉入口和罚则均按 pending 记录。',
+    implementationStage: 'legislative',
+    coverageNote: '已找到法国 CNIL、ARCEP、参议院报告、国民议会预算意见、立法 dossier 与 DDADUE 官方材料：参议院报告和国民议会材料确认 DDADUE 法案已于 2026-02-18 经参议院一读通过，并拟由 ARCEP 负责 Data Act（不含第 VII 章）、受理相关投诉并适用 3%/5% 营业额罚款上限及 €150,000/€375,000 兜底；文本尚未形成公布生效法，故主管机构、投诉入口和罚则仍按 pending 记录。',
     competentAuthorities: [
       {
         name: '法国电子通信、邮政与报刊分发监管局（拟议）',
@@ -2253,7 +2283,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         role: 'competent_authority',
         scope: 'ARCEP 官方材料称 DDADUE 草案将扩展其 Data Act 数据共享、调查、制裁和争议解决权限；最终法定指定仍待草案通过。',
         sourceUrl: urls.frArcepDataAct,
-        evidence: evidence([urls.frArcepDataAct, urls.frLegifranceDdADue, urls.frSenateDdADue, urls.frDdADueLegislativeDossier], 'pending'),
+        evidence: evidence([urls.frArcepDataAct, urls.frLegifranceDdADue, urls.frSenateDdADue, urls.frDdADueLegislativeDossier, urls.frSenateDdADueReport, urls.frAssemblyArcepDataAct2026], 'pending'),
       },
     ],
     complaintRoutes: [
@@ -2264,7 +2294,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         url: urls.frLegifranceDdADue,
         submissionMode: '草案第 35-1 条规定可向 ARCEP 提交；尚无已确认的生效 Data Act 在线入口',
         status: 'pending',
-        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct, urls.frDdADueLegislativeDossier], 'pending'),
+        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct, urls.frDdADueLegislativeDossier, urls.frSenateDdADueReport], 'pending'),
       },
     ],
     penaltySchedule: [
@@ -2275,10 +2305,10 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         scope: 'ARCEP 拟议 Data Act 监督范围（不含 Data Act Chapter VII）；最终生效文本和适用范围待确认。',
         sourceUrl: urls.frLegifranceDdADue,
         conditionalTurnoverCap: true,
-        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct, urls.frDdADueLegislativeDossier], 'pending'),
+        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct, urls.frDdADueLegislativeDossier, urls.frSenateDdADueReport, urls.frAssemblyArcepDataAct2026], 'pending'),
       },
     ],
-    additionalSources: [sources.frCnilDataAct, sources.frSenateDdADue, sources.frDdADueLegislativeDossier, sources.frLegifranceDdADue, sources.frArcepDataAct],
+    additionalSources: [sources.frCnilDataAct, sources.frSenateDdADue, sources.frDdADueLegislativeDossier, sources.frLegifranceDdADue, sources.frArcepDataAct, sources.frSenateDdADueReport, sources.frAssemblyArcepDataAct2026],
   },
   pl: {
     coverage: 'partial',

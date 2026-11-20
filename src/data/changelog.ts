@@ -7,6 +7,27 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-fr-ddadue-parliamentary-status',
+    date: '2026-11-21',
+    countryId: 'fr',
+    kind: 'changed',
+    summary: '补入法国参议院 DDADUE 报告和国民议会官方意见：两份材料确认法案已于 2026-02-18 经参议院一读通过，拟由 ARCEP 负责 Data Act（第 VII 章除外）并适用 3%/5% 营业额罚款上限；法案尚未公布生效，因此相关字段保持 pending，法国实施阶段更新为 legislative。',
+    sourceUrls: [
+      'https://www.senat.fr/rap/l25-347/l25-347_mono.html',
+      'https://www.assemblee-nationale.fr/dyn/opendata/AVISANR5L17B3337-tIII.html',
+    ],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-be-parliamentary-data-act-status',
+    date: '2026-11-21',
+    countryId: 'be',
+    kind: 'changed',
+    summary: '补入比利时众议院官方政策材料：BIPT 与联邦经济公共服务部门已准备将 BIPT 指定为 Data Act 主管机关所需的立法调整，但立法程序仍在推进；因此 BIPT、正式投诉入口和国内罚则继续保持 pending/not_located。',
+    sourceUrls: ['https://www.lachambre.be/site/wwwcfm/flwb/flwbcheckpdf.cfm?docn=56K1282007&language=fr'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-sk-bill-1447-data-act-detail',
     date: '2026-11-21',
     countryId: 'sk',

@@ -97,6 +97,7 @@ test('the second country batch separates enacted Denmark and Finland from partia
   assert.equal(belgium.complaintRoutes.length, 2)
   assert.equal(belgium.penaltySchedule.length, 0)
   assert.ok(belgium.sources.some((source) => source.id === 'be-bipt-data-act'))
+  assert.ok(belgium.sources.some((source) => source.id === 'be-parliamentary-data-act-implementation-2026'))
   assert.match(belgium.coverageNote ?? '', /BIPT|草案/)
 
   assert.equal(austria.coverage, 'partial')
@@ -366,7 +367,7 @@ test('France, Poland, and Spain are partial records with explicit implementation
 
   assert.ok(france)
   assert.equal(france.coverage, 'partial')
-  assert.equal(france.implementationStage, 'draft')
+  assert.equal(france.implementationStage, 'legislative')
   assert.equal(france.competentAuthorities.length, 2)
   assert.equal(getCountryEvidenceStatus(france, 'authority'), 'pending')
   assert.equal(france.complaintRoutes.length, 2)
@@ -377,6 +378,8 @@ test('France, Poland, and Spain are partial records with explicit implementation
   assert.match(france.coverageNote ?? '', /CNIL|DDADUE/)
   assert.ok(france.sources.some((source) => source.id === 'fr-cnil-data-act'))
   assert.ok(france.sources.some((source) => source.id === 'fr-ddadue-legislative-dossier'))
+  assert.ok(france.sources.some((source) => source.id === 'fr-senate-ddadue-data-act-report-2026'))
+  assert.ok(france.sources.some((source) => source.id === 'fr-assembly-arcep-data-act-2026'))
   assert.match(france.coverageNote ?? '', /议会|审议/)
 
   const poland = COUNTRY_RECORDS.find((item) => item.id === 'pl')
