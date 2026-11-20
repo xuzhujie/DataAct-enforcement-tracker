@@ -7,6 +7,19 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-mt-deep-issue-mapping',
+    date: '2026-11-21',
+    countryId: 'mt',
+    kind: 'changed',
+    summary: '马耳他由 partial 升级为 deep：L.N. 222/2025、MDIA/MCA/IDPC competence split、投诉路径和国内法定罚款上限已核验；MDIA 官方指引进一步确认设备数据访问及第三方共享争议映射。二手设备继受保持 pending，公开 Data Act 处罚仍 not_located。',
+    sourceUrls: [
+      'https://mdia.gov.mt/services/the-data-act/',
+      'https://www.mca.org.mt/the-data-act',
+      'https://legislation.mt/eli/ln/2025/222/eng',
+    ],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-gr-bg-hr-implementation-signals',
     date: '2026-11-21',
     countryId: 'eu',
