@@ -40,6 +40,7 @@ const urls = {
   frArcepDataAct: 'https://www.arcep.fr/fileadmin/cru-1769533491/user_upload/01-26-version-francaise.pdf',
   plDataActBill: 'https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm',
   plDataActBillPdf: 'https://api.sejm.gov.pl/sejm/term10/prints/3266/3266.pdf',
+  plDataActSenatePrint: 'https://www.senat.gov.pl/prace/druki/record,14878.html',
   plDraftImplementation: 'https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2',
   esDataActGuide: 'https://datos.gob.es/sites/default/files/2025-09/ley-datos-en.pdf',
   esDataActChapterV: 'https://www.boe.es/buscar/doc.php?id=BOE-A-2026-9079',
@@ -358,6 +359,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The official Sejm print sets out the draft complaint route to the UKE President (Art. 25) and draft administrative-penalty ceilings of up to PLN 100,000 or, for an undertaking, 4% of prior-year turnover (Art. 31(15)); the text remains a bill.',
+  }),
+  plDataActSenateStage: source({
+    id: 'pl-data-act-senate-stage',
+    label: 'Poland Senate · Data Act bill print no. 934',
+    url: urls.plDataActSenatePrint,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The Senate register records bill print no. 934 dated 20 November 2026. It confirms that the Sejm-adopted Data Act bill had entered the Senate stage, not that the implementing statute had been promulgated or entered into force.',
   }),
   plDraftImplementation: source({
     id: 'pl-draft-implementation',
@@ -2223,7 +2233,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   pl: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '波兰官方材料显示：政府于 2026-10-13 通过 Data Act 实施法案项目，众议院于 2026-11-19 通过该法案；法案尚未公布并生效，故 UKE 主席、投诉程序和 100,000 PLN / 4% 营业额罚款上限仍按立法阶段 pending 记录。',
+    coverageNote: '波兰官方材料显示：政府于 2026-10-13 通过 Data Act 实施法案项目，众议院于 2026-11-19 通过该法案，参议院登记了 2026-11-20 的第 934 号议案文本；法案尚未公布并生效，故 UKE 主席、投诉程序和 100,000 PLN / 4% 营业额罚款上限仍按立法阶段 pending 记录。',
     competentAuthorities: [
       {
         name: '波兰电子通信办公室主席（拟议）',
@@ -2231,7 +2241,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         role: 'data_coordinator',
         scope: '政府和众议院通过的法案文本拟由 UKE 主席负责 Data Act 监督、数据协调和投诉处理；法案尚未作为生效国内法记录。',
         sourceUrl: urls.plDraftImplementation,
-        evidence: evidence([urls.plDraftImplementation, urls.plDataActBill, urls.plDataActBillPdf], 'pending'),
+        evidence: evidence([urls.plDraftImplementation, urls.plDataActBill, urls.plDataActBillPdf, urls.plDataActSenatePrint], 'pending'),
       },
     ],
     complaintRoutes: [
@@ -2242,7 +2252,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         url: urls.plDraftImplementation,
         submissionMode: '法案第 25 条拟议投诉程序；尚无已确认的生效法定或在线提交入口',
         status: 'pending',
-        evidence: evidence([urls.plDraftImplementation, urls.plDataActBill, urls.plDataActBillPdf], 'pending'),
+        evidence: evidence([urls.plDraftImplementation, urls.plDataActBill, urls.plDataActBillPdf, urls.plDataActSenatePrint], 'pending'),
       },
     ],
     penaltySchedule: [
@@ -2253,10 +2263,10 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         scope: '法案第 31 条第 1–14 款所列 Data Act 义务的拟议行政罚款；最终金额和适用范围待公布生效文本确认。',
         sourceUrl: urls.plDataActBillPdf,
         conditionalTurnoverCap: true,
-        evidence: evidence([urls.plDataActBillPdf, urls.plDataActBill], 'pending'),
+        evidence: evidence([urls.plDataActBillPdf, urls.plDataActBill, urls.plDataActSenatePrint], 'pending'),
       },
     ],
-    additionalSources: [sources.plDataActBill, sources.plDataActBillPdf, sources.plDraftImplementation],
+    additionalSources: [sources.plDataActBill, sources.plDataActBillPdf, sources.plDataActSenateStage, sources.plDraftImplementation],
   },
   es: {
     coverage: 'partial',

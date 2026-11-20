@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-pl-senate-stage',
+    date: '2026-11-21',
+    countryId: 'pl',
+    kind: 'changed',
+    summary: '补入波兰参议院官方登记：Data Act 实施法案已进入 2026-11-20 第 934 号参议院议案阶段；尚未公布并生效，因此 UKE 主管、一般投诉程序和国内罚则继续保持 pending。',
+    sourceUrls: ['https://www.senat.gov.pl/prace/druki/record,14878.html', 'https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-complaint-route-scope-filter',
     date: '2026-11-21',
     countryId: 'eu',

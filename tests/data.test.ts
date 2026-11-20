@@ -290,6 +290,8 @@ test('new official signals keep proposed authorities and live Swedish intake vis
   assert.equal(getCountryEvidenceStatus(poland, 'complaint_route'), 'pending')
   assert.equal(getCountryEvidenceStatus(poland, 'penalty_schedule'), 'pending')
   assert.ok(poland.sources.some((source) => source.id === 'pl-data-act-bill-pdf'))
+  assert.ok(poland.sources.some((source) => source.id === 'pl-data-act-senate-stage'))
+  assert.match(poland.coverageNote ?? '', /参议院|934/)
   const slovenia = COUNTRY_RECORDS.find((country) => country.id === 'si')!
   assert.equal(getCountryEvidenceStatus(slovenia, 'authority'), 'pending')
   assert.equal(slovenia.competentAuthorities.length, 2)
