@@ -1,7 +1,7 @@
 import { Filter, RotateCcw } from 'lucide-react'
 import type { ChangeEvent } from 'react'
-import type { CountryFilterState, PresenceFilter } from '../data/types'
-import { formatCoverage } from '../lib/format'
+import type { CountryFilterState, FieldFilter } from '../data/types'
+import { formatCoverage, formatVerificationStatus } from '../lib/format'
 import { formatImplementationStage } from '../lib/view-model'
 
 interface RegistryFiltersProps {
@@ -72,7 +72,7 @@ export default function RegistryFilters({ filters, onChange, onReset, resultCoun
   )
 }
 
-function PresenceSelect({ label, value, onChange }: { label: string; value: PresenceFilter; onChange: (value: PresenceFilter) => void }) {
+function PresenceSelect({ label, value, onChange }: { label: string; value: FieldFilter; onChange: (value: FieldFilter) => void }) {
   return (
     <label>
       <span>{label}</span>
@@ -80,6 +80,10 @@ function PresenceSelect({ label, value, onChange }: { label: string; value: Pres
         <option value="all">全部</option>
         <option value="present">已登记</option>
         <option value="missing">未登记</option>
+        <option value="verified">{formatVerificationStatus('verified')}</option>
+        <option value="pending">{formatVerificationStatus('pending')}</option>
+        <option value="not_located">{formatVerificationStatus('not_located')}</option>
+        <option value="not_applicable">{formatVerificationStatus('not_applicable')}</option>
       </select>
     </label>
   )

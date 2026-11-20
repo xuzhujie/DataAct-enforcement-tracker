@@ -2,6 +2,7 @@ export type VerificationStatus = 'verified' | 'pending' | 'not_located' | 'not_a
 export type CountryCoverage = 'deep' | 'partial' | 'queue' | 'planned'
 export type ImplementationStage = 'enacted' | 'legislative' | 'draft' | 'not_located'
 export type PresenceFilter = 'all' | 'present' | 'missing'
+export type FieldFilter = PresenceFilter | VerificationStatus
 export type PublishedPenaltyFilter = 'all' | VerificationStatus
 export type IssueType = 'device_access' | 'third_party_sharing' | 'second_hand_transfer'
 export type AuthorityRole = 'data_coordinator' | 'competent_authority' | 'data_protection'
@@ -208,8 +209,8 @@ export interface CoverageMetrics {
 export interface CountryFilterState {
   coverage: CountryCoverage | 'all'
   implementationStage: ImplementationStage | 'all'
-  authority: PresenceFilter
-  complaintRoute: PresenceFilter
-  penaltySchedule: PresenceFilter
+  authority: FieldFilter
+  complaintRoute: FieldFilter
+  penaltySchedule: FieldFilter
   publishedPenaltyStatus: PublishedPenaltyFilter
 }
