@@ -7,6 +7,18 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-sk-bill-1447-data-act-detail',
+    date: '2026-11-21',
+    countryId: 'sk',
+    kind: 'changed',
+    summary: '纳入斯洛伐克议会第 1447 号政府法案及官方解释材料：拟由 MIRRI 与电子通信监管局分工，并在 §§34–36 设定 Data Act 违法与最高 €10m 或净全球营业额 4% 的罚则；法案未生效，因此主管机关、投诉入口和罚则均保持 pending。',
+    sourceUrls: [
+      'https://www.nrsr.sk/web/Dynamic/DocumentPreview.aspx?DocID=596316',
+      'https://www.nrsr.sk/web/Dynamic/DocumentPreview.aspx?DocID=596317',
+    ],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-es-cnmc-aepd-data-act-cooperation',
     date: '2026-11-21',
     countryId: 'es',
