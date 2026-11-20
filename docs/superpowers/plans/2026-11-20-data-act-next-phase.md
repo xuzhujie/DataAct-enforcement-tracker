@@ -25,7 +25,7 @@
 
 - 西班牙不得继续引用 BOE 的 DSA 合作协议作为 Data Act 主管机关证据；只能保留西班牙政府 Data Act 指南及明确标注的研究线索。
 - Italy、Belgium、Austria 的“已知状态”和“尚未定位”要拆开记录；不把 AGCOM/BIPT/RTR 的监管关注或拟议指定写成已完成国内实施。
-- 六个新增部分覆盖国家（Ireland、Lithuania、Malta、Portugal、Romania、Sweden）必须保留官方状态依据，同时未确认的投诉路线/罚则/案件字段保持空值。
+- 五个新增部分覆盖国家（Ireland、Lithuania、Portugal、Romania、Sweden）必须保留官方状态依据；Malta 已因主管机关、投诉路径、国内罚则和两条设备争议链完成核验而升级为 `deep`，其二手转让与公开处罚字段仍保持未确认。
 - 其余排队国家仍必须出现在 EU-27 登记簿，并有清楚的研究入口或“未定位”说明；不得因 DGA/DSA 页面出现而升级覆盖状态。
 - 监测视图和维护视图要支持筛选、来源链接、状态解释，并在移动宽度 390×844 下无横向溢出。
 
@@ -44,7 +44,7 @@
 - `SourceRecord.sourceType` gains `research-lead` so cross-regulation material is visible but not promoted to a legal fact.
 - Spain uses the official Spanish-government Data Act guide and drops the DSA cooperation text as a Data Act source.
 - Italy/Belgium/Austria retain unresolved fields as empty and describe their official current status in `coverageNote`/sources.
-- Country count after the six upgrades in Task 2 is expected to be 4 deep, 11 partial, 12 queue; tests must assert the final count.
+- The original Task 2 estimate was 4 deep, 11 partial, 12 queue; the current registry supersedes that estimate with 6 deep, 21 partial, 0 queue after the full EU-27 evidence refresh.
 
 - [x] **Step 1: Write failing evidence tests** for Spain’s source taxonomy/correction, Italy/Belgium/Austria status notes, and six-country count expectations.
 - [x] **Step 2: Run the focused tests** and confirm the old Spain source/counts fail.
@@ -61,12 +61,12 @@
 - Modify: `docs/superpowers/specs/2026-11-19-data-act-enforcement-tracker-design.md`
 
 **Interfaces:**
-- Promote Ireland, Lithuania, Malta, Portugal, Romania, and Sweden to `partial` only on official evidence; unresolved authorities/routes/penalties remain empty unless final evidence is present.
-- Keep the other twelve queue records visible with official research-lead sources and explicit non-Data-Act caveats.
-- Malta may expose its official MDIA/MCA competence split, but it remains partial until the domestic penalty and complaint layers are fully verified.
+- Promote Ireland, Lithuania, Portugal, Romania, and Sweden to `partial` only on official evidence; Malta can be promoted to `deep` only after its enacted authority, complaint, penalty and issue-lens evidence is reconciled; unresolved fields remain explicit.
+- Keep every unresolved field visible with official research-lead sources and explicit non-Data-Act caveats; the current snapshot has no queue records, but 21 partial records retain field-level gaps.
+- Malta's MDIA/MCA/IDPC competence split, complaint routes, statutory penalty layers, and device-access/third-party-sharing issue lenses are now verified; keep second-hand transfer and public penalty decisions explicitly pending/not located.
 
-- [x] **Step 1: Write failing tests** for the six partial records, twelve queue records, EU-27 uniqueness, and no false authorities/penalties on draft-only evidence.
-- [x] **Step 2: Run tests** to confirm the six records are still queue and the queue-source taxonomy is missing.
+- [x] **Step 1: Write failing tests** for country coverage, EU-27 uniqueness, and no false authorities/penalties on draft-only evidence.
+- [x] **Step 2: Run tests** to confirm the pre-refresh coverage assumptions fail before registry changes.
 - [x] **Step 3: Add official national sources and notes** for all eighteen countries, using `research-lead` for DGA/DSA/general-policy material.
 - [x] **Step 4: Reconcile metrics, filters, and coverage notes** so partial/queue semantics remain null-safe.
 - [x] **Step 5: Run tests, lint, and build** before adding new UI views.
@@ -135,6 +135,6 @@
 - [x] `npm run lint`
 - [x] `npm run build`
 - [x] Native desktop/mobile QA and console review
-- [x] EU-27 count/uniqueness and 4/11/12 coverage metrics confirmed
+- [x] EU-27 count/uniqueness confirmed; the current refreshed metrics are 6 deep / 21 partial / 0 queue
 - [x] Source links and cross-regulation labels verified
 - [x] No Git commit claimed; workspace ledger records the environment limitation

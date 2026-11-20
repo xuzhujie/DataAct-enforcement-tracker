@@ -185,13 +185,13 @@ test('new partial records retain draft implementation evidence without final leg
   }
 })
 
-test('the remaining EU records distinguish twenty-two partial records from five deeply verified countries', () => {
-  const expectedPartial = ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'mt', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se']
+test('the remaining EU records distinguish twenty-one partial records from six deeply verified countries', () => {
+  const expectedPartial = ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se']
   const expectedQueue: string[] = []
 
   assert.deepEqual(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').map((country) => country.id), expectedPartial)
   assert.deepEqual(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').map((country) => country.id), expectedQueue)
-  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 5)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 6)
   assert.equal(COUNTRY_RECORDS.length, 27)
 
   for (const countryId of ['ie', 'pt', 'ro', 'se']) {
@@ -212,7 +212,7 @@ test('the remaining EU records distinguish twenty-two partial records from five 
   }
 
   const malta = COUNTRY_RECORDS.find((country) => country.id === 'mt')!
-  assert.equal(malta.coverage, 'partial')
+  assert.equal(malta.coverage, 'deep')
   assert.equal(malta.implementationStage, 'enacted')
   assert.equal(malta.implementingAct, 'Fair Access to and Use of Data Regulations, 2025 · L.N. 222 of 2025')
   assert.equal(malta.implementingActUrl, 'https://legislation.mt/eli/ln/2025/222/eng')
@@ -279,10 +279,13 @@ test('the next country evidence batch records official implementation signals wi
   assert.ok(lithuania.complaintRoutes.some((route) => route.url.includes('duomenu-akto-prieziura')))
   assert.equal(lithuania.penaltySchedule.length, 2)
 
-  assert.equal(malta.coverage, 'partial')
+  assert.equal(malta.coverage, 'deep')
   assert.ok(malta.complaintRoutes.some((route) => route.url.includes('regulatory-complaints')))
   assert.ok(malta.sources.some((source) => source.id === 'mt-legal-notice-222-2025'))
   assert.equal(malta.enforcementSummary.publishedPenaltyStatus, 'not_located')
+  assert.equal(malta.issues.find((issue) => issue.issue === 'device_access')?.status, 'verified')
+  assert.equal(malta.issues.find((issue) => issue.issue === 'third_party_sharing')?.status, 'verified')
+  assert.equal(malta.issues.find((issue) => issue.issue === 'second_hand_transfer')?.status, 'pending')
 })
 
 test('new official signals keep proposed authorities and live Swedish intake visibly pending or verified', () => {
@@ -352,7 +355,7 @@ test('each country keeps unresolved enforcement fields explicit instead of using
   }
 })
 
-test('partial countries expose field-level evidence status without upgrading overall coverage', () => {
+test('field-level evidence status remains explicit for partial and deep records', () => {
   const cyprus = COUNTRY_RECORDS.find((country) => country.id === 'cy')!
   const malta = COUNTRY_RECORDS.find((country) => country.id === 'mt')!
 
@@ -366,6 +369,9 @@ test('partial countries expose field-level evidence status without upgrading ove
   assert.equal(getCountryEvidenceStatus(malta, 'complaint_route'), 'verified')
   assert.equal(getCountryEvidenceStatus(malta, 'penalty_schedule'), 'verified')
   assert.equal(getCountryEvidenceStatus(malta, 'published_penalty'), 'not_located')
+  assert.equal(malta.issues.find((issue) => issue.issue === 'device_access')?.evidence.evidenceStatus, 'verified')
+  assert.equal(malta.issues.find((issue) => issue.issue === 'third_party_sharing')?.evidence.evidenceStatus, 'verified')
+  assert.equal(malta.issues.find((issue) => issue.issue === 'second_hand_transfer')?.evidence.evidenceStatus, 'pending')
 })
 
 test('Germany legal facts retain source URLs, freshness, and evidence state', () => {
@@ -420,8 +426,8 @@ test('country register covers all 27 EU member states without inventing implemen
 
   assert.deepEqual(COUNTRY_RECORDS.map((country) => country.iso2), expectedIso2)
   assert.equal(COUNTRY_RECORDS.length, 27)
-  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 5)
-  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').length, 22)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 6)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').length, 21)
   assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').length, 0)
   assert.ok(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').every((country) => country.competentAuthorities.some((authority) => authority.role === 'data_protection')))
   assert.ok(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').every((country) => country.sources.some((source) => source.id === 'eu-edpb-national-dpa-members')))
@@ -444,14 +450,14 @@ test('every EU country exposes the three hardware issue lenses with explicit pen
 test('coverage metrics keep deep, partial, and queue countries separate', () => {
   const metrics = getCoverageMetrics(COUNTRY_RECORDS)
 
-  assert.equal(metrics.deepCount, 5)
-  assert.equal(metrics.partialCount, 22)
+  assert.equal(metrics.deepCount, 6)
+  assert.equal(metrics.partialCount, 21)
   assert.equal(metrics.queueCount, 0)
   assert.equal(metrics.totalTrackedCountries, 27)
 })
 
 test('country registry filters are composable and keep missing facts distinct from verified absence', () => {
-  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial' }).map((country) => country.id), ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'mt', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se'])
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial' }).map((country) => country.id), ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se'])
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, implementationStage: 'enacted' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 27)
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, complaintRoute: 'present' }).length, 27)
@@ -834,8 +840,8 @@ test('maintenance report aggregates evidence gaps, review due items, and source 
 
   assert.equal(report.schemaVersion, 1)
   assert.equal(report.registry.countryCount, 27)
-  assert.equal(report.registry.coverage.deepCount, 5)
-  assert.equal(report.registry.coverage.partialCount, 22)
+  assert.equal(report.registry.coverage.deepCount, 6)
+  assert.equal(report.registry.coverage.partialCount, 21)
   assert.equal(report.registry.actualEnforcementCaseCount, 0)
   assert.equal(report.registry.validation.passed, true)
   assert.deepEqual(report.evidence.authority, {

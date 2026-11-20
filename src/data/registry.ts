@@ -2243,6 +2243,42 @@ const pendingHardwareIssues = (sourceUrls: string[]): IssueRecord[] => {
   ]
 }
 
+const maltaHardwareIssues: IssueRecord[] = [
+  {
+    issue: 'device_access',
+    label: '设备数据访问',
+    euArticles: ['Art. 3(1)', 'Art. 4(1)'],
+    nationalBasis: 'L.N. 222/2025 · MDIA Data Act guidance · connected-product user access right',
+    status: 'verified',
+    evidenceSummary: 'MDIA 官方 Data Act 页面明确说明，联网产品用户有权访问使用过程中生成的数据；MDIA 负责除 Articles 23–31、34–35 外的 Data Act 条款，故九号这类联网硬件的数据访问请求应先按 MDIA 一般主管范围登记。',
+    nextAction: '为具体九号型号建立数据目录和请求记录，保存用户身份、设备/服务关联、请求范围、格式与响应时限；拒绝时核对 Article 4 的安全、商业秘密和其他例外理由。',
+    sourceUrls: [urls.mtMdiaDataAct, urls.mtLegalNotice, urls.euDataAct],
+    evidence: evidence([urls.mtMdiaDataAct, urls.mtLegalNotice, urls.euDataAct], 'verified'),
+  },
+  {
+    issue: 'third_party_sharing',
+    label: '第三方共享',
+    euArticles: ['Art. 5(1)', 'Art. 6(2)'],
+    nationalBasis: 'L.N. 222/2025 · Data Act Arts. 4–5 · MDIA data-sharing refusal and trade-secret guidance',
+    status: 'verified',
+    evidenceSummary: 'MDIA 官方页面确认数据持有人在特定情形下可拒绝、暂停或扣留共享，并要求处理联网产品安全、商业秘密、第三方保密措施及通知主管机关等边界；这为第三方请求和再共享争议提供了可核验的马耳他执行映射。',
+    nextAction: '逐项核验第三方授权链、用途限制、再共享和商业秘密保护措施；如数据持有人拒绝或暂停共享，保留其理由、通知 MDIA 的记录和已约定的技术/组织措施。',
+    sourceUrls: [urls.mtMdiaDataAct, urls.mtLegalNotice, urls.euDataAct],
+    evidence: evidence([urls.mtMdiaDataAct, urls.mtLegalNotice, urls.euDataAct], 'verified'),
+  },
+  {
+    issue: 'second_hand_transfer',
+    label: '二手转让 / 设备继受',
+    euArticles: ['Art. 3(2)', 'Art. 4(1)', 'Art. 5(1)'],
+    nationalBasis: 'L.N. 222/2025 与 MDIA Data Act guidance 提供一般用户/数据访问框架；二手转让不是 Data Act 独立违法类型，具体仍需结合账户、所有权与数据清理事实映射',
+    status: 'pending',
+    evidenceSummary: '已核验的马耳他官方材料确认联网产品用户访问和数据共享规则，但本轮尚未定位针对二手设备历史数据、账户交接、权限撤销或新用户访问的独立执行口径。',
+    nextAction: '补齐二手设备交易事实：注销原账户、重置设备、历史数据删除、绑定关系迁移和新用户访问请求，并据此判断是设备数据访问、第三方共享还是个人数据投诉路径。',
+    sourceUrls: [urls.mtMdiaDataAct, urls.mtLegalNotice, urls.euDataAct],
+    evidence: evidence([urls.mtMdiaDataAct, urls.mtLegalNotice, urls.euDataAct], 'pending'),
+  },
+]
+
 interface QueueCountryOptions {
   coverage?: CountryRecord['coverage']
   implementationStage?: ImplementationStage
@@ -2534,12 +2570,12 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
     additionalSources: [sources.ltEiminDataActDraft, sources.ltEiminDataActPage],
   },
   mt: {
-    coverage: 'partial',
+    coverage: 'deep',
     implementationStage: 'enacted',
     implementingAct: 'Fair Access to and Use of Data Regulations, 2025 · L.N. 222 of 2025',
     implementingActUrl: urls.mtLegalNotice,
     publishedPenaltyStatus: 'not_located',
-    coverageNote: '马耳他 L.N. 222/2025 与 MDIA/MCA 官方页面确认 MDIA/MCA/IDPC 的 competence split、数据协调员和投诉路径；Cap. 591、Cap. 418 与 L.N. 223/2025 已补入国内法定罚款上限。MCA 的独立在线表单和公开 Data Act 实际处罚仍待定位，但 MCA 官方 Data Act 页面已确认可直接投诉。',
+    coverageNote: '马耳他 L.N. 222/2025 与 MDIA/MCA 官方页面确认 MDIA/MCA/IDPC 的 competence split、数据协调员和投诉路径；Cap. 591、Cap. 418 与 L.N. 223/2025 已补入国内法定罚款上限。联网设备的数据访问和第三方共享争议已按 MDIA 官方指引完成映射；二手设备继受仍待补充专项口径。MCA 没有单独在线表单，公开 Data Act 实际处罚也仍未定位。',
     competentAuthorities: [
       {
         name: '马耳他数字创新局',
@@ -2624,6 +2660,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.mtDataProtectionRegulations, urls.mtGdpr, urls.euDataAct], 'verified'),
       },
     ],
+    issues: maltaHardwareIssues,
     additionalSources: [sources.mtMdiaDataAct, sources.mtMcaDataAct, sources.mtMdiaAct, sources.mtMcaAct, sources.mtDataProtectionRegulations, sources.mtGdpr, sources.mtIdpcComplaint, sources.mtLegalNotice, sources.mtRegulatoryComplaints],
   },
   pt: {
