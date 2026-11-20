@@ -94,7 +94,7 @@ test('the second country batch separates enacted Denmark and Finland from partia
   assert.equal(belgium.coverage, 'partial')
   assert.equal(belgium.implementationStage, 'draft')
   assert.equal(belgium.competentAuthorities.length, 2)
-  assert.equal(belgium.complaintRoutes.length, 1)
+  assert.equal(belgium.complaintRoutes.length, 2)
   assert.equal(belgium.penaltySchedule.length, 0)
   assert.ok(belgium.sources.some((source) => source.id === 'be-bipt-data-act'))
   assert.match(belgium.coverageNote ?? '', /BIPT|草案/)
@@ -102,7 +102,7 @@ test('the second country batch separates enacted Denmark and Finland from partia
   assert.equal(austria.coverage, 'partial')
   assert.equal(austria.implementationStage, 'not_located')
   assert.ok(austria.competentAuthorities.some((authority) => authority.nameEn.includes('Data Protection Authority')))
-  assert.equal(austria.complaintRoutes.length, 0)
+  assert.equal(austria.complaintRoutes.length, 1)
   assert.equal(austria.penaltySchedule.length, 0)
   assert.match(austria.coverageNote ?? '', /尚未|指定/)
 
@@ -160,8 +160,8 @@ test('new partial records retain draft implementation evidence without final leg
   for (const country of [czechia, hungary, slovakia]) {
     if (country.id === 'cz') assert.equal(country.competentAuthorities.length, 2)
     else assert.equal(country.competentAuthorities.length, 1)
-    if (country.id === 'cz') assert.equal(country.complaintRoutes.length, 1)
-    else assert.equal(country.complaintRoutes.length, 0)
+    if (country.id === 'cz') assert.equal(country.complaintRoutes.length, 2)
+    else assert.equal(country.complaintRoutes.length, 1)
     assert.equal(country.penaltySchedule.length, 0)
     assert.deepEqual(country.enforcementCases, [])
   }
@@ -183,9 +183,9 @@ test('the remaining EU records distinguish twenty-two partial records from five 
     if (countryId === 'se') assert.equal(country.competentAuthorities.length, 2)
     if (countryId === 'pt') assert.equal(country.competentAuthorities.length, 2)
     if (countryId === 'se') assert.equal(country.complaintRoutes.length, 1)
-    if (countryId === 'ie') assert.equal(country.complaintRoutes.length, 2)
-    if (countryId === 'pt') assert.equal(country.complaintRoutes.length, 0)
-    if (countryId === 'ro') assert.equal(country.complaintRoutes.length, 1)
+    if (countryId === 'ie') assert.equal(country.complaintRoutes.length, 3)
+    if (countryId === 'pt') assert.equal(country.complaintRoutes.length, 1)
+    if (countryId === 'ro') assert.equal(country.complaintRoutes.length, 2)
     if (countryId === 'ie') assert.equal(country.penaltySchedule.length, 3)
     if (countryId === 'se') assert.equal(country.penaltySchedule.length, 1)
     if (countryId === 'pt') assert.equal(country.penaltySchedule.length, 0)
@@ -210,8 +210,8 @@ test('the remaining EU records distinguish twenty-two partial records from five 
     assert.equal(country.implementationStage, 'legislative')
     if (countryId === 'cz') assert.equal(country.competentAuthorities.length, 2)
     else assert.equal(country.competentAuthorities.length, 1)
-    if (countryId === 'cz') assert.equal(country.complaintRoutes.length, 1)
-    else assert.equal(country.complaintRoutes.length, 0)
+    if (countryId === 'cz') assert.equal(country.complaintRoutes.length, 2)
+    else assert.equal(country.complaintRoutes.length, 1)
     assert.equal(country.penaltySchedule.length, 0)
     assert.deepEqual(country.enforcementCases, [])
     assert.ok(country.sources.some((source) => source.sourceType === 'research-lead'))
@@ -242,7 +242,7 @@ test('the next country evidence batch records official implementation signals wi
 
   assert.equal(cyprus.coverage, 'partial')
   assert.ok(cyprus.competentAuthorities.some((authority) => authority.nameEn.includes('Deputy Ministry of Research, Innovation and Digital Policy')))
-  assert.equal(cyprus.complaintRoutes.length, 0)
+  assert.equal(cyprus.complaintRoutes.length, 1)
   assert.equal(cyprus.penaltySchedule.length, 0)
 
   assert.equal(lithuania.coverage, 'deep')
@@ -296,7 +296,7 @@ test('new official signals keep proposed authorities and live Swedish intake vis
   assert.equal(luxembourg.implementationStage, 'draft')
   assert.equal(luxembourg.competentAuthorities.length, 3)
   assert.equal(getCountryEvidenceStatus(luxembourg, 'authority'), 'pending')
-  assert.equal(luxembourg.complaintRoutes.length, 1)
+  assert.equal(luxembourg.complaintRoutes.length, 2)
   assert.equal(getCountryEvidenceStatus(luxembourg, 'complaint_route'), 'pending')
   assert.equal(luxembourg.penaltySchedule.length, 3)
   assert.equal(getCountryEvidenceStatus(luxembourg, 'penalty_schedule'), 'pending')
@@ -304,7 +304,7 @@ test('new official signals keep proposed authorities and live Swedish intake vis
   assert.ok(portugal.sources.some((source) => source.id === 'pt-data-act-execution-plan'))
   assert.equal(portugal.competentAuthorities.length, 2)
   assert.equal(getCountryEvidenceStatus(portugal, 'authority'), 'pending')
-  assert.equal(portugal.complaintRoutes.length, 0)
+  assert.equal(portugal.complaintRoutes.length, 1)
 })
 
 test('each country keeps unresolved enforcement fields explicit instead of using zero as a proxy for missing evidence', () => {
@@ -327,7 +327,7 @@ test('partial countries expose field-level evidence status without upgrading ove
 
   assert.equal(cyprus.coverage, 'partial')
   assert.equal(getCountryEvidenceStatus(cyprus, 'authority'), 'verified')
-  assert.equal(getCountryEvidenceStatus(cyprus, 'complaint_route'), 'not_located')
+  assert.equal(getCountryEvidenceStatus(cyprus, 'complaint_route'), 'verified')
   assert.equal(getCountryEvidenceStatus(cyprus, 'penalty_schedule'), 'not_located')
   assert.equal(getCountryEvidenceStatus(cyprus, 'published_penalty'), 'pending')
 
@@ -356,7 +356,7 @@ test('France, Poland, and Spain are partial records with explicit implementation
   assert.equal(france.implementationStage, 'draft')
   assert.equal(france.competentAuthorities.length, 2)
   assert.equal(getCountryEvidenceStatus(france, 'authority'), 'pending')
-  assert.equal(france.complaintRoutes.length, 1)
+  assert.equal(france.complaintRoutes.length, 2)
   assert.equal(getCountryEvidenceStatus(france, 'complaint_route'), 'pending')
   assert.equal(france.penaltySchedule.length, 1)
   assert.equal(getCountryEvidenceStatus(france, 'penalty_schedule'), 'pending')
@@ -419,11 +419,20 @@ test('country registry filters are composable and keep missing facts distinct fr
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial' }).map((country) => country.id), ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'mt', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se'])
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, implementationStage: 'enacted' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 27)
-  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, complaintRoute: 'present' }).length, 14)
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, complaintRoute: 'present' }).length, 27)
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, penaltySchedule: 'present' }).length, 13)
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'not_located' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'verified' }).length, 0)
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), [])
+})
+
+test('new DPA complaint routes stay scoped to the Article 37(3) personal-data boundary', () => {
+  const dpaRoutes = COUNTRY_RECORDS.flatMap((country) => country.complaintRoutes).filter((route) => route.id.endsWith('-data-protection-personal-data-complaint'))
+
+  assert.equal(dpaRoutes.length, 20)
+  assert.ok(dpaRoutes.every((route) => route.status === 'verified'))
+  assert.ok(dpaRoutes.every((route) => route.scope.includes('Article 37(3)') && route.scope.includes('not a general Article 38 complaint form')))
+  assert.ok(dpaRoutes.every((route) => route.evidence.sourceUrls.includes('https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R2854')))
 })
 
 test('formatters keep legal dates readable and statuses explicit', () => {
@@ -633,7 +642,7 @@ test('source freshness distinguishes current, review, stale, unknown, and future
 
 test('change log entries are country-filterable and retain official source traceability', () => {
   assert.ok(CHANGE_LOG.length >= 8)
-  assert.ok(CHANGE_LOG.every((entry) => COUNTRY_RECORDS.some((country) => country.id === entry.countryId)))
+  assert.ok(CHANGE_LOG.every((entry) => entry.countryId === 'eu' || COUNTRY_RECORDS.some((country) => country.id === entry.countryId)))
   assert.ok(CHANGE_LOG.every((entry) => entry.sourceUrls.length > 0 && entry.date && entry.evidenceStatus))
   assert.ok(filterChangeLog(CHANGE_LOG, { countryId: 'fr', kind: 'all' }).every((entry) => entry.countryId === 'fr'))
   assert.ok(filterChangeLog(CHANGE_LOG, { countryId: 'all', kind: 'review' }).every((entry) => entry.kind === 'review'))
@@ -758,9 +767,9 @@ test('maintenance report aggregates evidence gaps, review due items, and source 
     not_applicable: 0,
     needsFollowUpCountryIds: ['be', 'cz', 'fr', 'it', 'lu', 'pl', 'pt', 'ro', 'si'],
   })
-  assert.equal(report.evidence.complaint_route.verified, 7)
+  assert.equal(report.evidence.complaint_route.verified, 20)
   assert.equal(report.evidence.complaint_route.pending, 7)
-  assert.equal(report.evidence.complaint_route.not_located, 13)
+  assert.equal(report.evidence.complaint_route.not_located, 0)
   assert.equal(report.evidence.penalty_schedule.verified, 6)
   assert.equal(report.evidence.penalty_schedule.pending, 7)
   assert.equal(report.evidence.penalty_schedule.not_located, 14)

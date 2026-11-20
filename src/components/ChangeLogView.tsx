@@ -34,6 +34,7 @@ export default function ChangeLogView({ entries, countries }: ChangeLogViewProps
           <span>国家</span>
           <select value={filters.countryId} onChange={(event) => setFilters({ ...filters, countryId: event.target.value })}>
             <option value="all">全部国家</option>
+            <option value="eu">🇪🇺 全欧盟</option>
             {countries.map((country) => <option key={country.id} value={country.id}>{country.flag} {country.name}</option>)}
           </select>
         </label>
@@ -52,12 +53,13 @@ export default function ChangeLogView({ entries, countries }: ChangeLogViewProps
         <ol className="changelog-list">
           {visibleEntries.map((entry) => {
             const country = countries.find((item) => item.id === entry.countryId)
+            const countryLabel = entry.countryId === 'eu' ? '🇪🇺 全欧盟' : `${country?.flag ?? ''} ${country?.name ?? entry.countryId}`
             return (
               <li key={entry.id} className="changelog-item">
                 <div className="changelog-item__topline">
                   <time dateTime={entry.date}>{formatDate(entry.date)}</time>
                   <span className={`changelog-kind changelog-kind--${entry.kind}`}>{kindLabels[entry.kind]}</span>
-                  <strong>{country?.flag} {country?.name ?? entry.countryId}</strong>
+                  <strong>{countryLabel}</strong>
                 </div>
                 <p>{entry.summary}</p>
                 <div className="changelog-item__sources">

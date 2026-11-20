@@ -115,6 +115,26 @@ const urls = {
   ltDataActLaw: 'https://www.e-tar.lt/portal/lt/legalAct/7d678490760b11f1b53dfa020e517810',
   mtLegalNotice: 'https://legislation.mt/eli/ln/2025/222/eng',
   mtRegulatoryComplaints: 'https://mdia.gov.mt/services/regulatory-complaints/',
+  atDsbComplaint: 'https://dsb.gv.at/eingabe-an-die-dsb/beschwerde',
+  beApdComplaint: 'https://www.dataprotectionauthority.be/citoyen/agir/introduire-une-plainte',
+  bgCpdpComplaint: 'https://cpdp.bg/%D0%BF%D1%80%D0%B0%D0%B2%D0%B0-%D0%BD%D0%B0-%D1%84%D0%B8%D0%B7%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D1%82%D0%B5-%D0%BB%D0%B8%D1%86%D0%B0/',
+  hrAzopComplaint: 'https://azop.hr/zahtjev-za-utvrdivanje-povrede-prava/',
+  cyDpaComplaint: 'https://www.dataprotection.gov.cy/dataprotection/dataprotection.nsf/59EA353334A12A41C225826000291BFC/%24file/Investigation%20procedure.pdf',
+  czUoouComplaint: 'https://uoou.gov.cz/online-formular-pro-podani-stiznosti-na-poruseni-predpisu-na-ochranu-osobnich-udaju',
+  eeAkiComplaint: 'https://www.aki.ee/meist/vota-uhendust/kaebus-isikuandmete-kaitse-asjas',
+  frCnilComplaint: 'https://www.cnil.fr/fr/adresser-une-plainte',
+  grHdpaComplaint: 'https://www.dpa.gr/en/individuals/complaint-to-the-hellenic-dpa',
+  huNaihComplaint: 'https://www.naih.hu/about-the-authority/how-to-make-a-complaint?width=wide',
+  ieDpcComplaint: 'https://dataprotection.ie/en/faqs/initial-contact-dpc/making-complaint-dpc',
+  itGaranteComplaint: 'https://www.garanteprivacy.it/it/i-miei-diritti',
+  lvDviComplaint: 'https://www.dvi.gov.lv/en/services/complaint-concerning-processing-personal-data',
+  luCnpdComplaint: 'https://cnpd.public.lu/en/particuliers/faire-valoir/formulaire-plainte.html',
+  plUodoComplaint: 'https://uodo.gov.pl/pl/526/2464',
+  ptCnpdComplaint: 'https://www.cnpd.pt/cidadaos/participacoes',
+  roAnspdcpComplaint: 'https://www.dataprotection.ro/formulare/',
+  siIpComplaint: 'https://www.ip-rs.si/en/data-protection/how-to-file-an-application',
+  skDpaComplaint: 'https://dataprotection.gov.sk/en/office/proceedings-on-protection-personal-data/',
+  esAepdComplaint: 'https://www.aepd.es/preguntas-frecuentes/13-reclamaciones/FAQ-1301-como-puedo-interponer-una-reclamacion-si-han-vulnerado-mis-datos-de-caracter-personal',
 }
 
 export const EU_COUNTRIES_SOURCE_URL = urls.euCountries
@@ -1004,6 +1024,190 @@ const sources = {
   }),
 }
 
+interface DataProtectionComplaintDefinition {
+  source: SourceRecord
+  submissionMode: string
+}
+
+const dataProtectionComplaintDefinition = (
+  id: string,
+  label: string,
+  url: string,
+  submissionMode: string,
+  note: string,
+): DataProtectionComplaintDefinition => ({
+  source: source({
+    id,
+    label,
+    url,
+    sourceType: 'complaint-form',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note,
+  }),
+  submissionMode,
+})
+
+const queueDataProtectionComplaintDefinitions: Record<string, DataProtectionComplaintDefinition> = {
+  at: dataProtectionComplaintDefinition(
+    'at-dsb-personal-data-complaint',
+    'Austrian Data Protection Authority · complaint',
+    urls.atDsbComplaint,
+    'DSB 官方投诉页面/在线提交渠道；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official DSB complaint route for alleged infringements concerning personal-data processing; it does not establish Austria’s general Data Coordinator or non-personal-data Data Act intake.',
+  ),
+  be: dataProtectionComplaintDefinition(
+    'be-apd-personal-data-complaint',
+    'Belgian Data Protection Authority · complaint',
+    urls.beApdComplaint,
+    'APD-GBA 官方个人数据投诉页面/在线门户；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official APD-GBA complaint route for alleged infringements concerning personal-data processing; it does not establish Belgium’s general Data Act complaint procedure.',
+  ),
+  bg: dataProtectionComplaintDefinition(
+    'bg-cpdp-personal-data-complaint',
+    'Bulgarian Commission for Personal Data Protection · complaint',
+    urls.bgCpdpComplaint,
+    'CPDP 官方个人数据权利/投诉渠道；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official CPDP information confirms that a data subject may complain to the supervisory authority; it does not establish Bulgaria’s general Data Act complaint procedure.',
+  ),
+  hr: dataProtectionComplaintDefinition(
+    'hr-azop-personal-data-complaint',
+    'Croatian Personal Data Protection Agency · rights-violation request',
+    urls.hrAzopComplaint,
+    'AZOP 官方权利侵害认定申请/投诉渠道；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official AZOP request route for establishing a violation of data-protection rights; it does not establish Croatia’s general Data Act complaint procedure.',
+  ),
+  cy: dataProtectionComplaintDefinition(
+    'cy-dpa-personal-data-complaint',
+    'Cyprus Data Protection Commissioner · investigation procedure',
+    urls.cyDpaComplaint,
+    '塞浦路斯个人数据保护专员官方调查/投诉程序；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official Commissioner procedure explains that a data subject may submit a complaint; it does not establish Cyprus’s general Data Act complaint procedure.',
+  ),
+  cz: dataProtectionComplaintDefinition(
+    'cz-uoou-personal-data-complaint',
+    'Czech Office for Personal Data Protection · complaint form',
+    urls.czUoouComplaint,
+    'UOOU 官方在线投诉表单；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official UOOU online form for a complaint under the personal-data protection rules; it does not establish Czechia’s general Data Act complaint procedure.',
+  ),
+  ee: dataProtectionComplaintDefinition(
+    'ee-aki-personal-data-complaint',
+    'Estonian Data Protection Inspectorate · personal-data complaint',
+    urls.eeAkiComplaint,
+    'AKI 官方个人数据投诉页面/电子提交渠道；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official AKI complaint route for personal-data matters; it does not establish Estonia’s general Data Act complaint procedure.',
+  ),
+  fr: dataProtectionComplaintDefinition(
+    'fr-cnil-personal-data-complaint',
+    'French Data Protection Authority (CNIL) · complaint',
+    urls.frCnilComplaint,
+    'CNIL 官方投诉页面/在线提交渠道；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official CNIL complaint route for personal-data matters; it does not establish France’s general Data Act complaint procedure or Arcep designation.',
+  ),
+  gr: dataProtectionComplaintDefinition(
+    'gr-hdpa-personal-data-complaint',
+    'Hellenic Data Protection Authority · complaint',
+    urls.grHdpaComplaint,
+    'HDPA 官方投诉页面/在线提交渠道；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official HDPA complaint route for personal-data matters; it does not establish Greece’s general Data Act complaint procedure.',
+  ),
+  hu: dataProtectionComplaintDefinition(
+    'hu-naih-personal-data-complaint',
+    'Hungarian National Authority for Data Protection and Freedom of Information · complaint',
+    urls.huNaihComplaint,
+    'NAIH 官方投诉页面/提交渠道；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official NAIH complaint route for personal-data matters; it does not establish Hungary’s general Data Act complaint procedure.',
+  ),
+  ie: dataProtectionComplaintDefinition(
+    'ie-dpc-personal-data-complaint',
+    'Irish Data Protection Commission · complaint',
+    urls.ieDpcComplaint,
+    'DPC 官方投诉页面/在线表单；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official DPC complaint route for personal-data matters; it does not establish the separate general Data Act complaint procedure before CCPC/ComReg.',
+  ),
+  it: dataProtectionComplaintDefinition(
+    'it-garante-personal-data-complaint',
+    'Italian Garante · rights and complaint tools',
+    urls.itGaranteComplaint,
+    'Garante 官方权利/投诉入口；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official Garante page directs data subjects to complaints and reports for personal-data violations; it does not establish Italy’s general Data Act complaint procedure.',
+  ),
+  lv: dataProtectionComplaintDefinition(
+    'lv-dvi-personal-data-complaint',
+    'Latvian Data State Inspectorate · complaint concerning personal-data processing',
+    urls.lvDviComplaint,
+    'DVI 官方个人数据处理投诉服务；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official DVI service route for complaints concerning unlawful personal-data processing; it does not establish Latvia’s general Data Act complaint procedure.',
+  ),
+  lu: dataProtectionComplaintDefinition(
+    'lu-cnpd-personal-data-complaint',
+    'Luxembourg National Data Protection Commission · complaint form',
+    urls.luCnpdComplaint,
+    'CNPD 官方个人数据投诉表单；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official CNPD complaint form for personal-data matters; it does not establish the general Data Act complaint right proposed in Bill 8809 as enacted law.',
+  ),
+  pl: dataProtectionComplaintDefinition(
+    'pl-uodo-personal-data-complaint',
+    'Polish Personal Data Protection Office · complaint',
+    urls.plUodoComplaint,
+    'UODO 官方个人数据投诉说明/提交渠道；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official UODO complaint route for personal-data matters; it does not establish Poland’s general Data Act complaint procedure before UKE.',
+  ),
+  pt: dataProtectionComplaintDefinition(
+    'pt-cnpd-personal-data-complaint',
+    'Portuguese Data Protection Commission · complaint/participation',
+    urls.ptCnpdComplaint,
+    'CNPD 官方投诉/参与页面；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official CNPD complaint route for personal-data matters; it does not establish Portugal’s general Data Act complaint procedure.',
+  ),
+  ro: dataProtectionComplaintDefinition(
+    'ro-anspdcp-personal-data-complaint',
+    'Romanian National Supervisory Authority for Personal Data Processing · complaint forms',
+    urls.roAnspdcpComplaint,
+    'ANSPDCP 官方投诉表单页面；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official ANSPDCP forms page for personal-data complaints; it does not establish the general Data Act complaint procedure proposed for ANCOM in the draft implementation bill.',
+  ),
+  si: dataProtectionComplaintDefinition(
+    'si-ip-personal-data-complaint',
+    'Slovenian Information Commissioner · complaint/application',
+    urls.siIpComplaint,
+    '信息专员官方个人数据投诉/申请页面；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official Information Commissioner route for personal-data applications; it does not establish Slovenia’s general Data Act complaint procedure under the draft bill.',
+  ),
+  sk: dataProtectionComplaintDefinition(
+    'sk-dpa-personal-data-complaint',
+    'Slovak Office for Personal Data Protection · proceedings',
+    urls.skDpaComplaint,
+    '斯洛伐克个人数据保护局官方程序页面；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official Slovak DPA proceedings page explains how complaints initiate personal-data proceedings; it does not establish Slovakia’s general Data Act complaint procedure.',
+  ),
+  es: dataProtectionComplaintDefinition(
+    'es-aepd-personal-data-complaint',
+    'Spanish Data Protection Agency · complaint FAQ and e-office',
+    urls.esAepdComplaint,
+    'AEPD 官方投诉说明/电子办公室入口；仅记录个人数据保护边界，不视为一般 Data Act 第 38 条投诉表单',
+    'Official AEPD complaint guidance for personal-data matters; it does not establish Spain’s general Data Act complaint procedure or full Article 37 designation.',
+  ),
+}
+
+const dataProtectionComplaintScope = 'Data Act Article 37(3) personal-data boundary: complaints about personal-data processing connected with a Data Act matter. This is not a general Article 38 complaint form for non-personal-data obligations or a final national Data Coordinator designation.'
+
+const queueDataProtectionComplaintRoute = (countryId: string): ComplaintRoute | undefined => {
+  const definition = queueDataProtectionComplaintDefinitions[countryId]
+  if (!definition) return undefined
+
+  return {
+    id: `${countryId}-data-protection-personal-data-complaint`,
+    label: `${definition.source.label} · Data Act personal-data boundary`,
+    scope: dataProtectionComplaintScope,
+    url: definition.source.url,
+    submissionMode: definition.submissionMode,
+    status: 'verified',
+    evidence: evidence([definition.source.url, urls.euDataAct, urls.euDpaMembers], 'verified'),
+  }
+}
+
 const germanAuthorities: AuthorityRecord[] = [
   {
     name: '联邦网络局',
@@ -1866,7 +2070,15 @@ interface QueueCountryOptions {
 
 const queueCountry = (record: Pick<CountryRecord, 'id' | 'name' | 'nameEn' | 'iso2' | 'flag'>, options: QueueCountryOptions = {}): CountryRecord => {
   const countryDataProtectionAuthority = queueDataProtectionAuthorities[record.id]
-  const countrySources = [euQueueSource, euCountryListSource, sources.euDpaMembers, ...(options.additionalSources ?? [])]
+  const dataProtectionComplaintDefinition = queueDataProtectionComplaintDefinitions[record.id]
+  const dataProtectionComplaintRoute = queueDataProtectionComplaintRoute(record.id)
+  const countrySources = [
+    euQueueSource,
+    euCountryListSource,
+    sources.euDpaMembers,
+    ...(dataProtectionComplaintDefinition ? [dataProtectionComplaintDefinition.source] : []),
+    ...(options.additionalSources ?? []),
+  ]
   const sourceUrls = countrySources.map((sourceRecord) => sourceRecord.url)
 
   return {
@@ -1877,7 +2089,10 @@ const queueCountry = (record: Pick<CountryRecord, 'id' | 'name' | 'nameEn' | 'is
     implementingAct: options.implementingAct,
     implementingActUrl: options.implementingActUrl,
     competentAuthorities: [...(options.competentAuthorities ?? []), ...(countryDataProtectionAuthority ? [countryDataProtectionAuthority] : [])],
-    complaintRoutes: options.complaintRoutes ?? [],
+    complaintRoutes: [
+      ...(options.complaintRoutes ?? []),
+      ...(dataProtectionComplaintRoute ? [dataProtectionComplaintRoute] : []),
+    ],
     penaltySchedule: options.penaltySchedule ?? [],
     enforcementSummary: {
       publishedPenaltyStatus: options.publishedPenaltyStatus ?? 'pending',
