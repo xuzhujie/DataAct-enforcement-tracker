@@ -7,6 +7,45 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-gr-bg-hr-implementation-signals',
+    date: '2026-11-21',
+    countryId: 'eu',
+    kind: 'changed',
+    summary: '补强希腊、保加利亚和克罗地亚的官方实施状态证据：希腊加入 AI/Data Governance 秘书处和 EETT 材料，但仍未最终指定 Data Act 主管机关；保加利亚加入 2025 年国内实施公开咨询；克罗地亚加入 2025 年度报告与 2026 立法计划。三国的正式主管、一般投诉入口和国内罚则均未因这些材料而升级为 enacted。',
+    sourceUrls: [
+      'https://ai.gov.gr/en/secretariat/',
+      'https://www.eett.gr/wp-content/uploads/2025/03/%CE%91%CE%A0-1142-021.%CE%A6%CE%95%CE%9A.pdf',
+      'https://www.strategy.bg/bg/public-consultations/10803/export',
+      'https://mpudt.gov.hr/UserDocsImages/dokumenti/Pravo%20na%20pristup%20informacijama/Godi%C5%A1nji%20planovi%20rada/Polugodi%C5%A1nji%20izvje%C5%A1taj%20o%20radu%20za%20razdoblje%20od%20sije%C4%8Dnja%20do%20lipnja%202025.%20godine.pdf',
+      'https://zakonodavstvo.gov.hr/UserDocsImages/dokumenti/PZA%202026/PZA%202026..pdf?vel=5516249',
+    ],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-pt-cnpd-data-act-opinion',
+    date: '2026-11-21',
+    countryId: 'pt',
+    kind: 'changed',
+    summary: '补入葡萄牙 CNPD 2026 年 Parecer 46/2026 的官方决定目录与 PDF：材料确认存在 Data Act 国内执行法提案及数据保护机关意见，但仍属草案/立法线索，不升级为最终主管机关、一般投诉入口或已生效罚则。',
+    sourceUrls: [
+      'https://www.cnpd.pt/decisoes/historico-de-decisoes/?ent=&type=&year=2026',
+      'https://www.cnpd.pt/umbraco/surface/cnpdDecision/download/123319',
+    ],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-ee-hu-status-sources',
+    date: '2026-11-21',
+    countryId: 'eu',
+    kind: 'changed',
+    summary: '补入爱沙尼亚 AKI Data Act 说明页和匈牙利议会 T/13050/8 官方草案：两条材料分别用于确认国家说明/研究线索与匈牙利草案权限分工；均不升级为最终主管机关、一般投诉入口或已生效国内罚则。',
+    sourceUrls: [
+      'https://www.aki.ee/rahvusvaheline/euroopa-andmestrateegia/andmemaarus',
+      'https://www.parlament.hu/irom42/13050/13050-0008.pdf',
+    ],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-lv-source-quality-correction',
     date: '2026-11-21',
     countryId: 'lv',

@@ -149,6 +149,7 @@ test('the evidence refresh separates Spain Data Act guidance from DSA-only mater
 test('new partial records retain draft implementation evidence without final legal facts', () => {
   const czechia = COUNTRY_RECORDS.find((item) => item.id === 'cz')!
   const hungary = COUNTRY_RECORDS.find((item) => item.id === 'hu')!
+  const latvia = COUNTRY_RECORDS.find((item) => item.id === 'lv')!
   const slovakia = COUNTRY_RECORDS.find((item) => item.id === 'sk')!
 
   assert.equal(czechia.implementationStage, 'legislative')
@@ -161,6 +162,11 @@ test('new partial records retain draft implementation evidence without final leg
   assert.equal(hungary.implementationStage, 'legislative')
   assert.match(hungary.coverageNote ?? '', /T\/13050|未通过|主管机关/)
   assert.ok(hungary.sources.some((source) => source.id === 'hu-naih-annual-report-2025'))
+
+  assert.equal(latvia.implementationStage, 'legislative')
+  assert.ok(latvia.sources.some((source) => source.id === 'lv-varam-data-act' && source.sourceType === 'research-lead'))
+  assert.ok(!latvia.sources.some((source) => source.id === 'lv-data-act-cabinet'))
+  assert.match(latvia.coverageNote ?? '', /VARAM|政策|协调/)
 
   assert.equal(slovakia.implementationStage, 'legislative')
   assert.match(slovakia.coverageNote ?? '', /MIRRI|实施法|Data Act/)
@@ -232,6 +238,9 @@ test('the remaining EU records distinguish twenty-two partial records from five 
   assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'cz')?.sources.some((source) => source.id === 'cz-rvis-data-act-draft'))
   assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'cz')?.sources.some((source) => source.id === 'cz-ctu-data-act-future-role'))
   assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'hu')?.sources.some((source) => source.id === 'hu-naih-annual-report-2025'))
+  assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'hu')?.sources.some((source) => source.id === 'hu-parliament-t13050-draft'))
+  assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'ee')?.sources.some((source) => source.id === 'ee-aki-data-act-information'))
+  assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'pt')?.sources.some((source) => source.id === 'pt-cnpd-data-act-opinion-46-2026'))
   assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'sk')?.sources.some((source) => source.id === 'sk-mirri-data-act-law'))
 
   assert.ok(COUNTRY_RECORDS.every((country) => country.sources.some((source) => source.sourceType !== 'eu-regulation' && source.sourceType !== 'eu-country-list')))
@@ -247,10 +256,18 @@ test('the next country evidence batch records official implementation signals wi
   assert.equal(bulgaria.coverage, 'partial')
   assert.equal(bulgaria.implementationStage, 'legislative')
   assert.ok(bulgaria.sources.some((source) => source.id === 'bg-midt-data-act'))
+  assert.ok(bulgaria.sources.some((source) => source.id === 'bg-data-act-consultation-2025'))
 
   assert.equal(croatia.coverage, 'partial')
   assert.equal(croatia.implementationStage, 'legislative')
   assert.ok(croatia.sources.some((source) => source.id === 'hr-mpudt-data-act-plan'))
+  assert.ok(croatia.sources.some((source) => source.id === 'hr-mpudt-half-year-report-2025'))
+  assert.ok(croatia.sources.some((source) => source.id === 'hr-government-legislative-plan-2026-data-act'))
+
+  const greece = COUNTRY_RECORDS.find((country) => country.id === 'gr')!
+  assert.ok(greece.sources.some((source) => source.id === 'gr-ai-secretariat-data-governance'))
+  assert.ok(greece.sources.some((source) => source.id === 'gr-eett-data-act-role-signal'))
+  assert.match(greece.coverageNote ?? '', /EETT|秘书处|未确认/)
 
   assert.equal(cyprus.coverage, 'partial')
   assert.ok(cyprus.competentAuthorities.some((authority) => authority.nameEn.includes('Deputy Ministry of Research, Innovation and Digital Policy')))
