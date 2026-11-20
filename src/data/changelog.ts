@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-fr-ddadue-legislative-dossier',
+    date: '2026-11-21',
+    countryId: 'fr',
+    kind: 'changed',
+    summary: '补入法国国民议会 DDADUE 官方立法 dossier：文本显示参议院一读通过后已转交国民议会，仍处于议会审议链条；因此 ARCEP 主管、一般投诉程序和 3%/5% 草案罚则继续保持 pending。',
+    sourceUrls: ['https://www.assemblee-nationale.fr/dyn/17/dossiers/DLR5L17N53140', 'https://www.senat.fr/dossier-legislatif/pjl25-118.html'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-pl-senate-stage',
     date: '2026-11-21',
     countryId: 'pl',

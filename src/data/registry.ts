@@ -36,6 +36,7 @@ const urls = {
   nlImplementingAct: 'https://zoek.officielebekendmakingen.nl/stb-2025-372.html',
   frCnilDataAct: 'https://www.cnil.fr/fr/reglement-donnees-data-act-nouveau-cadre-europeen-pour-partage-utilisation-donnees',
   frSenateDdADue: 'https://www.senat.fr/compte-rendu-commissions/20260202/affeco.html',
+  frDdADueLegislativeDossier: 'https://www.assemblee-nationale.fr/dyn/17/dossiers/DLR5L17N53140',
   frLegifranceDdADue: 'https://www.legifrance.gouv.fr/contenu/Media/files/autour-de-la-loi/legislatif-et-reglementaire/actualite-legislative/2025/pjl_ecom2524721l_cm_10.11.2025.pdf',
   frArcepDataAct: 'https://www.arcep.fr/fileadmin/cru-1769533491/user_upload/01-26-version-francaise.pdf',
   plDataActBill: 'https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm',
@@ -323,6 +324,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'Official parliamentary material reviewed for the status of the proposed Data Act implementing provisions.',
+  }),
+  frDdADueLegislativeDossier: source({
+    id: 'fr-ddadue-legislative-dossier',
+    label: 'French National Assembly · DDADUE legislative dossier',
+    url: urls.frDdADueLegislativeDossier,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official legislative dossier records the bill as adopted at first reading by the Senate and transmitted to the National Assembly; it is retained as current legislative-status evidence, not as proof of promulgation or entry into force.',
   }),
   frLegifranceDdADue: source({
     id: 'fr-legifrance-ddadue-draft',
@@ -2195,7 +2205,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   fr: {
     coverage: 'partial',
     implementationStage: 'draft',
-    coverageNote: '已找到法国 CNIL、ARCEP 与 DDADUE 官方材料：DDADUE 草案第 35-1 条拟由 ARCEP 负责 Data Act（不含第 VII 章）、受理相关投诉并适用 3%/5% 营业额罚款上限及 €150,000/€375,000 兜底；草案尚未最终通过，故主管机构、投诉入口和罚则均按 pending 记录。',
+    coverageNote: '已找到法国 CNIL、ARCEP、参议院/国民议会立法 dossier 与 DDADUE 官方材料：DDADUE 草案第 35-1 条拟由 ARCEP 负责 Data Act（不含第 VII 章）、受理相关投诉并适用 3%/5% 营业额罚款上限及 €150,000/€375,000 兜底；官方立法 dossier 仍显示文本处于议会审议链条，草案尚未形成公布生效法，故主管机构、投诉入口和罚则均按 pending 记录。',
     competentAuthorities: [
       {
         name: '法国电子通信、邮政与报刊分发监管局（拟议）',
@@ -2203,7 +2213,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         role: 'competent_authority',
         scope: 'ARCEP 官方材料称 DDADUE 草案将扩展其 Data Act 数据共享、调查、制裁和争议解决权限；最终法定指定仍待草案通过。',
         sourceUrl: urls.frArcepDataAct,
-        evidence: evidence([urls.frArcepDataAct, urls.frLegifranceDdADue, urls.frSenateDdADue], 'pending'),
+        evidence: evidence([urls.frArcepDataAct, urls.frLegifranceDdADue, urls.frSenateDdADue, urls.frDdADueLegislativeDossier], 'pending'),
       },
     ],
     complaintRoutes: [
@@ -2214,7 +2224,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         url: urls.frLegifranceDdADue,
         submissionMode: '草案第 35-1 条规定可向 ARCEP 提交；尚无已确认的生效 Data Act 在线入口',
         status: 'pending',
-        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct], 'pending'),
+        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct, urls.frDdADueLegislativeDossier], 'pending'),
       },
     ],
     penaltySchedule: [
@@ -2225,10 +2235,10 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         scope: 'ARCEP 拟议 Data Act 监督范围（不含 Data Act Chapter VII）；最终生效文本和适用范围待确认。',
         sourceUrl: urls.frLegifranceDdADue,
         conditionalTurnoverCap: true,
-        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct], 'pending'),
+        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct, urls.frDdADueLegislativeDossier], 'pending'),
       },
     ],
-    additionalSources: [sources.frCnilDataAct, sources.frSenateDdADue, sources.frLegifranceDdADue, sources.frArcepDataAct],
+    additionalSources: [sources.frCnilDataAct, sources.frSenateDdADue, sources.frDdADueLegislativeDossier, sources.frLegifranceDdADue, sources.frArcepDataAct],
   },
   pl: {
     coverage: 'partial',

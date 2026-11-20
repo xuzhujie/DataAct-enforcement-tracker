@@ -369,6 +369,8 @@ test('France, Poland, and Spain are partial records with explicit implementation
   assert.equal(france.enforcementSummary.publishedPenaltyStatus, 'pending')
   assert.match(france.coverageNote ?? '', /CNIL|DDADUE/)
   assert.ok(france.sources.some((source) => source.id === 'fr-cnil-data-act'))
+  assert.ok(france.sources.some((source) => source.id === 'fr-ddadue-legislative-dossier'))
+  assert.match(france.coverageNote ?? '', /议会|审议/)
 
   const poland = COUNTRY_RECORDS.find((item) => item.id === 'pl')
   const spain = COUNTRY_RECORDS.find((item) => item.id === 'es')
