@@ -1,0 +1,130 @@
+name: Data Act evidence refresh
+description: Submit a primary-source update for a country record or enforcement case.
+title: "Evidence refresh: "
+labels:
+  - evidence-refresh
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for a source-backed update. Do not report a statutory maximum as an actual fine, and do not add an enforcement case without an official decision or authority announcement.
+
+  - type: dropdown
+    id: country
+    attributes:
+      label: Country
+      description: Select the EU Member State whose record should be reviewed.
+      options:
+        - Austria
+        - Belgium
+        - Bulgaria
+        - Croatia
+        - Cyprus
+        - Czechia
+        - Denmark
+        - Estonia
+        - Finland
+        - France
+        - Germany
+        - Greece
+        - Hungary
+        - Ireland
+        - Italy
+        - Latvia
+        - Lithuania
+        - Luxembourg
+        - Malta
+        - Netherlands
+        - Poland
+        - Portugal
+        - Romania
+        - Slovakia
+        - Slovenia
+        - Spain
+        - Sweden
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: affected_fields
+    attributes:
+      label: Affected field(s)
+      description: Select every registry field supported by the evidence.
+      options:
+        - label: Competent authority / Data Coordinator
+        - label: General Data Act complaint route
+        - label: Article 37(3) personal-data complaint route
+        - label: Domestic statutory penalty schedule
+        - label: Actual public penalty or enforcement case
+        - label: Connected-product / device-data access issue lens
+        - label: Third-party sharing issue lens
+        - label: Second-hand transfer issue lens
+        - label: Source metadata or review date
+    validations:
+      required: true
+
+  - type: dropdown
+    id: evidence_status
+    attributes:
+      label: Evidence status
+      description: Use pending for a draft or proposal; use verified only when the primary source supports the current legal status.
+      options:
+        - verified
+        - pending
+        - not_located
+        - not_applicable
+    validations:
+      required: true
+
+  - type: dropdown
+    id: source_type
+    attributes:
+      label: Source type
+      options:
+        - statute
+        - regulator-page
+        - complaint-route
+        - official-decision
+        - policy-plan
+        - other-official
+    validations:
+      required: true
+
+  - type: textarea
+    id: official_sources
+    attributes:
+      label: Official source URL(s)
+      description: Paste the direct URL(s) to the official law, regulator page, complaint form, decision, or government publication.
+      placeholder: https://...
+    validations:
+      required: true
+
+  - type: textarea
+    id: factual_summary
+    attributes:
+      label: Factual summary
+      description: State the exact fact supported by the source and distinguish enacted law, proposal, complaint route, and actual penalty.
+      placeholder: The source says ...; it does / does not establish ...
+    validations:
+      required: true
+
+  - type: input
+    id: last_verified_at
+    attributes:
+      label: Last verified date
+      description: Use YYYY-MM-DD.
+      placeholder: "2026-11-21"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Review confirmations
+      options:
+        - label: I checked a primary official source, not only a search result or secondary summary.
+          required: true
+        - label: If this concerns an actual penalty or case, the source identifies a specific Data Act matter and official decision or announcement.
+          required: true
+        - label: I have kept the statutory penalty ceiling separate from any actual penalty amount.
+          required: true

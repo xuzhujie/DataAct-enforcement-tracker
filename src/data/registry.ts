@@ -94,6 +94,7 @@ const urls = {
   czCtuDataActFlyer: 'https://ctu.gov.cz/sites/default/files/obsah/soubory-ke-stazeni/Letaky/DataAkt_23_10_25.pdf',
   czCtuDataActFutureRole: 'https://ctu.gov.cz/evropsky-sbor-pro-datove-inovace',
   czDigitalCzech2026Plan: 'https://mpo.gov.cz/assets/cz/podnikani/digitalni-ekonomika/2025/10/Implementacni-plan-Digitalni-Cesko-2026.pdf',
+  czDataActDraftBill: 'https://www.odok.gov.cz/portal/services/download/attachment/ALBSDFJGJ57F/',
   eeTtjaFreeFlow: 'https://www.ttja.ee/en/single-contact-and-information-point-free-flow-non-personal-data-eu',
   grAiGov: 'https://ai.gov.gr/en/',
   huNaihDigitalLegislation: 'https://naih.hu/data-protection/eu-digital-legislation',
@@ -907,6 +908,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The official 2026 implementation plan says the Data Act is to be implemented through the proposed Digital Economy Act; it is legislative-status evidence, not an enacted law, final authority designation, complaint route, or domestic penalty schedule.',
+  }),
+  czDataActDraftBill: source({
+    id: 'cz-data-act-draft-bill',
+    label: 'Czech Government ODok · draft Digital Economy Act amendment for the Data Act',
+    url: urls.czDataActDraftBill,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official government draft proposes CTU as data coordinator, UOOU and the Digital and Information Agency for defined Data Act scopes, complaint-related proceedings, and draft ceilings of EUR 20 million or 4% worldwide turnover; it is a 2025 legislative draft and not enacted law.',
   }),
   eeTtjaFreeFlow: source({
     id: 'ee-ttja-free-flow-data-lead',
@@ -2612,7 +2622,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   cz: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '捷克 MPO《Digitální Česko 2026》实施计划与政府 RVIS 会议纪要均记录 Data Act 将通过拟议《数字经济法》落地；CTU 官方页面称其未来可能参与 Data Act，但最终主管机关、投诉入口和国内罚则尚未确认。',
+    coverageNote: '捷克 MPO《Digitální Česko 2026》实施计划、政府 RVIS 会议纪要与 ODok 官方法案草案均记录 Data Act 将通过拟议《数字经济法》落地；草案拟由 CTU 担任数据协调员、由 UOOU 与 Digital and Information Agency 分工，并拟设最高 €20,000,000 或全球营业额 4% 的罚款，但草案尚未生效，最终主管机关、投诉入口和国内罚则仍保持 pending。',
     competentAuthorities: [
       {
         name: '捷克电信办公室（拟议/待法定确认）',
@@ -2620,7 +2630,15 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         role: 'data_coordinator',
         scope: 'CTU 官方材料将其列为未来可能参与 Data Act 的机构；不等同于最终法定指定。',
         sourceUrl: urls.czCtuDataActFutureRole,
-        evidence: evidence([urls.czCtuDataActFutureRole, urls.czRvisDataActDraft], 'pending'),
+        evidence: evidence([urls.czCtuDataActFutureRole, urls.czRvisDataActDraft, urls.czDataActDraftBill], 'pending'),
+      },
+      {
+        name: '捷克数字与信息局（拟议/待法定确认）',
+        nameEn: 'Digital and Information Agency (DIA) (proposed / pending statutory confirmation)',
+        role: 'competent_authority',
+        scope: 'ODok 法案草案拟由 Digital and Information Agency 负责 Data Act Article 32 相关监督范围；草案尚未生效，不视为最终 Article 37 指定。',
+        sourceUrl: urls.czDataActDraftBill,
+        evidence: evidence([urls.czDataActDraftBill], 'pending'),
       },
     ],
     complaintRoutes: [
@@ -2631,10 +2649,21 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         url: urls.czCtuDataActFlyer,
         submissionMode: '官方收文邮箱/电话（podatelna@ctu.gov.cz）；当前仅记录为 pending 联系渠道，不视为已生效 Data Act 投诉表单',
         status: 'pending',
-        evidence: evidence([urls.czCtuDataActFlyer, urls.czCtuDataActFutureRole, urls.czRvisDataActDraft], 'pending'),
+        evidence: evidence([urls.czCtuDataActFlyer, urls.czCtuDataActFutureRole, urls.czRvisDataActDraft, urls.czDataActDraftBill], 'pending'),
       },
     ],
-    additionalSources: [sources.czRvisDataActDraft, sources.czCtuDataActFlyer, sources.czCtuDataActFutureRole, sources.czMpoDataAct, sources.czDigitalCzech2026Plan],
+    penaltySchedule: [
+      {
+        label: 'Czech Data Act draft §§57a–57c · €20m / 4% worldwide turnover',
+        maximum: 'ODok 法案草案拟规定，数据持有人、数据处理服务提供者及其他相关主体的部分 Data Act 违法行为，最高可处 €20,000,000，或企业最近一个完整财年的全球营业额 4%，取较高者；该上限尚未成为生效国内法。',
+        legalBasis: 'Czech draft amendment to the Digital Economy Act, §§57a(3), 57b(2), 57c(3)',
+        scope: '草案列举的设备数据访问、第三方共享、数据处理服务切换、互操作性及相关义务；最终适用范围待生效文本确认。',
+        sourceUrl: urls.czDataActDraftBill,
+        conditionalTurnoverCap: true,
+        evidence: evidence([urls.czDataActDraftBill], 'pending'),
+      },
+    ],
+    additionalSources: [sources.czRvisDataActDraft, sources.czCtuDataActFlyer, sources.czCtuDataActFutureRole, sources.czMpoDataAct, sources.czDigitalCzech2026Plan, sources.czDataActDraftBill],
   },
   ee: {
     coverage: 'partial',

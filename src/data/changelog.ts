@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-cz-draft-bill-detail',
+    date: '2026-11-21',
+    countryId: 'cz',
+    kind: 'changed',
+    summary: '补入捷克政府 ODok Data Act 实施法案草案：拟由 CTU 担任数据协调员、UOOU 与 Digital and Information Agency 分工，并拟设最高 €20m 或全球营业额 4% 的罚款；草案未生效，因此捷克罚则从 not_located 提升为 pending，主管机构和投诉入口仍不升级为 verified。',
+    sourceUrls: ['https://www.odok.gov.cz/portal/services/download/attachment/ALBSDFJGJ57F/'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-source-fingerprint-monitor',
     date: '2026-11-21',
     countryId: 'eu',
