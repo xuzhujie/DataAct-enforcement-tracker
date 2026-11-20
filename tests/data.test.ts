@@ -138,6 +138,10 @@ test('the evidence refresh separates Spain Data Act guidance from the BOE DSA co
   assert.match(italy.coverageNote ?? '', /AGCOM|未找到|指定/)
   assert.ok(belgium.sources.some((source) => source.id === 'be-bipt-work-plan-2026'))
   assert.ok(austria.sources.some((source) => source.id === 'at-rtr-data-act-newsletter-2026'))
+
+  const czechia = COUNTRY_RECORDS.find((item) => item.id === 'cz')!
+  assert.ok(czechia.sources.some((source) => source.id === 'cz-digital-czech-2026-plan' && source.sourceType === 'research-lead'))
+  assert.match(czechia.coverageNote ?? '', /Digitální Česko|数字经济法/)
 })
 
 test('new partial records retain draft implementation evidence without final legal facts', () => {

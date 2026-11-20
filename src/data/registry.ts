@@ -91,6 +91,7 @@ const urls = {
   czRvisDataActDraft: 'https://vlada.gov.cz/assets/ppov/rvis/zapisy_rvis/2025_6-4-_Predsednictvo_RVIS_zapis.pdf',
   czCtuDataActFlyer: 'https://ctu.gov.cz/sites/default/files/obsah/soubory-ke-stazeni/Letaky/DataAkt_23_10_25.pdf',
   czCtuDataActFutureRole: 'https://ctu.gov.cz/evropsky-sbor-pro-datove-inovace',
+  czDigitalCzech2026Plan: 'https://mpo.gov.cz/assets/cz/podnikani/digitalni-ekonomika/2025/10/Implementacni-plan-Digitalni-Cesko-2026.pdf',
   eeTtjaFreeFlow: 'https://www.ttja.ee/en/single-contact-and-information-point-free-flow-non-personal-data-eu',
   grAiGov: 'https://ai.gov.gr/en/',
   huNaihDigitalLegislation: 'https://naih.hu/data-protection/eu-digital-legislation',
@@ -877,6 +878,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'CTU says its future activity in relation to the Data Act is contemplated; this is a pending institutional signal, not a final Czech designation.',
+  }),
+  czDigitalCzech2026Plan: source({
+    id: 'cz-digital-czech-2026-plan',
+    label: 'Czech Ministry of Industry and Trade · Digital Czech 2026 implementation plan',
+    url: urls.czDigitalCzech2026Plan,
+    sourceType: 'research-lead',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official 2026 implementation plan says the Data Act is to be implemented through the proposed Digital Economy Act; it is legislative-status evidence, not an enacted law, final authority designation, complaint route, or domestic penalty schedule.',
   }),
   eeTtjaFreeFlow: source({
     id: 'ee-ttja-free-flow-data-lead',
@@ -2582,7 +2592,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   cz: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '捷克政府 RVIS 会议纪要记录 Data Act 实施法案处于立法流程；CTU 官方页面称其未来可能参与 Data Act，但最终主管机关、投诉入口和国内罚则尚未确认。',
+    coverageNote: '捷克 MPO《Digitální Česko 2026》实施计划与政府 RVIS 会议纪要均记录 Data Act 将通过拟议《数字经济法》落地；CTU 官方页面称其未来可能参与 Data Act，但最终主管机关、投诉入口和国内罚则尚未确认。',
     competentAuthorities: [
       {
         name: '捷克电信办公室（拟议/待法定确认）',
@@ -2604,7 +2614,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.czCtuDataActFlyer, urls.czCtuDataActFutureRole, urls.czRvisDataActDraft], 'pending'),
       },
     ],
-    additionalSources: [sources.czRvisDataActDraft, sources.czCtuDataActFlyer, sources.czCtuDataActFutureRole, sources.czMpoDataAct],
+    additionalSources: [sources.czRvisDataActDraft, sources.czCtuDataActFlyer, sources.czCtuDataActFutureRole, sources.czMpoDataAct, sources.czDigitalCzech2026Plan],
   },
   ee: {
     coverage: 'partial',

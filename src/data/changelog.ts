@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-cz-digital-czech-plan',
+    date: '2026-11-21',
+    countryId: 'cz',
+    kind: 'changed',
+    summary: '补入捷克 MPO《Digitální Česko 2026》官方实施计划：该计划确认 Data Act 将通过拟议《数字经济法》落地，但仍属于立法状态证据；最终主管机关、一般投诉入口、国内法定罚则和实际处罚继续保持 pending/not_located。',
+    sourceUrls: ['https://mpo.gov.cz/assets/cz/podnikani/digitalni-ekonomika/2025/10/Implementacni-plan-Digitalni-Cesko-2026.pdf', 'https://vlada.gov.cz/assets/ppov/rvis/zapisy_rvis/2025_6-4-_Predsednictvo_RVIS_zapis.pdf'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-eu-dpa-complaint-routes',
     date: '2026-11-21',
     countryId: 'eu',
