@@ -117,6 +117,8 @@ export default function CountryDetail({ record, activeIssues, initialTab = 'over
             <div className="queue-detail__stage"><span>实施阶段</span><strong>{formatImplementationStage(record.implementationStage)}</strong></div>
             <StatusTag status="pending" />
             <CountryFieldStatus record={record} />
+            <div className="section-heading-inline"><h3>争议矩阵 · {record.name}</h3><span>与顶部筛选联动</span></div>
+            <IssueMatrix countryName={record.name} issues={record.issues} activeIssues={activeIssues} />
             <div className="queue-detail__sources">
               {record.sources.map((source) => (
                 <a key={source.id} href={source.url} target="_blank" rel="noreferrer">

@@ -249,7 +249,7 @@ The concept image is a layout reference only; all UI copy, tables, filters and l
 ## Interactions
 
 - Country selector changes the selected country and updates the summary/detail panel.
-- Country register rows can be selected; Germany opens the complete detail view, while partial/queued countries show their verification state, pending issue lenses and expansion note.
+- Country register rows can be selected; Germany opens the complete detail view, while partial/queued countries show their verification state, the same filterable three-lens issue matrix, pending issue lenses and expansion note.
 - Issue filters update the visible matrix and issue-focused case list.
 - Tabs switch between dashboard, country register, cases, timeline, sources, change log and maintenance without page reload.
 - Maintenance filters keep country, priority and due status independent; source links open the official page for the next review.

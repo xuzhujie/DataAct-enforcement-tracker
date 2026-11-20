@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-all-country-issue-matrix-view',
+    date: '2026-11-21',
+    countryId: 'eu',
+    kind: 'changed',
+    summary: '争议矩阵扩展到全部 EU-27 国家详情：设备数据访问、第三方共享和二手转让/设备继受均可通过顶部筛选切换；partial 国家也直接展示字段级 pending/verified 状态、证据范围和下一步，不再只显示 deep 国家矩阵。',
+    sourceUrls: ['https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R2854'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-mt-deep-issue-mapping',
     date: '2026-11-21',
     countryId: 'mt',

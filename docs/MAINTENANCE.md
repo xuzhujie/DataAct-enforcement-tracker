@@ -11,6 +11,8 @@ The current registry snapshot is dated `2026-11-21`. It covers all 27 EU Member 
 
 The field-level view is intentionally more granular than the coverage label: 17 country records have a verified authority field for at least the Data Act personal-data boundary and 10 have an officially signalled but still pending general authority; all 27 now expose a public complaint route, with 20 records at verified status and 7 records still pending because they combine a verified Article 37(3) data-protection route with a draft or unconfirmed general Data Act procedure; 6 have a verified domestic penalty schedule and 9 have proposed ceilings recorded as pending, while 12 remain not located; and the official Data Act case register currently contains 0 cases. A verified personal-data authority or complaint route is not treated as proof of a complete national Data Coordinator designation or a general Article 38 route for non-personal-data obligations. The remaining fields are displayed as `pending` or `not_located`, not as zero.
 
+The three hardware issue lenses—device data access, third-party sharing, and second-hand transfer / device succession—are present for every country and are controlled by the top issue filter. The same matrix is rendered for both deep and partial country records; a partial record keeps each lens visibly pending until national law and authority practice are verified.
+
 ## Local checks
 
 ```bash
