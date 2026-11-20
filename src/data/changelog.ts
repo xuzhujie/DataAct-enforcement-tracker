@@ -7,6 +7,33 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-si-draft-penalties',
+    date: '2026-11-21',
+    countryId: 'si',
+    kind: 'changed',
+    summary: '补入斯洛文尼亚 eUprava 官方 Data Act 实施法草案文本：第 11–12 条提出分级罚款上限，第 13(2) 条拟适用 €20m/全球营业额 4% 个人数据罚款上限；草案未生效，主管、投诉和罚则继续按 pending 记录。',
+    sourceUrls: ['https://e-uprava.gov.si/.download/edem/datoteka?disposition=attachment&file=802686', 'https://www.gov.si/novice/2026-05-04-javna-obravnava-osnutka-zakona-za-implementacijo-akta-o-podatkih/'],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-fr-ddadue-detail',
+    date: '2026-11-21',
+    countryId: 'fr',
+    kind: 'changed',
+    summary: '法国 DDADUE 官方草案第 35-1 条细化了 ARCEP 的拟议主管、投诉和罚则框架：可由相关主体提交，法人罚款上限拟为全球营业额 3%（重复违法 5%），无可确定营业额时 €150,000 / €375,000；草案尚未生效，均保持 pending。',
+    sourceUrls: ['https://www.legifrance.gouv.fr/contenu/Media/files/autour-de-la-loi/legislatif-et-reglementaire/actualite-legislative/2025/pjl_ecom2524721l_cm_10.11.2025.pdf', 'https://www.arcep.fr/fileadmin/cru-1769533491/user_upload/01-26-version-francaise.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-pl-sejm-adopted-data-act-bill',
+    date: '2026-11-21',
+    countryId: 'pl',
+    kind: 'changed',
+    summary: '波兰官方材料确认众议院于 2026-11-19 通过 Data Act 实施法案；法案第 25 条拟由 UKE 主席受理投诉，第 31(15) 条拟设 100,000 PLN / 企业上一年度营业额 4% 罚款上限。因尚未公布并生效，主管机构、投诉程序和罚则均保持 pending。',
+    sourceUrls: ['https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm', 'https://api.sejm.gov.pl/sejm/term10/prints/3266/3266.pdf', 'https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-se-government-assignment',
     date: '2026-11-21',
     countryId: 'se',

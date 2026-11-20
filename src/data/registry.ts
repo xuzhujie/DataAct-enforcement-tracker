@@ -38,6 +38,7 @@ const urls = {
   frLegifranceDdADue: 'https://www.legifrance.gouv.fr/contenu/Media/files/autour-de-la-loi/legislatif-et-reglementaire/actualite-legislative/2025/pjl_ecom2524721l_cm_10.11.2025.pdf',
   frArcepDataAct: 'https://www.arcep.fr/fileadmin/cru-1769533491/user_upload/01-26-version-francaise.pdf',
   plDataActBill: 'https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm',
+  plDataActBillPdf: 'https://api.sejm.gov.pl/sejm/term10/prints/3266/3266.pdf',
   plDraftImplementation: 'https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2',
   esDataActGuide: 'https://datos.gob.es/sites/default/files/2025-09/ley-datos-en.pdf',
   esDataActChapterV: 'https://www.boe.es/buscar/doc.php?id=BOE-A-2026-9079',
@@ -105,6 +106,7 @@ const urls = {
   lvDataActCabinet: 'https://likumi.lv/ta/id/361419',
   luCnpdDataAct: 'https://cnpd.public.lu/fr/actualites/national/2024/06/conference-data-act.html',
   siDataActDraft: 'https://www.gov.si/novice/2026-05-04-javna-obravnava-osnutka-zakona-za-implementacijo-akta-o-podatkih/',
+  siDataActDraftText: 'https://e-uprava.gov.si/.download/edem/datoteka?disposition=attachment&file=802686',
   ltRrtDataActSupervision: 'https://rrt.lt/veiklos-sritys/skaitmenine-erdve/duomenu-akto-prieziura/rrt-prieziura',
   ltRrtDataActUse: 'https://rrt.lt/veiklos-sritys/skaitmenine-erdve/duomenu-akto-prieziura/da-naudojimas',
   ltDataActLaw: 'https://www.e-tar.lt/portal/lt/legalAct/7d678490760b11f1b53dfa020e517810',
@@ -295,7 +297,7 @@ const sources = {
     sourceType: 'statute',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
-    note: 'The government draft proposes ARCEP as the authority for most Data Act chapters; it remains draft evidence and is not recorded as final designation or penalty law.',
+    note: 'The government draft’s Article 35-1 would designate Arcep, permit complaints by concerned persons, and set a 3% / 5% turnover-linked sanction ceiling with €150,000 / €375,000 fallback amounts; it remains draft evidence and is not recorded as final French law.',
   }),
   frArcepDataAct: source({
     id: 'fr-arcep-data-act-2026',
@@ -313,7 +315,16 @@ const sources = {
     sourceType: 'authority',
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
-    note: 'The ministry describes parliamentary adoption of a bill; this is not recorded as an enacted implementing statute.',
+    note: 'The ministry reports that the Sejm adopted the Data Act bill on 19 November 2026; the bill is not recorded as an enacted implementing statute or as in-force domestic law.',
+  }),
+  plDataActBillPdf: source({
+    id: 'pl-data-act-bill-pdf',
+    label: 'Poland Sejm · Bill print 3266 · Data Act draft text',
+    url: urls.plDataActBillPdf,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official Sejm print sets out the draft complaint route to the UKE President (Art. 25) and draft administrative-penalty ceilings of up to PLN 100,000 or, for an undertaking, 4% of prior-year turnover (Art. 31(15)); the text remains a bill.',
   }),
   plDraftImplementation: source({
     id: 'pl-draft-implementation',
@@ -951,6 +962,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The official consultation page identifies a draft implementation law and proposed AKOS / Information Commissioner roles; the consultation draft is not treated as final law or final penalty schedule.',
+  }),
+  siDataActDraftText: source({
+    id: 'si-data-act-draft-text',
+    label: 'Slovenia eUprava · Draft Data Act implementation law text',
+    url: urls.siDataActDraftText,
+    sourceType: 'statute',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'The official consultation draft assigns general Data Act implementation tasks to AKOS, preserves the Information Commissioner boundary for personal data, and sets out draft fine ranges in Articles 11–13; it is not enacted law.',
   }),
 }
 
@@ -1869,7 +1889,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   fr: {
     coverage: 'partial',
     implementationStage: 'draft',
-    coverageNote: '已找到法国 CNIL、ARCEP 与 DDADUE 官方材料：ARCEP 的 Data Act 主管角色及调查、制裁、争议解决权限仍依赖 DDADUE 草案最终通过，故按 pending 记录；尚未确认最终生效法和完整罚则。',
+    coverageNote: '已找到法国 CNIL、ARCEP 与 DDADUE 官方材料：DDADUE 草案第 35-1 条拟由 ARCEP 负责 Data Act（不含第 VII 章）、受理相关投诉并适用 3%/5% 营业额罚款上限及 €150,000/€375,000 兜底；草案尚未最终通过，故主管机构、投诉入口和罚则均按 pending 记录。',
     competentAuthorities: [
       {
         name: '法国电子通信、邮政与报刊分发监管局（拟议）',
@@ -1880,34 +1900,67 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.frArcepDataAct, urls.frLegifranceDdADue, urls.frSenateDdADue], 'pending'),
       },
     ],
+    complaintRoutes: [
+      {
+        id: 'fr-arcep-data-act-complaint-draft',
+        label: 'ARCEP Data Act 投诉受理（DDADUE 草案）',
+        scope: 'DDADUE 草案第 35-1 条第 II 款拟允许相关自然人或法人向 ARCEP 反映 Data Act 义务违反；正式生效程序和在线表单尚未定位。',
+        url: urls.frLegifranceDdADue,
+        submissionMode: '草案第 35-1 条规定可向 ARCEP 提交；尚无已确认的生效 Data Act 在线入口',
+        status: 'pending',
+        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct], 'pending'),
+      },
+    ],
+    penaltySchedule: [
+      {
+        label: 'DDADUE draft Art. 35-1 II · 3% / 5% worldwide turnover; €150k / €375k fallback',
+        maximum: 'DDADUE 草案第 35-1 条第 II 款拟规定：对法人罚款最高为最近一期全球税前营业额的 3%，同一义务重复违法提高至 5%；无法据此确定上限时，最高 €150,000，五年内重复违法最高 €375,000。该上限尚未成为生效国内法。',
+        legalBasis: 'French DDADUE bill, Article 25 inserting Law SREN Art. 35-1 II',
+        scope: 'ARCEP 拟议 Data Act 监督范围（不含 Data Act Chapter VII）；最终生效文本和适用范围待确认。',
+        sourceUrl: urls.frLegifranceDdADue,
+        conditionalTurnoverCap: true,
+        evidence: evidence([urls.frLegifranceDdADue, urls.frArcepDataAct], 'pending'),
+      },
+    ],
     additionalSources: [sources.frCnilDataAct, sources.frSenateDdADue, sources.frLegifranceDdADue, sources.frArcepDataAct],
   },
   pl: {
     coverage: 'partial',
     implementationStage: 'legislative',
-    coverageNote: '已找到波兰官方材料：2026-10-13 政府通过 Data Act 实施法案项目，拟由 UKE 主席监督、受理投诉并在特定情形下处罚；法案尚未作为已生效国内法记录，正式投诉入口与数值罚则仍待最终文本。',
+    coverageNote: '波兰官方材料显示：政府于 2026-10-13 通过 Data Act 实施法案项目，众议院于 2026-11-19 通过该法案；法案尚未公布并生效，故 UKE 主席、投诉程序和 100,000 PLN / 4% 营业额罚款上限仍按立法阶段 pending 记录。',
     competentAuthorities: [
       {
         name: '波兰电子通信办公室主席（拟议）',
         nameEn: 'President of the Office of Electronic Communications (UKE) (proposed)',
         role: 'data_coordinator',
-        scope: '政府通过的实施法案项目拟由 UKE 负责监督、数据协调和投诉处理；尚未确认最终生效法律。',
+        scope: '政府和众议院通过的法案文本拟由 UKE 主席负责 Data Act 监督、数据协调和投诉处理；法案尚未作为生效国内法记录。',
         sourceUrl: urls.plDraftImplementation,
-        evidence: evidence([urls.plDraftImplementation], 'pending'),
+        evidence: evidence([urls.plDraftImplementation, urls.plDataActBill, urls.plDataActBillPdf], 'pending'),
       },
     ],
     complaintRoutes: [
       {
         id: 'pl-uke-data-act-complaint-draft',
         label: 'UKE Data Act 投诉程序（草案）',
-        scope: '政府通过的实施法案项目说明用户可就数据访问、合同限制或拒绝分享等 Data Act 事项向 UKE 提交投诉；正式在线入口尚未定位。',
+        scope: '法案第 25 条拟允许用户向 UKE 主席提交 Data Act 投诉，并规定通常 2 个月内反馈、最长可延至 4 个月；正式生效的在线入口尚未定位。',
         url: urls.plDraftImplementation,
-        submissionMode: '政府项目描述的拟议投诉程序；尚无已确认的生效法定或在线提交入口',
+        submissionMode: '法案第 25 条拟议投诉程序；尚无已确认的生效法定或在线提交入口',
         status: 'pending',
-        evidence: evidence([urls.plDraftImplementation, urls.plDataActBill], 'pending'),
+        evidence: evidence([urls.plDraftImplementation, urls.plDataActBill, urls.plDataActBillPdf], 'pending'),
       },
     ],
-    additionalSources: [sources.plDataActBill, sources.plDraftImplementation],
+    penaltySchedule: [
+      {
+        label: 'Data Act bill Art. 31(15) · PLN 100,000 / 4% turnover (draft)',
+        maximum: '法案第 31 条第 15 款拟规定：一般主体行政罚款最高 100,000 波兰兹罗提；对企业最高不超过其被罚前一财年的营业额 4%。该上限尚未成为生效国内法。',
+        legalBasis: 'Poland Data Act bill (Sejm print 3266), Art. 31(15)',
+        scope: '法案第 31 条第 1–14 款所列 Data Act 义务的拟议行政罚款；最终金额和适用范围待公布生效文本确认。',
+        sourceUrl: urls.plDataActBillPdf,
+        conditionalTurnoverCap: true,
+        evidence: evidence([urls.plDataActBillPdf, urls.plDataActBill], 'pending'),
+      },
+    ],
+    additionalSources: [sources.plDataActBill, sources.plDataActBillPdf, sources.plDraftImplementation],
   },
   es: {
     coverage: 'partial',
@@ -2264,7 +2317,7 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   si: {
     coverage: 'partial',
     implementationStage: 'draft',
-    coverageNote: '斯洛文尼亚数字转型部官方咨询公告已发布 Data Act 实施法草案，并提出 AKOS 与信息专员的职责；草案尚非最终法，投诉入口和最终罚则仍待核验。',
+    coverageNote: '斯洛文尼亚数字转型部官方咨询公告和草案文本已定位：拟由 AKOS 负责一般 Data Act 实施，并由信息专员处理个人数据边界；草案第 11–13 条提出 €400,000 / €100,000 及 GDPR €20m/4% 罚款框架。草案尚非最终法，投诉入口和最终罚则仍待核验。',
     competentAuthorities: [
       {
         name: '斯洛文尼亚通信网络与服务局（拟议）',
@@ -2283,7 +2336,36 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.siDataActDraft], 'pending'),
       },
     ],
-    additionalSources: [sources.siDigitalisation, sources.siDataActDraft],
+    penaltySchedule: [
+      {
+        label: 'Draft Data Act Art. 11 · serious offences · up to €400,000',
+        maximum: '草案第 11 条拟规定：中型/大型法人最高 €400,000；其他法人最高 €20,000；个体经营者最高 €20,000；责任人最高 €10,000；个人最高 €5,000。该上限尚未成为生效国内法。',
+        legalBasis: 'Slovenian Draft Data Act implementation law, Art. 11',
+        scope: '草案第 11 条所列严重违法行为；最终违法构成和主体分类待正式法确认。',
+        sourceUrl: urls.siDataActDraftText,
+        conditionalTurnoverCap: false,
+        evidence: evidence([urls.siDataActDraftText, urls.siDataActDraft], 'pending'),
+      },
+      {
+        label: 'Draft Data Act Art. 12 · other offences · up to €100,000',
+        maximum: '草案第 12 条拟规定：中型/大型法人最高 €100,000；其他法人最高 €10,000；个体经营者最高 €20,000；责任人最高 €10,000；个人最高 €5,000。该上限尚未成为生效国内法。',
+        legalBasis: 'Slovenian Draft Data Act implementation law, Art. 12',
+        scope: '草案第 12 条所列其他违法行为；最终违法构成和主体分类待正式法确认。',
+        sourceUrl: urls.siDataActDraftText,
+        conditionalTurnoverCap: false,
+        evidence: evidence([urls.siDataActDraftText, urls.siDataActDraft], 'pending'),
+      },
+      {
+        label: 'Draft Data Act Art. 13(2) · GDPR personal-data ceiling',
+        maximum: '草案第 13 条第 2 款拟对涉及个人数据的违法行为适用最高 €20,000,000 或全球年度营业额 4%（取较高者）的上限；该框架尚未成为生效国内法。',
+        legalBasis: 'Slovenian Draft Data Act implementation law, Art. 13(2) · GDPR Art. 83(5)',
+        scope: '涉及个人数据处理的 Data Act 违法行为；最终适用边界待正式法和监管实践确认。',
+        sourceUrl: urls.siDataActDraftText,
+        conditionalTurnoverCap: true,
+        evidence: evidence([urls.siDataActDraftText, urls.siDataActDraft, urls.euDataAct], 'pending'),
+      },
+    ],
+    additionalSources: [sources.siDigitalisation, sources.siDataActDraft, sources.siDataActDraftText],
   },
 }
 
