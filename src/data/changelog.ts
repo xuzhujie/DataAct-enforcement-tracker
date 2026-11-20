@@ -7,6 +7,24 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-pt-implementation-signals',
+    date: '2026-11-21',
+    countryId: 'pt',
+    kind: 'changed',
+    summary: '葡萄牙《国家数字战略行动计划》明确将 ARTE, I.P. 与 CNPD 列为 Data Act 执行法令制定的参与实体；两者以 pending 实施计划信号入库，不视为最终 Article 37 主管机关或正式投诉入口。',
+    sourceUrls: ['https://diariodarepublica.pt/dr/detalhe/resolucao-conselho-ministros/214-2025-992879810', 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R2854'],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-21-be-pending-contact',
+    date: '2026-11-21',
+    countryId: 'be',
+    kind: 'changed',
+    summary: '比利时 BIPT Data Act 专题页列出 info@bipt.be 一般咨询邮箱；因实施法仍待完成，渠道按 pending 联系记录入库，不视为已生效法定投诉表单。',
+    sourceUrls: ['https://www.bipt.be/sectors/digital/the-data-act/the-data-act', 'https://news.belgium.be/nl/uitvoering-van-de-europese-dataverordening'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-cz-pending-contact',
     date: '2026-11-21',
     countryId: 'cz',

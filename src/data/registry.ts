@@ -1807,6 +1807,17 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
         evidence: evidence([urls.beBiptDataAct, urls.beDraftImplementation], 'pending'),
       },
     ],
+    complaintRoutes: [
+      {
+        id: 'be-bipt-data-act-contact-pending',
+        label: 'BIPT Data Act 一般咨询邮箱（非已确认投诉表单）',
+        scope: 'BIPT Data Act 专题页列出的联系渠道；可用于询问数据访问、第三方共享或数据处理服务切换事项，但正式法定投诉权限和程序仍待实施法确认。',
+        url: urls.beBiptDataAct,
+        submissionMode: '发送至 info@bipt.be；当前仅记录为 pending 一般咨询渠道，不视为已生效 Data Act 投诉表单',
+        status: 'pending',
+        evidence: evidence([urls.beBiptDataAct, urls.beDraftImplementation], 'pending'),
+      },
+    ],
     additionalSources: [sources.beBiptDataAct, sources.beBiptApplication, sources.beDraftImplementation, sources.beBiptWorkPlan2026],
   },
   at: {
@@ -2049,7 +2060,25 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   pt: {
     coverage: 'partial',
     implementationStage: 'draft',
-    coverageNote: '葡萄牙《2026–2027 国家数字战略行动计划》把 Data Act 实施法令列为政府任务；本次未找到最终主管机关、投诉入口或国内罚则，仍保持 draft。',
+    coverageNote: '葡萄牙《2026–2027 国家数字战略行动计划》把 Data Act 实施法令列为政府任务，并列 ARTE, I.P.、CNPD 等参与实体；这些是实施计划信号，不等同于 Data Act Article 37 的最终法定主管机关，投诉入口和国内罚则仍未确认。',
+    competentAuthorities: [
+      {
+        name: '葡萄牙国家数字机构（实施计划参与实体，拟议/待法定确认）',
+        nameEn: 'Agência para a Reforma Tecnológica do Estado (ARTE, I.P.) (implementation-plan signal; pending statutory confirmation)',
+        role: 'competent_authority',
+        scope: '《国家数字战略行动计划》将 ARTE, I.P. 列为 Data Act 执行法令制定的参与实体；这不等同于已完成 Article 37 主管机关或数据协调员指定。',
+        sourceUrl: urls.ptDataActExecutionPlan,
+        evidence: evidence([urls.ptDataActExecutionPlan, urls.ptDigitalStrategy], 'pending'),
+      },
+      {
+        name: '葡萄牙国家数据保护委员会（个人数据边界候选，待法定确认）',
+        nameEn: 'Comissão Nacional de Proteção de Dados (CNPD) (personal-data boundary signal; pending statutory confirmation)',
+        role: 'data_protection',
+        scope: '行动计划将 CNPD 列为 Data Act 执行法令制定的参与实体；个人数据监督仍须以最终国内法和 GDPR Article 37(3) 边界为准。',
+        sourceUrl: urls.ptDataActExecutionPlan,
+        evidence: evidence([urls.ptDataActExecutionPlan, urls.euDataAct], 'pending'),
+      },
+    ],
     additionalSources: [sources.ptDigitalStrategy, sources.ptDataActExecutionPlan],
   },
   ro: {
