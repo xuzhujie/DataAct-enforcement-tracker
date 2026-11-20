@@ -16,6 +16,15 @@ export const CHANGE_LOG: ChangeLogEntry[] = [
     evidenceStatus: 'verified',
   },
   {
+    id: '2026-11-21-it-legislative-signal',
+    date: '2026-11-21',
+    countryId: 'it',
+    kind: 'changed',
+    summary: '意大利 AGCOM 2025 年官方年度报告明确指出，国家立法者仍需指定 Data Act 第 23–31、34–35 条主管机关；意大利由 not_located 修正为 legislative，最终主管机关、投诉入口和国内罚则仍未确认。',
+    sourceUrls: ['https://www.agcom.it/sites/default/files/documenti/relazione_annuale/RELAZIONE%20ANNUALE%202025_0.pdf', 'https://www.agcom.it/sites/default/files/media/allegato/2026/Allegato%20A%20alla%20delibera%20n.%2047-26-CONS%20Piano%20triennale%20di%20prevenzione%20della%20corruzione%20e%20della%20trasparenza%202026-2028.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-21-pt-implementation-signals',
     date: '2026-11-21',
     countryId: 'pt',

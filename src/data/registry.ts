@@ -41,6 +41,7 @@ const urls = {
   plDraftImplementation: 'https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2',
   esDataActGuide: 'https://datos.gob.es/sites/default/files/2025-09/ley-datos-en.pdf',
   itAgcomDataActPtpct2026: 'https://www.agcom.it/sites/default/files/media/allegato/2026/Allegato%20A%20alla%20delibera%20n.%2047-26-CONS%20Piano%20triennale%20di%20prevenzione%20della%20corruzione%20e%20della%20trasparenza%202026-2028.pdf',
+  itAgcomAnnualReport2025: 'https://www.agcom.it/sites/default/files/documenti/relazione_annuale/RELAZIONE%20ANNUALE%202025_0.pdf',
   beBiptDataAct: 'https://www.bipt.be/sectors/digital/the-data-act/the-data-act',
   beBiptApplication: 'https://www.bipt.be/sectors/digital/the-data-act/application-of-the-data-act',
   beDraftImplementation: 'https://news.belgium.be/nl/uitvoering-van-de-europese-dataverordening',
@@ -339,6 +340,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The official plan places the Data Act within AGCOM’s regulatory perimeter, but the reviewed passage does not establish a completed national Data Act coordinator designation, complaint route, or domestic penalty schedule.',
+  }),
+  itAgcomAnnualReport2025: source({
+    id: 'it-agcom-annual-report-2025-data-act',
+    label: 'AGCOM · 2025 annual report · Data Act designation still required',
+    url: urls.itAgcomAnnualReport2025,
+    sourceType: 'research-lead',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'AGCOM’s official 2025 annual report states that the national legislator still needs to identify the competent authority for the Data Act’s cloud-portability and interoperability provisions; it is legislative-status evidence, not a final designation.',
   }),
   beBiptDataAct: source({
     id: 'be-bipt-data-act',
@@ -1799,9 +1809,9 @@ const queueCountry = (record: Pick<CountryRecord, 'id' | 'name' | 'nameEn' | 'is
 const queueCountryOptions: Record<string, QueueCountryOptions> = {
   it: {
     coverage: 'partial',
-    implementationStage: 'not_located',
-    coverageNote: '意大利 AGCOM 官方 2026–2028 透明度计划将 Data Act 纳入监管范围；本次仍未找到最终数据协调员、专门投诉入口或国内罚则方案。',
-    additionalSources: [sources.itAgcomDataActPtpct2026],
+    implementationStage: 'legislative',
+    coverageNote: '意大利 AGCOM 官方 2025 年度报告明确写明，国家立法者仍需指定 Data Act 第 23–31、34–35 条的主管机关；2026–2028 透明度计划将 Data Act 纳入监管范围，但最终数据协调员、专门投诉入口和国内罚则方案仍未确认。',
+    additionalSources: [sources.itAgcomDataActPtpct2026, sources.itAgcomAnnualReport2025],
   },
   be: {
     coverage: 'partial',

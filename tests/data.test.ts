@@ -84,8 +84,9 @@ test('the second country batch separates enacted Denmark and Finland from partia
   const finland = COUNTRY_RECORDS.find((item) => item.id === 'fi')!
 
   assert.equal(italy.coverage, 'partial')
-  assert.equal(italy.implementationStage, 'not_located')
+  assert.equal(italy.implementationStage, 'legislative')
   assert.ok(italy.sources.some((source) => source.id === 'it-agcom-data-act-ptpct-2026'))
+  assert.ok(italy.sources.some((source) => source.id === 'it-agcom-annual-report-2025-data-act'))
   assert.match(italy.coverageNote ?? '', /主管机关|罚则/)
 
   assert.equal(belgium.coverage, 'partial')
@@ -131,6 +132,7 @@ test('the evidence refresh separates Spain Data Act guidance from the BOE DSA co
   assert.match(spain.coverageNote ?? '', /Data Act 指南|未确认|主管机关/)
 
   assert.ok(italy.sources.some((source) => source.id === 'it-agcom-data-act-ptpct-2026' && source.sourceType === 'research-lead'))
+  assert.ok(italy.sources.some((source) => source.id === 'it-agcom-annual-report-2025-data-act' && source.sourceType === 'research-lead'))
   assert.match(italy.coverageNote ?? '', /AGCOM|未找到|指定/)
   assert.ok(belgium.sources.some((source) => source.id === 'be-bipt-work-plan-2026'))
   assert.ok(austria.sources.some((source) => source.id === 'at-rtr-data-act-newsletter-2026'))
