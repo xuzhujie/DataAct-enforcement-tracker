@@ -8,6 +8,7 @@
     "test": "node --import tsx/esm --test tests/data.test.ts",
     "validate:registry": "node --import tsx/esm scripts/validate-registry.ts",
     "check:sources": "node --import tsx/esm scripts/check-sources.ts",
+    "compare:sources": "node --import tsx/esm scripts/compare-source-health.ts",
     "report:maintenance": "node --import tsx/esm scripts/build-maintenance-report.ts",
     "build": "tsc -b && vite build",
     "lint": "tsc -b",

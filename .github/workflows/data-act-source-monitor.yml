@@ -25,6 +25,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Restore prior source fingerprints
+        uses: actions/cache/restore@v4
+        with:
+          path: .monitor/source-health-baseline.json
+          key: data-act-source-health-${{ github.repository }}-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            data-act-source-health-${{ github.repository }}-${{ github.ref_name }}-
+
       - name: Validate registry
         id: registry-validation
         run: npm run validate:registry
@@ -33,6 +41,24 @@ jobs:
         id: source-health
         continue-on-error: true
         run: npm run check:sources -- --output source-health.json
+
+      - name: Compare source fingerprints
+        id: source-changes
+        if: always()
+        run: npm run compare:sources -- --previous .monitor/source-health-baseline.json --current source-health.json --output source-changes.json
+
+      - name: Refresh source fingerprint baseline
+        if: always() && steps.source-health.outcome != 'cancelled'
+        run: |
+          mkdir -p .monitor
+          if [ -f source-health.json ]; then cp source-health.json .monitor/source-health-baseline.json; fi
+
+      - name: Save current source fingerprints
+        if: always() && steps.source-health.outcome != 'cancelled'
+        uses: actions/cache/save@v4
+        with:
+          path: .monitor/source-health-baseline.json
+          key: data-act-source-health-${{ github.repository }}-${{ github.ref_name }}-${{ github.run_id }}
 
       - name: Build maintenance report
         id: maintenance-report
@@ -46,8 +72,48 @@ jobs:
           name: data-act-maintenance-reports
           path: |
             source-health.json
+            source-changes.json
             maintenance-report.json
           if-no-files-found: ignore
+
+      - name: Create or update source-content change issue
+        if: always() && steps.source-changes.outcome == 'success' && steps.source-changes.outputs.change_count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changeCount = '${{ steps.source-changes.outputs.change_count }}'
+            const changedCount = '${{ steps.source-changes.outputs.changed_count }}'
+            const failedCount = '${{ steps.source-changes.outputs.failed_count }}'
+            const recoveredCount = '${{ steps.source-changes.outputs.recovered_count }}'
+            const title = 'Data Act official source changed or recovered'
+            const body = [
+              `The source monitor detected ${changeCount} source change(s): ${changedCount} content change(s), ${failedCount} failure(s), and ${recoveredCount} recovery/recoveries.`,
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'Review `source-changes.json` and the linked primary source before changing any verified registry field. This alert does not publish legal facts automatically.',
+            ].join('\n')
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            })
+            const existing = openIssues.find((issue) => issue.title === title)
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              })
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              })
+            }
 
       - name: Create or update source-health failure issue
         if: always() && steps.source-health.outcome == 'failure'

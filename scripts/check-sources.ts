@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { writeFile } from 'node:fs/promises'
 import { COUNTRY_RECORDS } from '../src/data/registry'
 import { buildSourceManifest, validateRegistry, type SourceManifestEntry } from '../src/data/registry-validation'
@@ -6,6 +7,42 @@ import { buildSourceHealthReport, isReachableHttpStatus, type SourceHealthResult
 function getArgument(name: string): string | undefined {
   const index = process.argv.indexOf(name)
   return index >= 0 ? process.argv[index + 1] : undefined
+}
+
+const FINGERPRINT_BYTE_LIMIT = 64 * 1024
+
+async function readContentFingerprint(response: Response): Promise<Pick<SourceHealthResult, 'contentHash' | 'contentBytes' | 'contentTruncated'>> {
+  if (!response.body) return {}
+
+  const reader = response.body.getReader()
+  const chunks: Buffer[] = []
+  let totalBytes = 0
+  let truncated = false
+
+  try {
+    while (totalBytes < FINGERPRINT_BYTE_LIMIT) {
+      const { done, value } = await reader.read()
+      if (done) break
+
+      const remaining = FINGERPRINT_BYTE_LIMIT - totalBytes
+      const chunk = Buffer.from(value.subarray(0, remaining))
+      chunks.push(chunk)
+      totalBytes += chunk.length
+
+      if (value.length > remaining) {
+        truncated = true
+        break
+      }
+    }
+  } finally {
+    if (truncated || totalBytes >= FINGERPRINT_BYTE_LIMIT) await reader.cancel()
+  }
+
+  return {
+    contentHash: createHash('sha256').update(Buffer.concat(chunks)).digest('hex'),
+    contentBytes: totalBytes,
+    contentTruncated: truncated || totalBytes >= FINGERPRINT_BYTE_LIMIT,
+  }
 }
 
 async function checkSource(entry: SourceManifestEntry): Promise<SourceHealthResult> {
@@ -26,7 +63,12 @@ async function checkSource(entry: SourceManifestEntry): Promise<SourceHealthResu
         },
         signal: controller.signal,
       })
-      await response.body?.cancel()
+      let fingerprint: Pick<SourceHealthResult, 'contentHash' | 'contentBytes' | 'contentTruncated'> = {}
+      try {
+        fingerprint = await readContentFingerprint(response)
+      } catch {
+        // A body-read failure should not hide the HTTP result; the next run can retry the fingerprint.
+      }
       const ok = isReachableHttpStatus(response.status)
       return {
         url: entry.url,
@@ -36,6 +78,7 @@ async function checkSource(entry: SourceManifestEntry): Promise<SourceHealthResu
         ok,
         finalUrl: response.url,
         contentType: response.headers.get('content-type'),
+        ...fingerprint,
         ...(ok ? {} : { error: `HTTP ${response.status}` }),
       }
     } catch (error) {

@@ -12,7 +12,7 @@ import { buildEnforcementMonitors } from '../src/data/monitoring'
 import { buildReviewQueue, filterReviewQueue } from '../src/data/review-queue'
 import { buildEnforcementCaseRegister, DEFAULT_ENFORCEMENT_CASE_FILTERS, filterEnforcementCases } from '../src/data/cases'
 import { buildSourceManifest, validateRegistry } from '../src/data/registry-validation'
-import { buildSourceHealthReport, isReachableHttpStatus } from '../src/data/source-health'
+import { buildSourceHealthReport, compareSourceHealthReports, isReachableHttpStatus } from '../src/data/source-health'
 import { buildMaintenanceReport } from '../src/data/maintenance-report'
 import { getCountryEvidenceStatus } from '../src/lib/field-status'
 import type { EnforcementCase } from '../src/data/types'
@@ -772,6 +772,27 @@ test('source-health reports treat redirects as reachable and keep HTTP failures 
   assert.equal(report.okCount, 2)
   assert.equal(report.failedCount, 1)
   assert.equal(report.passed, false)
+})
+
+test('source-health fingerprints classify content changes and availability transitions', () => {
+  const previous = buildSourceHealthReport('2026-11-20T00:00:00.000Z', [
+    { url: 'https://example.test/changed', label: 'changed', countryIds: ['de'], status: 200, ok: true, finalUrl: 'https://example.test/changed', contentType: 'text/html', contentHash: 'old' },
+    { url: 'https://example.test/failed', label: 'failed', countryIds: ['lt'], status: 200, ok: true, finalUrl: 'https://example.test/failed', contentType: 'text/html', contentHash: 'same' },
+    { url: 'https://example.test/recovered', label: 'recovered', countryIds: ['pl'], status: 403, ok: false, finalUrl: 'https://example.test/recovered', contentType: 'text/html', error: 'HTTP 403' },
+  ], [])
+  const current = buildSourceHealthReport('2026-11-21T00:00:00.000Z', [
+    { url: 'https://example.test/changed', label: 'changed', countryIds: ['de'], status: 200, ok: true, finalUrl: 'https://example.test/changed', contentType: 'text/html', contentHash: 'new' },
+    { url: 'https://example.test/failed', label: 'failed', countryIds: ['lt'], status: 403, ok: false, finalUrl: 'https://example.test/failed', contentType: 'text/html', error: 'HTTP 403' },
+    { url: 'https://example.test/recovered', label: 'recovered', countryIds: ['pl'], status: 200, ok: true, finalUrl: 'https://example.test/recovered', contentType: 'text/html', contentHash: 'same' },
+    { url: 'https://example.test/added', label: 'added', countryIds: ['fr'], status: 200, ok: true, finalUrl: 'https://example.test/added', contentType: 'text/html', contentHash: 'new' },
+  ], [])
+
+  assert.deepEqual(compareSourceHealthReports(previous, current).map((change) => [change.url, change.kind]), [
+    ['https://example.test/added', 'added'],
+    ['https://example.test/changed', 'changed'],
+    ['https://example.test/failed', 'failed'],
+    ['https://example.test/recovered', 'recovered'],
+  ])
 })
 
 test('maintenance report aggregates evidence gaps, review due items, and source health without mutating the registry', () => {

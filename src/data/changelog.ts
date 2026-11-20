@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-source-fingerprint-monitor',
+    date: '2026-11-21',
+    countryId: 'eu',
+    kind: 'changed',
+    summary: '维护流水线新增官方来源内容指纹与变化分类：定时任务会比较来源页面/文件的有限内容摘要，区分新增、移除、内容变化、失败和恢复，并通过 issue 提醒人工复核；不会自动改写任何法律事实。',
+    sourceUrls: ['https://digital-strategy.ec.europa.eu/en/factpages/data-act-explained'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-fr-ddadue-legislative-dossier',
     date: '2026-11-21',
     countryId: 'fr',
