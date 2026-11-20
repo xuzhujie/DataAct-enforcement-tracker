@@ -22,9 +22,13 @@ function addDays(value: string, days: number, fallback: string): string {
 
 function getTargetFields(record: CountryRecord): string[] {
   const fields: string[] = []
-  if (record.competentAuthorities.length === 0) fields.push('主管机关')
-  if (record.complaintRoutes.length === 0) fields.push('投诉入口')
-  if (record.penaltySchedule.length === 0) fields.push('国内法定罚则')
+  const hasUnresolvedEvidence = (items: Array<{ evidence: { evidenceStatus: string } }>): boolean => (
+    items.length === 0 || items.some((item) => item.evidence.evidenceStatus !== 'verified')
+  )
+
+  if (hasUnresolvedEvidence(record.competentAuthorities)) fields.push('主管机关')
+  if (hasUnresolvedEvidence(record.complaintRoutes)) fields.push('投诉入口')
+  if (hasUnresolvedEvidence(record.penaltySchedule)) fields.push('国内法定罚则')
   if (record.enforcementCases.length === 0 || record.enforcementSummary.publishedPenaltyStatus !== 'verified') fields.push('实际处罚决定')
   if (record.issues.length < 3 || record.issues.some((issue) => issue.status !== 'verified')) fields.push('联网硬件争议映射')
   if (fields.length === 0) fields.push('来源新鲜度')

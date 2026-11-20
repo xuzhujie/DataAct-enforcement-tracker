@@ -36,6 +36,7 @@ const urls = {
   frCnilDataAct: 'https://www.cnil.fr/fr/reglement-donnees-data-act-nouveau-cadre-europeen-pour-partage-utilisation-donnees',
   frSenateDdADue: 'https://www.senat.fr/compte-rendu-commissions/20260202/affeco.html',
   frLegifranceDdADue: 'https://www.legifrance.gouv.fr/contenu/Media/files/autour-de-la-loi/legislatif-et-reglementaire/actualite-legislative/2025/pjl_ecom2524721l_cm_10.11.2025.pdf',
+  frArcepDataAct: 'https://www.arcep.fr/fileadmin/cru-1769533491/user_upload/01-26-version-francaise.pdf',
   plDataActBill: 'https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm',
   plDraftImplementation: 'https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2',
   esDataActGuide: 'https://datos.gob.es/sites/default/files/2025-09/ley-datos-en.pdf',
@@ -290,6 +291,15 @@ const sources = {
     lastVerifiedAt: DATA_AS_OF,
     evidenceStatus: 'verified',
     note: 'The government draft proposes ARCEP as the authority for most Data Act chapters; it remains draft evidence and is not recorded as final designation or penalty law.',
+  }),
+  frArcepDataAct: source({
+    id: 'fr-arcep-data-act-2026',
+    label: 'Arcep · DDADUE draft and Data Act competencies',
+    url: urls.frArcepDataAct,
+    sourceType: 'authority',
+    lastVerifiedAt: DATA_AS_OF,
+    evidenceStatus: 'verified',
+    note: 'Arcep states that the DDADUE draft would extend its Data Act data-sharing, investigation, sanction, and dispute-settlement powers; the designation remains pending until the draft legislation is final.',
   }),
   plDataActBill: source({
     id: 'pl-data-act-bill',
@@ -1798,8 +1808,18 @@ const queueCountryOptions: Record<string, QueueCountryOptions> = {
   fr: {
     coverage: 'partial',
     implementationStage: 'draft',
-    coverageNote: '已找到法国 CNIL / DDADUE 官方材料：ARCEP 指定与 Data Act 国内实施仍以项目/议会材料呈现，尚未在本次来源集合中确认最终生效法和完整罚则。',
-    additionalSources: [sources.frCnilDataAct, sources.frSenateDdADue, sources.frLegifranceDdADue],
+    coverageNote: '已找到法国 CNIL、ARCEP 与 DDADUE 官方材料：ARCEP 的 Data Act 主管角色及调查、制裁、争议解决权限仍依赖 DDADUE 草案最终通过，故按 pending 记录；尚未确认最终生效法和完整罚则。',
+    competentAuthorities: [
+      {
+        name: '法国电子通信、邮政与报刊分发监管局（拟议）',
+        nameEn: 'French Electronic Communications, Postal and Print Media Regulatory Authority (Arcep) (proposed)',
+        role: 'competent_authority',
+        scope: 'ARCEP 官方材料称 DDADUE 草案将扩展其 Data Act 数据共享、调查、制裁和争议解决权限；最终法定指定仍待草案通过。',
+        sourceUrl: urls.frArcepDataAct,
+        evidence: evidence([urls.frArcepDataAct, urls.frLegifranceDdADue, urls.frSenateDdADue], 'pending'),
+      },
+    ],
+    additionalSources: [sources.frCnilDataAct, sources.frSenateDdADue, sources.frLegifranceDdADue, sources.frArcepDataAct],
   },
   pl: {
     coverage: 'partial',

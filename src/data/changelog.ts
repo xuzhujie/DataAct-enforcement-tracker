@@ -25,6 +25,15 @@ export const CHANGE_LOG: ChangeLogEntry[] = [
     evidenceStatus: 'pending',
   },
   {
+    id: '2026-11-21-fr-arcep-signal',
+    date: '2026-11-21',
+    countryId: 'fr',
+    kind: 'changed',
+    summary: '法国加入 ARCEP 的拟议 Data Act 主管机关记录；ARCEP 官方材料确认 DDADUE 草案拟扩展数据共享、调查、制裁和争议解决权限，最终指定仍为 pending。',
+    sourceUrls: ['https://www.arcep.fr/fileadmin/cru-1769533491/user_upload/01-26-version-francaise.pdf', 'https://www.legifrance.gouv.fr/contenu/Media/files/autour-de-la-loi/legislatif-et-reglementaire/actualite-legislative/2025/pjl_ecom2524721l_cm_10.11.2025.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-20-de-deep',
     date: '2026-11-20',
     countryId: 'de',

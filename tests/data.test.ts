@@ -318,7 +318,8 @@ test('France, Poland, and Spain are partial records with explicit implementation
   assert.ok(france)
   assert.equal(france.coverage, 'partial')
   assert.equal(france.implementationStage, 'draft')
-  assert.equal(france.competentAuthorities.length, 0)
+  assert.equal(france.competentAuthorities.length, 1)
+  assert.equal(getCountryEvidenceStatus(france, 'authority'), 'pending')
   assert.equal(france.complaintRoutes.length, 0)
   assert.equal(france.penaltySchedule.length, 0)
   assert.equal(france.enforcementSummary.publishedPenaltyStatus, 'pending')
@@ -376,12 +377,12 @@ test('coverage metrics keep deep, partial, and queue countries separate', () => 
 test('country registry filters are composable and keep missing facts distinct from verified absence', () => {
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial' }).map((country) => country.id), ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'mt', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se'])
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, implementationStage: 'enacted' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
-  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 15)
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 16)
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, complaintRoute: 'present' }).length, 7)
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, penaltySchedule: 'present' }).length, 6)
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'not_located' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'verified' }).length, 0)
-  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), ['bg', 'hr', 'ee', 'fr', 'gr', 'hu', 'it', 'lv', 'lu', 'pt', 'sk', 'es'])
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), ['bg', 'hr', 'ee', 'gr', 'hu', 'it', 'lv', 'lu', 'pt', 'sk', 'es'])
 })
 
 test('formatters keep legal dates readable and statuses explicit', () => {
@@ -711,8 +712,8 @@ test('maintenance report aggregates evidence gaps, review due items, and source 
   assert.equal(report.registry.validation.passed, true)
   assert.deepEqual(report.evidence.authority, {
     verified: 9,
-    pending: 6,
-    not_located: 12,
+    pending: 7,
+    not_located: 11,
     not_applicable: 0,
     needsFollowUpCountryIds: ['be', 'bg', 'hr', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es'],
   })
