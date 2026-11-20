@@ -7,6 +7,24 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-mt-penalties',
+    date: '2026-11-21',
+    countryId: 'mt',
+    kind: 'changed',
+    summary: '马耳他补齐国内罚则与投诉分层：MDIA Cap. 591 art. 42、MCA Cap. 418 art. 33 及 L.N. 223/2025 / GDPR art. 83(5) 已分别入库；MDIA、IDPC 和 MCA 的官方投诉渠道已按权限范围拆开，公开 Data Act 实际处罚仍未定位。',
+    sourceUrls: ['https://legislation.mt/eli/cap/591/eng/pdf', 'https://legislation.mt/eli/cap/418/eng/pdf', 'https://legislation.mt/getpdf/69008efdafa59620bca31499', 'https://idpc.org.mt/file-a-complaint/'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-21-si-authority-signal',
+    date: '2026-11-21',
+    countryId: 'si',
+    kind: 'changed',
+    summary: '斯洛文尼亚官方 Data Act 实施法咨询公告明确提出 AKOS 与信息专员的实施/监督职责；两者以 pending 拟议主管机关入库，最终指定、投诉入口和罚则仍未确认。',
+    sourceUrls: ['https://www.gov.si/novice/2026-05-04-javna-obravnava-osnutka-zakona-za-implementacijo-akta-o-podatkih/'],
+    evidenceStatus: 'pending',
+  },
+  {
     id: '2026-11-20-de-deep',
     date: '2026-11-20',
     countryId: 'de',

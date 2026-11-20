@@ -124,7 +124,7 @@ test('the evidence refresh separates Spain Data Act guidance from the BOE DSA co
   const belgium = COUNTRY_RECORDS.find((item) => item.id === 'be')!
   const austria = COUNTRY_RECORDS.find((item) => item.id === 'at')!
 
-  assert.equal(DATA_AS_OF, '2026-11-20')
+  assert.equal(DATA_AS_OF, '2026-11-21')
   assert.ok(spain.sources.some((source) => source.id === 'es-data-act-guide' && source.sourceType === 'research-lead'))
   assert.ok(spain.sources.every((source) => source.id !== 'es-boe-cnmc-aepd-cooperation'))
   assert.match(spain.coverageNote ?? '', /Data Act 指南|未确认|主管机关/)
@@ -190,7 +190,8 @@ test('the remaining EU records distinguish twenty-two partial records from five 
   assert.ok(malta.competentAuthorities.some((authority) => authority.nameEn.includes('MDIA')))
   assert.ok(malta.competentAuthorities.some((authority) => authority.nameEn.includes('Malta Communications Authority')))
   assert.ok(malta.complaintRoutes.some((route) => route.url.includes('regulatory-complaints')))
-  assert.equal(malta.penaltySchedule.length, 0)
+  assert.ok(malta.complaintRoutes.some((route) => route.id === 'mt-mca-data-act-complaint'))
+  assert.equal(malta.penaltySchedule.length, 3)
 
   for (const countryId of ['cz', 'hu', 'sk']) {
     const country = COUNTRY_RECORDS.find((item) => item.id === countryId)!
@@ -262,6 +263,9 @@ test('new official signals keep proposed authorities and live Swedish intake vis
   assert.equal(getCountryEvidenceStatus(sweden, 'penalty_schedule'), 'not_located')
   assert.ok(poland.competentAuthorities.some((authority) => authority.nameEn.includes('UKE')))
   assert.equal(getCountryEvidenceStatus(poland, 'authority'), 'pending')
+  const slovenia = COUNTRY_RECORDS.find((country) => country.id === 'si')!
+  assert.equal(getCountryEvidenceStatus(slovenia, 'authority'), 'pending')
+  assert.equal(slovenia.competentAuthorities.length, 2)
   assert.ok(portugal.sources.some((source) => source.id === 'pt-data-act-execution-plan'))
   assert.equal(portugal.competentAuthorities.length, 0)
   assert.equal(portugal.complaintRoutes.length, 0)
@@ -293,7 +297,7 @@ test('partial countries expose field-level evidence status without upgrading ove
 
   assert.equal(getCountryEvidenceStatus(malta, 'authority'), 'verified')
   assert.equal(getCountryEvidenceStatus(malta, 'complaint_route'), 'verified')
-  assert.equal(getCountryEvidenceStatus(malta, 'penalty_schedule'), 'not_located')
+  assert.equal(getCountryEvidenceStatus(malta, 'penalty_schedule'), 'verified')
   assert.equal(getCountryEvidenceStatus(malta, 'published_penalty'), 'not_located')
 })
 
@@ -372,12 +376,12 @@ test('coverage metrics keep deep, partial, and queue countries separate', () => 
 test('country registry filters are composable and keep missing facts distinct from verified absence', () => {
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial' }).map((country) => country.id), ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'mt', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se'])
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, implementationStage: 'enacted' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
-  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 14)
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 15)
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, complaintRoute: 'present' }).length, 7)
-  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, penaltySchedule: 'present' }).length, 5)
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, penaltySchedule: 'present' }).length, 6)
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'not_located' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'verified' }).length, 0)
-  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), ['bg', 'hr', 'ee', 'fr', 'gr', 'hu', 'it', 'lv', 'lu', 'pt', 'sk', 'si', 'es'])
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), ['bg', 'hr', 'ee', 'fr', 'gr', 'hu', 'it', 'lv', 'lu', 'pt', 'sk', 'es'])
 })
 
 test('formatters keep legal dates readable and statuses explicit', () => {
@@ -403,7 +407,7 @@ test('country view-models keep partial status and copy reference explicit', () =
 
   assert.equal(formatCountryStatus(germany), '已核验')
   assert.equal(formatCountryStatus(france), '部分核验')
-  assert.equal(buildCountryReference(germany), '德国 Germany · Data Act · DADG · verified 2026-11-20')
+  assert.equal(buildCountryReference(germany), '德国 Germany · Data Act · DADG · verified 2026-11-21')
   assert.match(buildCountryReference(france), /partial coverage/)
   assert.doesNotMatch(buildCountryReference(france), /verified/)
 })
@@ -412,8 +416,8 @@ test('timeline events sort newest first without mutating the registry', () => {
   const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
   const sorted = sortTimelineEvents(germany.timeline)
 
-  assert.equal(sorted[0].date, '2026-11-20')
-  assert.equal(germany.timeline[0].date, '2026-11-20')
+  assert.equal(sorted[0].date, '2026-11-21')
+  assert.equal(germany.timeline[0].date, '2026-11-21')
 })
 
 test('exports include only the active issue view and preserve source traceability', () => {
@@ -555,7 +559,7 @@ test('review queue assigns deterministic priority, due dates, target fields, and
   assert.ok(franceItem.targetFields.includes('国内法定罚则'))
 
   assert.equal(bulgariaItem.priority, 'high')
-  assert.equal(bulgariaItem.nextReviewAt, '2026-12-20')
+  assert.equal(bulgariaItem.nextReviewAt, '2026-12-21')
   assert.equal(bulgariaItem.due, false)
 
   assert.equal(filterReviewQueue(items, { countryId: 'fr', priority: 'all', due: 'all' }).length, 1)
@@ -707,13 +711,13 @@ test('maintenance report aggregates evidence gaps, review due items, and source 
   assert.equal(report.registry.validation.passed, true)
   assert.deepEqual(report.evidence.authority, {
     verified: 9,
-    pending: 5,
-    not_located: 13,
+    pending: 6,
+    not_located: 12,
     not_applicable: 0,
     needsFollowUpCountryIds: ['be', 'bg', 'hr', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es'],
   })
   assert.equal(report.evidence.complaint_route.verified, 7)
-  assert.equal(report.evidence.penalty_schedule.verified, 5)
+  assert.equal(report.evidence.penalty_schedule.verified, 6)
   assert.equal(report.evidence.published_penalty.not_located, 6)
   assert.equal(report.reviewQueue.total, 27)
   assert.equal(report.reviewQueue.items.length, 27)

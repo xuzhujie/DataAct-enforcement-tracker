@@ -6,9 +6,9 @@
 - **Statutory penalty cap** is the maximum sanction supported by the applicable domestic law or official implementation text. It is not an amount imposed in a real case.
 - **Actual public penalty** is populated only from an official decision, register entry, or official announcement that can be traced to a specific Data Act matter. An empty case register means that no publicly traceable decision was located in the reviewed official sources; it does not mean that no investigation exists.
 
-The current registry snapshot is dated `2026-11-20`. It covers all 27 EU Member States, with 5 deep-verified records, 22 partial records, and no country hidden behind an invented zero or a synthetic enforcement case.
+The current registry snapshot is dated `2026-11-21`. It covers all 27 EU Member States, with 5 deep-verified records, 22 partial records, and no country hidden behind an invented zero or a synthetic enforcement case.
 
-The field-level view is intentionally more granular than the coverage label: 9 country records have a verified authority field and 5 have an officially signalled but still pending authority; 7 have a verified public complaint route; 5 have a verified domestic penalty schedule; and the official Data Act case register currently contains 0 cases. The remaining fields are displayed as `pending` or `not_located`, not as zero.
+The field-level view is intentionally more granular than the coverage label: 9 country records have a verified authority field and 6 have an officially signalled but still pending authority; 7 have a verified public complaint route; 6 have a verified domestic penalty schedule; and the official Data Act case register currently contains 0 cases. The remaining fields are displayed as `pending` or `not_located`, not as zero.
 
 ## Local checks
 
@@ -29,9 +29,9 @@ npm run report:maintenance -- --source-health source-health.json --output mainte
 
 `.github/workflows/data-act-source-monitor.yml` runs every Monday at 02:00 UTC and can also be started with `workflow_dispatch`. It validates the registry, checks all unique source URLs, builds `maintenance-report.json`, and uploads both reports as an artifact. A failed source check creates or comments on the open issue `Data Act source check failed`; a due review queue creates or comments on `Data Act tracker maintenance review due`. The workflow does not mutate the registry or publish unverified facts.
 
-The latest network-enabled run (2026-11-21) reached `76/84` URLs. Eight official endpoints remain maintenance signals: two Lithuanian EIMIN pages, the Romanian ANCOM consultation page, the Lithuanian e-TAR law page, two Cyprus government PDFs, the Irish government General Scheme page, and the French Legifrance PDF. Several return anti-bot `403` responses and one has intermittent network failure. The monitor keeps these failures visible; it does not replace primary evidence with an unverified mirror.
+The latest network-enabled run (2026-11-21) reached `81/89` URLs. Eight official endpoints remain maintenance signals: two Lithuanian EIMIN pages, the Romanian ANCOM consultation page, the Lithuanian e-TAR law page, two Cyprus government PDFs, the Irish government General Scheme page, and the French Legifrance PDF. Several return anti-bot `403` responses and one has intermittent network failure. The monitor keeps these failures visible; it does not replace primary evidence with an unverified mirror.
 
-The remaining substantive queue is explicit: 13 countries still have no registrable Data Act-specific authority field, 20 have no public Data Act complaint route, and 22 have no domestic penalty schedule in the reviewed official sources. Belgium, Czechia, Ireland, Poland and Romania now show proposed/expected authorities as `pending`; Sweden has a live PTS complaint e-service but limited powers pending supplementary legislation; Portugal has an official implementation-plan signal only. These are not treated as final national law.
+The remaining substantive queue is explicit: 12 countries still have no registrable Data Act-specific authority field, 20 have no public Data Act complaint route, and 21 have no domestic penalty schedule in the reviewed official sources. Belgium, Czechia, Ireland, Poland, Romania and Slovenia now show proposed/expected authorities as `pending`; Sweden has a live PTS complaint e-service but limited powers pending supplementary legislation; Malta now has verified MDIA/MCA/IDPC statutory penalty ceilings but still lacks a separate MCA Data Act intake form and any located public Data Act penalty decision; Portugal has an official implementation-plan signal only. These are not treated as final national law.
 
 ## Update protocol
 
