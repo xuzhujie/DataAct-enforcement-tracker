@@ -6,6 +6,7 @@ export type FieldFilter = PresenceFilter | VerificationStatus
 export type PublishedPenaltyFilter = 'all' | VerificationStatus
 export type IssueType = 'device_access' | 'third_party_sharing' | 'second_hand_transfer'
 export type AuthorityRole = 'data_coordinator' | 'competent_authority' | 'data_protection'
+export type ComplaintRouteScope = 'general_data_act' | 'personal_data_boundary'
 export type AppTab = 'dashboard' | 'country-register' | 'cases' | 'timeline' | 'sources' | 'change-log' | 'maintenance'
 export type SourceFreshnessStatus = 'current' | 'review' | 'stale' | 'unknown'
 export type ChangeLogKind = 'new' | 'changed' | 'review'
@@ -211,6 +212,7 @@ export interface CountryFilterState {
   implementationStage: ImplementationStage | 'all'
   authority: FieldFilter
   complaintRoute: FieldFilter
+  complaintRouteScope: ComplaintRouteScope | 'all'
   penaltySchedule: FieldFilter
   publishedPenaltyStatus: PublishedPenaltyFilter
 }

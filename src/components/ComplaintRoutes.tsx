@@ -1,5 +1,6 @@
 import { ArrowUpRight, Inbox } from 'lucide-react'
 import type { ComplaintRoute, SourceRecord } from '../data/types'
+import { formatComplaintRouteScope, getComplaintRouteScope } from '../lib/view-model'
 import StatusTag from './StatusTag'
 
 export default function ComplaintRoutes({ routes, portal }: { routes: ComplaintRoute[]; portal?: Pick<SourceRecord, 'label' | 'url' | 'note'> }) {
@@ -29,7 +30,7 @@ export default function ComplaintRoutes({ routes, portal }: { routes: ComplaintR
               <div>
                 <strong>{route.label}</strong>
                 <span>{route.scope}</span>
-                <small>{route.submissionMode}</small>
+                <small>{formatComplaintRouteScope(getComplaintRouteScope(route))} · {route.submissionMode}</small>
               </div>
               <div className="route-item__meta">
                 <StatusTag status={route.status} />

@@ -3,7 +3,7 @@ import { CHANGE_LOG } from '../data/changelog'
 import { buildEnforcementMonitors } from '../data/monitoring'
 import { buildReviewQueue } from '../data/review-queue'
 import { getSourceFreshness } from './freshness'
-import { filterIssues } from './view-model'
+import { filterIssues, formatComplaintRouteScope, getComplaintRouteScope } from './view-model'
 
 function getExportPayload(record: CountryRecord, activeIssues: IssueType[]) {
   const issues = filterIssues(record.issues, activeIssues)
@@ -75,7 +75,7 @@ export function buildMarkdownExport(record: CountryRecord, activeIssues: IssueTy
     authorities,
     '',
     '## 投诉入口',
-    payload.complaintRoutes.length ? payload.complaintRoutes.map((route) => `- [${route.label}](${route.url})：${route.scope}`).join('\n') : '- 待补齐',
+    payload.complaintRoutes.length ? payload.complaintRoutes.map((route) => `- [${route.label}](${route.url})【${formatComplaintRouteScope(getComplaintRouteScope(route))}】：${route.scope}`).join('\n') : '- 待补齐',
     '',
     penaltyHeading,
     penalties,

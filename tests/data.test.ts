@@ -3,7 +3,7 @@ import test from 'node:test'
 import { COUNTRY_RECORDS, DATA_AS_OF, GERMANY_ID } from '../src/data/registry'
 import { getCountryMetrics, getCoverageMetrics } from '../src/data/metrics'
 import { formatCoverage, formatDate, formatIssueLabel, formatVerificationStatus } from '../src/lib/format'
-import { buildCountryReference, DEFAULT_COUNTRY_FILTERS, filterCountries, filterIssues, formatCountryStatus } from '../src/lib/view-model'
+import { buildCountryReference, DEFAULT_COUNTRY_FILTERS, filterCountries, filterIssues, formatCountryStatus, getComplaintRouteScope } from '../src/lib/view-model'
 import { buildJsonExport, buildMarkdownExport } from '../src/lib/export'
 import { sortTimelineEvents } from '../src/lib/view-model'
 import { CHANGE_LOG, filterChangeLog } from '../src/data/changelog'
@@ -431,6 +431,25 @@ test('country registry filters are composable and keep missing facts distinct fr
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'not_located' }).map((country) => country.id), ['de', 'dk', 'fi', 'lt', 'mt', 'nl'])
   assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'verified' }).length, 0)
   assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), [])
+})
+
+test('country registry distinguishes general Data Act and personal-data complaint routes', () => {
+  const germany = COUNTRY_RECORDS.find((country) => country.id === GERMANY_ID)!
+  const austria = COUNTRY_RECORDS.find((country) => country.id === 'at')!
+  const personalDataCountries = filterCountries(COUNTRY_RECORDS, {
+    ...DEFAULT_COUNTRY_FILTERS,
+    complaintRouteScope: 'personal_data_boundary',
+  })
+  const generalDataActCountries = filterCountries(COUNTRY_RECORDS, {
+    ...DEFAULT_COUNTRY_FILTERS,
+    complaintRouteScope: 'general_data_act',
+  })
+
+  assert.equal(getComplaintRouteScope(germany.complaintRoutes[0]), 'general_data_act')
+  assert.equal(getComplaintRouteScope(austria.complaintRoutes[0]), 'personal_data_boundary')
+  assert.ok(personalDataCountries.some((country) => country.id === 'at'))
+  assert.ok(!generalDataActCountries.some((country) => country.id === 'at'))
+  assert.ok(generalDataActCountries.some((country) => country.id === GERMANY_ID))
 })
 
 test('new DPA complaint routes stay scoped to the Article 37(3) personal-data boundary', () => {

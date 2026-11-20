@@ -1,8 +1,8 @@
 import { Filter, RotateCcw } from 'lucide-react'
 import type { ChangeEvent } from 'react'
-import type { CountryFilterState, FieldFilter } from '../data/types'
+import type { ComplaintRouteScope, CountryFilterState, FieldFilter } from '../data/types'
 import { formatCoverage, formatVerificationStatus } from '../lib/format'
-import { formatImplementationStage } from '../lib/view-model'
+import { formatComplaintRouteScope, formatImplementationStage } from '../lib/view-model'
 
 interface RegistryFiltersProps {
   filters: CountryFilterState
@@ -56,6 +56,7 @@ export default function RegistryFilters({ filters, onChange, onReset, resultCoun
         </label>
         <PresenceSelect label="主管机构" value={filters.authority} onChange={(value) => update('authority', value)} />
         <PresenceSelect label="投诉入口" value={filters.complaintRoute} onChange={(value) => update('complaintRoute', value)} />
+        <ComplaintRouteScopeSelect value={filters.complaintRouteScope} onChange={(value) => update('complaintRouteScope', value)} />
         <PresenceSelect label="法定罚则" value={filters.penaltySchedule} onChange={(value) => update('penaltySchedule', value)} />
         <label>
           <span>公开处罚状态</span>
@@ -69,6 +70,19 @@ export default function RegistryFilters({ filters, onChange, onReset, resultCoun
         </label>
       </div>
     </section>
+  )
+}
+
+function ComplaintRouteScopeSelect({ value, onChange }: { value: ComplaintRouteScope | 'all'; onChange: (value: ComplaintRouteScope | 'all') => void }) {
+  return (
+    <label>
+      <span>入口范围</span>
+      <select {...selectValue(value, onChange)}>
+        <option value="all">全部</option>
+        <option value="general_data_act">{formatComplaintRouteScope('general_data_act')}</option>
+        <option value="personal_data_boundary">{formatComplaintRouteScope('personal_data_boundary')}</option>
+      </select>
+    </label>
   )
 }
 

@@ -3,6 +3,7 @@
 ## What the dashboard distinguishes
 
 - **Complaint route** is the public form or channel for a person or company to contact the competent authority. It is not evidence that a complaint was filed or that an authority opened a case.
+- Complaint routes can be filtered by scope: **general Data Act / non-personal-data intake** versus the **Article 37(3) personal-data boundary**. The scope label does not upgrade a draft route to a final legal procedure; use the route’s own `verified` / `pending` status for that distinction.
 - **Statutory penalty cap** is the maximum sanction supported by the applicable domestic law or official implementation text. It is not an amount imposed in a real case.
 - **Actual public penalty** is populated only from an official decision, register entry, or official announcement that can be traced to a specific Data Act matter. An empty case register means that no publicly traceable decision was located in the reviewed official sources; it does not mean that no investigation exists.
 

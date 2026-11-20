@@ -1,5 +1,5 @@
 import { publishedPenaltyLabel } from '../data/metrics'
-import type { CountryFilterState, CountryRecord, FieldFilter, ImplementationStage, IssueRecord, IssueType } from '../data/types'
+import type { ComplaintRoute, ComplaintRouteScope, CountryFilterState, CountryRecord, FieldFilter, ImplementationStage, IssueRecord, IssueType } from '../data/types'
 import { getCountryEvidenceStatus, type CountryEvidenceField } from './field-status'
 
 export const DEFAULT_COUNTRY_FILTERS: CountryFilterState = {
@@ -7,8 +7,22 @@ export const DEFAULT_COUNTRY_FILTERS: CountryFilterState = {
   implementationStage: 'all',
   authority: 'all',
   complaintRoute: 'all',
+  complaintRouteScope: 'all',
   penaltySchedule: 'all',
   publishedPenaltyStatus: 'all',
+}
+
+export function getComplaintRouteScope(route: ComplaintRoute): ComplaintRouteScope {
+  const routeText = `${route.label} ${route.scope} ${route.submissionMode}`
+  return /Article 37\(3\)|personal[- ]data|个人数据|GDPR/i.test(routeText)
+    ? 'personal_data_boundary'
+    : 'general_data_act'
+}
+
+export function formatComplaintRouteScope(scope: ComplaintRouteScope): string {
+  return scope === 'personal_data_boundary'
+    ? '个人数据边界 · Art. 37(3)'
+    : '一般 Data Act · 非个人数据'
 }
 
 function matchesPresence(count: number, filter: FieldFilter): boolean {
@@ -27,6 +41,7 @@ export function filterCountries(records: CountryRecord[], filters: CountryFilter
     if (filters.implementationStage !== 'all' && record.implementationStage !== filters.implementationStage) return false
     if (!matchesFieldFilter(record, 'authority', filters.authority, record.competentAuthorities.length)) return false
     if (!matchesFieldFilter(record, 'complaint_route', filters.complaintRoute, record.complaintRoutes.length)) return false
+    if (filters.complaintRouteScope !== 'all' && !record.complaintRoutes.some((route) => getComplaintRouteScope(route) === filters.complaintRouteScope)) return false
     if (!matchesFieldFilter(record, 'penalty_schedule', filters.penaltySchedule, record.penaltySchedule.length)) return false
     if (filters.publishedPenaltyStatus !== 'all' && record.enforcementSummary.publishedPenaltyStatus !== filters.publishedPenaltyStatus) return false
     return true

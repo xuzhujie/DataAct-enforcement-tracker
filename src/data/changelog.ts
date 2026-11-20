@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-complaint-route-scope-filter',
+    date: '2026-11-21',
+    countryId: 'eu',
+    kind: 'changed',
+    summary: '为国别登记新增投诉入口范围筛选：将一般 Data Act / 非个人数据入口与 Data Act Article 37(3) 个人数据边界入口结构化区分；入口范围分类不改变各路线自身的 verified/pending 状态。',
+    sourceUrls: ['https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R2854'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-cz-digital-czech-plan',
     date: '2026-11-21',
     countryId: 'cz',
