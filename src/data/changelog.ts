@@ -1,0 +1,188 @@
+import type { ChangeLogEntry, ChangeLogKind } from './types'
+
+export interface ChangeLogFilterState {
+  countryId: string | 'all'
+  kind: ChangeLogKind | 'all'
+}
+
+export const CHANGE_LOG: ChangeLogEntry[] = [
+  {
+    id: '2026-11-20-de-deep',
+    date: '2026-11-20',
+    countryId: 'de',
+    kind: 'new',
+    summary: '保留德国深度核验：BNetzA 投诉入口、DADG §15 法定罚款档位和 BfDI 个人数据边界。',
+    sourceUrls: ['https://www.bundesnetzagentur.de/DE/Fachthemen/Digitales/DataAct/Beschwerdeportal/start.html', 'https://www.gesetze-im-internet.de/dadg/__15.html'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-nl-deep',
+    date: '2026-11-20',
+    countryId: 'nl',
+    kind: 'new',
+    summary: '新增荷兰深度核验：ACM/AP 权限、智能设备数据报告入口和 Uitvoeringswet 罚则。',
+    sourceUrls: ['https://www.acm.nl/en/publications/acm-now-authorized-enforce-data-act', 'https://zoek.officielebekendmakingen.nl/stb-2025-372.html'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-dk-deep',
+    date: '2026-11-20',
+    countryId: 'dk',
+    kind: 'new',
+    summary: '新增丹麦深度核验：Digitaliseringsstyrelsen、borger.dk / virk.dk 投诉入口和 Datadelingsloven §10。',
+    sourceUrls: ['https://digst.dk/tilsyn/dataforordningen/tilsyn-med-dataforordningen/', 'https://www.retsinformation.dk/eli/lta/2025/1618'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-fi-deep',
+    date: '2026-11-20',
+    countryId: 'fi',
+    kind: 'new',
+    summary: '新增芬兰深度核验：Traficom 数据协调员、在线联系入口以及 2% / 4% 国内行政罚款上限。',
+    sourceUrls: ['https://traficom.fi/en/data-economy-and-data-intermediation/supervision-data-act', 'https://www.finlex.fi/fi/lainsaadanto/saadoskokoelma/2025/1148'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-fr-partial',
+    date: '2026-11-20',
+    countryId: 'fr',
+    kind: 'changed',
+    summary: '法国由待补齐升级为部分核验；保留 CNIL / DDADUE 与议会材料，但不填入最终主管机关或罚则。',
+    sourceUrls: ['https://www.cnil.fr/fr/reglement-donnees-data-act-nouveau-cadre-europeen-pour-partage-utilisation-donnees', 'https://www.senat.fr/compte-rendu-commissions/20260202/affeco.html'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-pl-partial',
+    date: '2026-11-20',
+    countryId: 'pl',
+    kind: 'changed',
+    summary: '波兰由待补齐升级为部分核验；议会阶段材料不视为已生效国内法。',
+    sourceUrls: ['https://www.gov.pl/web/cyfryzacja/wieksza-kontrola-nad-danymi-data-act-przyjete-przez-sejm', 'https://www.gov.pl/web/premier/projekt-ustawy-o-sprawiedliwym-dostepie-do-danych-i-ich-wykorzystywaniu2'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-es-partial',
+    date: '2026-11-20',
+    countryId: 'es',
+    kind: 'changed',
+    summary: '西班牙证据修正：移除不属于 Data Act 主管机关证据的 BOE DSA 协作文本，改用西班牙政府 Data Act 指南；最终指定仍未确认。',
+    sourceUrls: ['https://datos.gob.es/sites/default/files/2025-09/ley-datos-en.pdf'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-be-partial',
+    date: '2026-11-20',
+    countryId: 'be',
+    kind: 'changed',
+    summary: '比利时由待补齐升级为部分核验；BIPT 角色和政府实施法草案已入库，最终法与入口仍待确认。',
+    sourceUrls: ['https://www.bipt.be/sectors/digital/the-data-act/the-data-act', 'https://news.belgium.be/nl/uitvoering-van-de-europese-dataverordening'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-at-partial',
+    date: '2026-11-20',
+    countryId: 'at',
+    kind: 'changed',
+    summary: '奥地利由待补齐升级为部分核验；RTR 明确记录主管机关法定指定尚未完成，DSB 仅保留个人数据边界。',
+    sourceUrls: ['https://www.rtr.at/TKP/was_wir_tun/telekommunikation/weitere-regulierungsthemen/data-act/zeitplan.de.html', 'https://dsb.gv.at/sites/site0344/media/downloads/datenschutzbericht_2024.pdf'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-it-review',
+    date: '2026-11-20',
+    countryId: 'it',
+    kind: 'review',
+    summary: '意大利保留在待补齐队列；AGCOM 2026–2028 官方计划显示 Data Act 属于监管范围，但本次仍未定位最终指定、投诉入口或国内罚则。',
+    sourceUrls: ['https://www.agcom.it/sites/default/files/media/allegato/2026/Allegato%20A%20alla%20delibera%20n.%2047-26-CONS%20Piano%20triennale%20di%20prevenzione%20della%20corruzione%20e%20della%20trasparenza%202026-2028.pdf'],
+    evidenceStatus: 'pending',
+  },
+  {
+    id: '2026-11-20-ie-partial',
+    date: '2026-11-20',
+    countryId: 'ie',
+    kind: 'changed',
+    summary: '爱尔兰升级为部分核验：政府 General Scheme / ComReg 记录 CCPC 与 ComReg 的拟议分工，但实施法仍待完成。',
+    sourceUrls: ['https://www.gov.ie/en/department-of-enterprise-tourism-and-employment/publications/general-scheme-of-the-data-bill-2025/', 'https://www.comreg.ie/industry/electronic-communications/eu-data-act/'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-lt-partial',
+    date: '2026-11-20',
+    countryId: 'lt',
+    kind: 'changed',
+    summary: '立陶宛升级为部分核验：政府 Data Act 实施法草案拟赋予 RRT 投诉、调查和制裁权限，仍待议会程序。',
+    sourceUrls: ['https://eimin.lrv.lt/en/structure-and-contacts/news-1/eimin-drafts-law-on-implementation-of-eu-data-act-SPEd/', 'https://eimin.lrv.lt/lt/veiklos-sritys/skaitmenine-politika/atviri-duomenys-1/es-duomenu-aktas_1/'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-mt-partial',
+    date: '2026-11-20',
+    countryId: 'mt',
+    kind: 'changed',
+    summary: '马耳他升级为部分核验：MDIA/MCA 官方页面记录一般协调与切换/互操作分工；完整投诉入口和罚则仍待补齐。',
+    sourceUrls: ['https://mdia.gov.mt/services/the-data-act/', 'https://www.mca.org.mt/the-data-act'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-pt-partial',
+    date: '2026-11-20',
+    countryId: 'pt',
+    kind: 'changed',
+    summary: '葡萄牙升级为部分核验：官方数字战略行动计划列出 Data Act 实施立法任务，主管机关、投诉和罚则尚未确认。',
+    sourceUrls: ['https://bo.digital.gov.pt/api/assets/etic/3e169348-73f6-416c-9d96-bed5bf4e9171/'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-ro-partial',
+    date: '2026-11-20',
+    countryId: 'ro',
+    kind: 'changed',
+    summary: '罗马尼亚升级为部分核验：ANCOM 公开咨询稿拟设主管机关/数据协调员，仍不是已生效国内法。',
+    sourceUrls: ['https://www.ancom.ro/en/about-us/media-en/press-releases/data-act-draft-law-on-the-application-of-rules-regarding-access-to-data-generated-by-connected-products-and-related-services-open-for-public-consultation/'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-se-partial',
+    date: '2026-11-20',
+    countryId: 'se',
+    kind: 'changed',
+    summary: '瑞典升级为部分核验：PTS 官方页面称政府已指定 PTS 为主管机关，但完整实施、投诉和罚则仍待核验。',
+    sourceUrls: ['https://www.pts.se/internet-och-telefoni/dataforordningen/'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-cz-partial',
+    date: '2026-11-20',
+    countryId: 'cz',
+    kind: 'changed',
+    summary: '捷克由待补齐升级为部分核验：RVIS 官方会议纪要记录 Data Act 实施法案及拟议 CTU 协调角色，但最终权限仍未确定。',
+    sourceUrls: ['https://vlada.gov.cz/assets/ppov/rvis/zapisy_rvis/2025_6-4-_Predsednictvo_RVIS_zapis.pdf', 'https://ctu.gov.cz/sites/default/files/obsah/soubory-ke-stazeni/Letaky/DataAkt_23_10_25.pdf'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-hu-partial',
+    date: '2026-11-20',
+    countryId: 'hu',
+    kind: 'changed',
+    summary: '匈牙利由待补齐升级为部分核验：NAIH 2025 年度报告记录 Data Act 实施法案 T/13050 未通过且主管机关尚未最终指定。',
+    sourceUrls: ['https://www.naih.hu/eves-beszamolok?download=1431%3Anaih-beszamolo-a-2025-evi-tevekenysegrol'],
+    evidenceStatus: 'verified',
+  },
+  {
+    id: '2026-11-20-sk-partial',
+    date: '2026-11-20',
+    countryId: 'sk',
+    kind: 'changed',
+    summary: '斯洛伐克由待补齐升级为部分核验：MIRRI 官方材料记录 Data Act 实施法准备工作，最终主管机关、投诉和罚则仍待确认。',
+    sourceUrls: ['https://mirri.gov.sk/aktuality/splnomocnenec-vlady-pre-ai/umela-inteligencia-zlepsuje-fungovanie-verejnych-sluzieb/', 'https://mirri.gov.sk/wp-content/uploads/2026/04/OP-MIRRI_SR_01_05_2026.pdf'],
+    evidenceStatus: 'verified',
+  },
+]
+
+export function filterChangeLog(entries: ChangeLogEntry[], filters: ChangeLogFilterState): ChangeLogEntry[] {
+  return entries.filter((entry) => {
+    if (filters.countryId !== 'all' && entry.countryId !== filters.countryId) return false
+    if (filters.kind !== 'all' && entry.kind !== filters.kind) return false
+    return true
+  })
+}

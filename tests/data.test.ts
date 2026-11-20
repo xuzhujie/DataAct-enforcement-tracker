@@ -1,0 +1,510 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+import { COUNTRY_RECORDS, DATA_AS_OF, GERMANY_ID } from '../src/data/registry'
+import { getCountryMetrics, getCoverageMetrics } from '../src/data/metrics'
+import { formatCoverage, formatDate, formatIssueLabel, formatVerificationStatus } from '../src/lib/format'
+import { buildCountryReference, DEFAULT_COUNTRY_FILTERS, filterCountries, filterIssues, formatCountryStatus } from '../src/lib/view-model'
+import { buildJsonExport, buildMarkdownExport } from '../src/lib/export'
+import { sortTimelineEvents } from '../src/lib/view-model'
+import { CHANGE_LOG, filterChangeLog } from '../src/data/changelog'
+import { getSourceFreshness } from '../src/lib/freshness'
+import { buildEnforcementMonitors } from '../src/data/monitoring'
+import { buildReviewQueue, filterReviewQueue } from '../src/data/review-queue'
+import { buildEnforcementCaseRegister, DEFAULT_ENFORCEMENT_CASE_FILTERS, filterEnforcementCases } from '../src/data/cases'
+import type { EnforcementCase } from '../src/data/types'
+
+test('Germany keeps EU application and German implementation dates separate', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)
+
+  assert.ok(germany)
+  assert.equal(germany.applicableFrom, '2025-09-12')
+  assert.equal(germany.nationalActEffectiveFrom, '2026-05-30')
+})
+
+test('Germany exposes the four DADG §15 penalty tiers with a conditional 2% cap', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)
+
+  assert.ok(germany)
+  assert.deepEqual(germany.penaltySchedule.map((tier) => tier.label), ['€5m / 2%', '€500k', '€100k', '€50k'])
+  assert.equal(germany.penaltySchedule[0].conditionalTurnoverCap, true)
+  assert.match(germany.penaltySchedule[0].scope, /§15\(5\)/)
+})
+
+test('Germany does not turn an unlocated public penalty into a zero', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)
+
+  assert.ok(germany)
+  assert.equal(germany.enforcementSummary.publishedPenaltyStatus, 'not_located')
+  assert.equal(germany.enforcementSummary.publishedPenaltyCount, null)
+  assert.equal(getCountryMetrics(germany).publishedPenaltyLabel, '未定位到公开处罚决定')
+})
+
+test('Germany has five complaint routes and a pending second-hand transfer issue', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)
+
+  assert.ok(germany)
+  assert.equal(germany.complaintRoutes.length, 5)
+  assert.equal(germany.issues.find((issue) => issue.issue === 'second_hand_transfer')?.status, 'pending')
+})
+
+test('the Netherlands records the enacted authority, reporting route, and domestic penalty caps', () => {
+  const netherlands = COUNTRY_RECORDS.find((item) => item.id === 'nl')
+
+  assert.ok(netherlands)
+  assert.equal(netherlands.coverage, 'deep')
+  assert.equal(netherlands.applicableFrom, '2025-09-12')
+  assert.equal(netherlands.nationalActEffectiveFrom, '2025-11-21')
+  assert.equal(netherlands.implementingAct, 'Uitvoeringswet dataverordening · Wet van 29 oktober 2025')
+  assert.deepEqual(netherlands.competentAuthorities.map((authority) => authority.nameEn), [
+    'Netherlands Authority for Consumers and Markets (ACM)',
+    'Dutch Data Protection Authority (AP)',
+  ])
+  assert.ok(netherlands.complaintRoutes.some((route) => route.url.includes('uw-melding-over-een-online-platform')))
+  assert.ok(netherlands.penaltySchedule.some((tier) => tier.label.includes('10% EU turnover')))
+  assert.ok(netherlands.penaltySchedule.some((tier) => tier.label.includes('GDPR Art. 83(5)')))
+  assert.equal(netherlands.enforcementSummary.publishedPenaltyStatus, 'not_located')
+  assert.equal(netherlands.issues.find((issue) => issue.issue === 'device_access')?.status, 'verified')
+  assert.equal(netherlands.issues.find((issue) => issue.issue === 'third_party_sharing')?.status, 'verified')
+  assert.equal(netherlands.issues.find((issue) => issue.issue === 'second_hand_transfer')?.status, 'pending')
+  assert.ok(netherlands.competentAuthorities.every((authority) => authority.evidence.sourceUrls.length > 0 && authority.evidence.lastVerifiedAt))
+  assert.ok(netherlands.complaintRoutes.every((route) => route.evidence.sourceUrls.length > 0 && route.evidence.evidenceStatus === route.status))
+  assert.ok(netherlands.penaltySchedule.every((tier) => tier.evidence.sourceUrls.includes(tier.sourceUrl)))
+  assert.ok(netherlands.sources.some((source) => source.id === 'nl-implementing-act'))
+})
+
+test('the second country batch separates enacted Denmark and Finland from partial Belgium and Austria', () => {
+  const italy = COUNTRY_RECORDS.find((item) => item.id === 'it')!
+  const belgium = COUNTRY_RECORDS.find((item) => item.id === 'be')!
+  const austria = COUNTRY_RECORDS.find((item) => item.id === 'at')!
+  const denmark = COUNTRY_RECORDS.find((item) => item.id === 'dk')!
+  const finland = COUNTRY_RECORDS.find((item) => item.id === 'fi')!
+
+  assert.equal(italy.coverage, 'queue')
+  assert.equal(italy.implementationStage, 'not_located')
+  assert.ok(italy.sources.some((source) => source.id === 'it-agcom-data-act-ptpct-2026'))
+  assert.match(italy.coverageNote ?? '', /主管机关|罚则/)
+
+  assert.equal(belgium.coverage, 'partial')
+  assert.equal(belgium.implementationStage, 'draft')
+  assert.equal(belgium.competentAuthorities.length, 0)
+  assert.equal(belgium.penaltySchedule.length, 0)
+  assert.ok(belgium.sources.some((source) => source.id === 'be-bipt-data-act'))
+  assert.match(belgium.coverageNote ?? '', /BIPT|草案/)
+
+  assert.equal(austria.coverage, 'partial')
+  assert.equal(austria.implementationStage, 'not_located')
+  assert.ok(austria.competentAuthorities.some((authority) => authority.nameEn.includes('Data Protection Authority')))
+  assert.equal(austria.complaintRoutes.length, 0)
+  assert.equal(austria.penaltySchedule.length, 0)
+  assert.match(austria.coverageNote ?? '', /尚未|指定/)
+
+  assert.equal(denmark.coverage, 'deep')
+  assert.equal(denmark.implementationStage, 'enacted')
+  assert.ok(denmark.competentAuthorities.some((authority) => authority.nameEn.includes('Danish Agency for Digital Government')))
+  assert.equal(denmark.complaintRoutes.length, 2)
+  assert.ok(denmark.penaltySchedule.some((tier) => tier.legalBasis.includes('§10')))
+  assert.equal(denmark.issues.find((issue) => issue.issue === 'device_access')?.status, 'verified')
+  assert.equal(denmark.issues.find((issue) => issue.issue === 'second_hand_transfer')?.status, 'pending')
+
+  assert.equal(finland.coverage, 'deep')
+  assert.equal(finland.implementationStage, 'enacted')
+  assert.ok(finland.competentAuthorities.some((authority) => authority.nameEn.includes('Traficom')))
+  assert.ok(finland.complaintRoutes.some((route) => route.url.includes('customer-service-data-ai')))
+  assert.ok(finland.penaltySchedule.some((tier) => tier.label.includes('4%')))
+  assert.ok(finland.sources.some((source) => source.id === 'fi-data-supervision-law'))
+})
+
+test('the evidence refresh separates Spain Data Act guidance from the BOE DSA cooperation text', () => {
+  const spain = COUNTRY_RECORDS.find((item) => item.id === 'es')!
+  const italy = COUNTRY_RECORDS.find((item) => item.id === 'it')!
+  const belgium = COUNTRY_RECORDS.find((item) => item.id === 'be')!
+  const austria = COUNTRY_RECORDS.find((item) => item.id === 'at')!
+
+  assert.equal(DATA_AS_OF, '2026-11-20')
+  assert.ok(spain.sources.some((source) => source.id === 'es-data-act-guide' && source.sourceType === 'research-lead'))
+  assert.ok(spain.sources.every((source) => source.id !== 'es-boe-cnmc-aepd-cooperation'))
+  assert.match(spain.coverageNote ?? '', /Data Act 指南|未确认|主管机关/)
+
+  assert.ok(italy.sources.some((source) => source.id === 'it-agcom-data-act-ptpct-2026' && source.sourceType === 'research-lead'))
+  assert.match(italy.coverageNote ?? '', /AGCOM|未找到|指定/)
+  assert.ok(belgium.sources.some((source) => source.id === 'be-bipt-work-plan-2026'))
+  assert.ok(austria.sources.some((source) => source.id === 'at-rtr-data-act-newsletter-2026'))
+})
+
+test('new partial records retain draft implementation evidence without final legal facts', () => {
+  const czechia = COUNTRY_RECORDS.find((item) => item.id === 'cz')!
+  const hungary = COUNTRY_RECORDS.find((item) => item.id === 'hu')!
+  const slovakia = COUNTRY_RECORDS.find((item) => item.id === 'sk')!
+
+  assert.equal(czechia.implementationStage, 'legislative')
+  assert.match(czechia.coverageNote ?? '', /RVIS|Data Act|草案/)
+  assert.ok(czechia.sources.some((source) => source.id === 'cz-rvis-data-act-draft'))
+
+  assert.equal(hungary.implementationStage, 'legislative')
+  assert.match(hungary.coverageNote ?? '', /T\/13050|未通过|主管机关/)
+  assert.ok(hungary.sources.some((source) => source.id === 'hu-naih-annual-report-2025'))
+
+  assert.equal(slovakia.implementationStage, 'legislative')
+  assert.match(slovakia.coverageNote ?? '', /MIRRI|实施法|Data Act/)
+  assert.ok(slovakia.sources.some((source) => source.id === 'sk-mirri-data-act-law'))
+
+  for (const country of [czechia, hungary, slovakia]) {
+    assert.equal(country.competentAuthorities.length, 0)
+    assert.equal(country.complaintRoutes.length, 0)
+    assert.equal(country.penaltySchedule.length, 0)
+    assert.deepEqual(country.enforcementCases, [])
+  }
+})
+
+test('the remaining EU queue is separated into fourteen official partial records and nine research queues', () => {
+  const expectedPartial = ['at', 'be', 'cz', 'fr', 'hu', 'ie', 'lt', 'mt', 'pl', 'pt', 'ro', 'sk', 'es', 'se']
+  const expectedQueue = ['bg', 'hr', 'cy', 'ee', 'gr', 'it', 'lv', 'lu', 'si']
+
+  assert.deepEqual(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').map((country) => country.id), expectedPartial)
+  assert.deepEqual(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').map((country) => country.id), expectedQueue)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 4)
+  assert.equal(COUNTRY_RECORDS.length, 27)
+
+  for (const countryId of ['ie', 'lt', 'pt', 'ro', 'se']) {
+    const country = COUNTRY_RECORDS.find((item) => item.id === countryId)!
+    assert.equal(country.competentAuthorities.length, 0)
+    assert.equal(country.complaintRoutes.length, 0)
+    assert.equal(country.penaltySchedule.length, 0)
+    assert.ok(country.sources.some((source) => source.sourceType !== 'eu-regulation' && source.sourceType !== 'eu-country-list'))
+  }
+
+  const malta = COUNTRY_RECORDS.find((country) => country.id === 'mt')!
+  assert.equal(malta.coverage, 'partial')
+  assert.equal(malta.implementationStage, 'enacted')
+  assert.ok(malta.competentAuthorities.some((authority) => authority.nameEn.includes('MDIA')))
+  assert.ok(malta.competentAuthorities.some((authority) => authority.nameEn.includes('Malta Communications Authority')))
+  assert.equal(malta.penaltySchedule.length, 0)
+
+  for (const countryId of ['cz', 'hu', 'sk']) {
+    const country = COUNTRY_RECORDS.find((item) => item.id === countryId)!
+    assert.equal(country.coverage, 'partial')
+    assert.equal(country.implementationStage, 'legislative')
+    assert.equal(country.competentAuthorities.length, 0)
+    assert.equal(country.complaintRoutes.length, 0)
+    assert.equal(country.penaltySchedule.length, 0)
+    assert.deepEqual(country.enforcementCases, [])
+    assert.ok(country.sources.some((source) => source.sourceType === 'research-lead'))
+  }
+
+  assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'cz')?.sources.some((source) => source.id === 'cz-rvis-data-act-draft'))
+  assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'hu')?.sources.some((source) => source.id === 'hu-naih-annual-report-2025'))
+  assert.ok(COUNTRY_RECORDS.find((country) => country.id === 'sk')?.sources.some((source) => source.id === 'sk-mirri-data-act-law'))
+
+  for (const country of COUNTRY_RECORDS.filter((item) => item.coverage === 'queue')) {
+    assert.equal(country.competentAuthorities.length, 0)
+    assert.equal(country.complaintRoutes.length, 0)
+    assert.equal(country.penaltySchedule.length, 0)
+  }
+})
+
+test('Germany legal facts retain source URLs, freshness, and evidence state', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
+
+  assert.ok(germany.competentAuthorities.every((authority) => authority.evidence.sourceUrls.length > 0 && authority.evidence.lastVerifiedAt))
+  assert.ok(germany.complaintRoutes.every((route) => route.evidence.sourceUrls.length > 0 && route.evidence.evidenceStatus === route.status))
+  assert.ok(germany.penaltySchedule.every((tier) => tier.evidence.sourceUrls.includes(tier.sourceUrl)))
+  assert.ok(germany.issues.every((issue) => issue.evidence.sourceUrls.length > 0 && issue.evidence.evidenceStatus === issue.status))
+  assert.equal(germany.enforcementSummary.sourceUrls.length, 2)
+  assert.ok(germany.sources.every((source) => !source.id.startsWith('nl-')))
+})
+
+test('France, Poland, and Spain are partial records with explicit implementation stages', () => {
+  const france = COUNTRY_RECORDS.find((item) => item.id === 'fr')
+
+  assert.ok(france)
+  assert.equal(france.coverage, 'partial')
+  assert.equal(france.implementationStage, 'draft')
+  assert.equal(france.competentAuthorities.length, 0)
+  assert.equal(france.complaintRoutes.length, 0)
+  assert.equal(france.penaltySchedule.length, 0)
+  assert.equal(france.enforcementSummary.publishedPenaltyStatus, 'pending')
+  assert.match(france.coverageNote ?? '', /CNIL|DDADUE/)
+  assert.ok(france.sources.some((source) => source.id === 'fr-cnil-data-act'))
+
+  const poland = COUNTRY_RECORDS.find((item) => item.id === 'pl')
+  const spain = COUNTRY_RECORDS.find((item) => item.id === 'es')
+
+  assert.ok(poland)
+  assert.ok(spain)
+  assert.equal(poland.coverage, 'partial')
+  assert.equal(poland.implementationStage, 'legislative')
+  assert.match(poland.coverageNote ?? '', /议会|法案/)
+  assert.ok(poland.sources.some((source) => source.id === 'pl-data-act-bill'))
+  assert.equal(spain.coverage, 'partial')
+  assert.equal(spain.implementationStage, 'not_located')
+  assert.match(spain.coverageNote ?? '', /Data Act 指南|未确认|主管机关/)
+  assert.ok(spain.sources.some((source) => source.id === 'es-data-act-guide'))
+})
+
+test('country register covers all 27 EU member states without inventing implementation facts', () => {
+  const expectedIso2 = ['DE', 'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE']
+
+  assert.deepEqual(COUNTRY_RECORDS.map((country) => country.iso2), expectedIso2)
+  assert.equal(COUNTRY_RECORDS.length, 27)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'deep').length, 4)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'partial').length, 14)
+  assert.equal(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').length, 9)
+  assert.ok(COUNTRY_RECORDS.filter((country) => country.coverage === 'queue').every((country) => country.competentAuthorities.length === 0 && country.complaintRoutes.length === 0 && country.penaltySchedule.length === 0))
+})
+
+test('every EU country exposes the three hardware issue lenses with explicit pending status when national mapping is incomplete', () => {
+  const issueTypes = ['device_access', 'third_party_sharing', 'second_hand_transfer']
+
+  for (const country of COUNTRY_RECORDS) {
+    assert.deepEqual(country.issues.map((issue) => issue.issue), issueTypes)
+    assert.ok(country.issues.every((issue) => issue.sourceUrls.length > 0 && issue.evidence.sourceUrls.length > 0))
+
+    if (country.coverage !== 'deep') {
+      assert.ok(country.issues.every((issue) => issue.status === 'pending'))
+      assert.ok(country.issues.every((issue) => issue.nationalBasis.includes('待补充本国法映射')))
+    }
+  }
+})
+
+test('coverage metrics keep deep, partial, and queue countries separate', () => {
+  const metrics = getCoverageMetrics(COUNTRY_RECORDS)
+
+  assert.equal(metrics.deepCount, 4)
+  assert.equal(metrics.partialCount, 14)
+  assert.equal(metrics.queueCount, 9)
+  assert.equal(metrics.totalTrackedCountries, 27)
+})
+
+test('country registry filters are composable and keep missing facts distinct from verified absence', () => {
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial' }).map((country) => country.id), ['at', 'be', 'cz', 'fr', 'hu', 'ie', 'lt', 'mt', 'pl', 'pt', 'ro', 'sk', 'es', 'se'])
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, implementationStage: 'enacted' }).map((country) => country.id), ['de', 'dk', 'fi', 'mt', 'nl'])
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, authority: 'present' }).length, 6)
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, complaintRoute: 'present' }).length, 4)
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, penaltySchedule: 'present' }).length, 4)
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'not_located' }).map((country) => country.id), ['de', 'dk', 'fi', 'nl'])
+  assert.equal(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, publishedPenaltyStatus: 'verified' }).length, 0)
+  assert.deepEqual(filterCountries(COUNTRY_RECORDS, { ...DEFAULT_COUNTRY_FILTERS, coverage: 'partial', authority: 'missing' }).map((country) => country.id), ['be', 'cz', 'fr', 'hu', 'ie', 'lt', 'pl', 'pt', 'ro', 'sk', 'es', 'se'])
+})
+
+test('formatters keep legal dates readable and statuses explicit', () => {
+  assert.equal(formatDate('2026-05-30'), '2026年5月30日')
+  assert.equal(formatCoverage('partial'), '部分核验')
+  assert.equal(formatVerificationStatus('not_located'), '未定位到公开记录')
+  assert.equal(formatVerificationStatus('pending'), '待核验')
+  assert.equal(formatIssueLabel('second_hand_transfer'), '二手转让 / 设备继受')
+})
+
+test('issue filtering respects the active issue set without mutating the registry', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
+  const filtered = filterIssues(germany.issues, ['device_access', 'second_hand_transfer'])
+
+  assert.deepEqual(filtered.map((issue) => issue.issue), ['device_access', 'second_hand_transfer'])
+  assert.equal(germany.issues.length, 3)
+  assert.equal(filterIssues(germany.issues, []).length, 0)
+})
+
+test('country view-models keep partial status and copy reference explicit', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
+  const france = COUNTRY_RECORDS.find((item) => item.id === 'fr')!
+
+  assert.equal(formatCountryStatus(germany), '已核验')
+  assert.equal(formatCountryStatus(france), '部分核验')
+  assert.equal(buildCountryReference(germany), '德国 Germany · Data Act · DADG · verified 2026-11-20')
+  assert.match(buildCountryReference(france), /partial coverage/)
+  assert.doesNotMatch(buildCountryReference(france), /verified/)
+})
+
+test('timeline events sort newest first without mutating the registry', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
+  const sorted = sortTimelineEvents(germany.timeline)
+
+  assert.equal(sorted[0].date, '2026-11-20')
+  assert.equal(germany.timeline[0].date, '2026-11-20')
+})
+
+test('exports include only the active issue view and preserve source traceability', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
+  const json = JSON.parse(buildJsonExport(germany, ['device_access'])) as { issues: Array<{ issue: string }>; country: string; changeLog: Array<{ countryId: string }>; sourceFreshness: Array<{ sourceId: string; status: string }> }
+  const markdown = buildMarkdownExport(germany, ['device_access'])
+
+  assert.equal(json.country, '德国')
+  assert.deepEqual(json.issues.map((issue) => issue.issue), ['device_access'])
+  assert.ok(json.changeLog.every((entry) => entry.countryId === 'de'))
+  assert.ok(json.sourceFreshness.every((entry) => entry.sourceId && entry.status))
+  assert.match(markdown, /DADG §15/)
+  assert.match(markdown, /BNetzA/)
+  assert.match(markdown, /www\.bundesnetzagentur\.de/)
+})
+
+test('actual enforcement cases stay separate from statutory penalties and remain honest when empty', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
+  const denmark = COUNTRY_RECORDS.find((item) => item.id === 'dk')!
+  const json = JSON.parse(buildJsonExport(germany, [])) as { enforcementCases: unknown[] }
+  const markdown = buildMarkdownExport(denmark, [])
+
+  assert.deepEqual(germany.enforcementCases, [])
+  assert.deepEqual(denmark.enforcementCases, [])
+  assert.deepEqual(json.enforcementCases, [])
+  assert.match(markdown, /## 实际执法/)
+  assert.match(markdown, /未定位到已公开的 Data Act 罚款决定/)
+  assert.doesNotMatch(markdown, /0 项公开处罚决定/)
+})
+
+test('enforcement monitors follow official sources without inferring enforcement cases', () => {
+  const monitors = buildEnforcementMonitors(COUNTRY_RECORDS, DATA_AS_OF)
+  const germanyMonitor = monitors.find((monitor) => monitor.countryId === 'de' && monitor.sourceId === 'bnetza-complaint-portal')
+  const queueMonitor = monitors.find((monitor) => monitor.countryId === 'bg' && monitor.sourceId === 'bg-crc-research-lead')
+  const spainGuideMonitor = monitors.find((monitor) => monitor.countryId === 'es' && monitor.sourceId === 'es-data-act-guide')
+
+  assert.ok(germanyMonitor)
+  assert.equal(germanyMonitor.status, 'active')
+  assert.equal(germanyMonitor.lastCheckedAt, DATA_AS_OF)
+  assert.equal(germanyMonitor.url, 'https://www.bundesnetzagentur.de/DE/Fachthemen/Digitales/DataAct/Beschwerdeportal/start.html')
+  assert.ok(germanyMonitor.evidence.sourceUrls.includes(germanyMonitor.url))
+
+  assert.ok(queueMonitor)
+  assert.equal(queueMonitor.status, 'candidate')
+  assert.equal(queueMonitor.sourceType, 'research-lead')
+  assert.ok(spainGuideMonitor)
+  assert.equal(spainGuideMonitor.status, 'candidate')
+  assert.ok(monitors.every((monitor) => !monitor.url.includes('european-union.europa.eu')))
+  assert.deepEqual(COUNTRY_RECORDS.find((country) => country.id === 'de')?.enforcementCases, [])
+})
+
+test('EU-wide case register stays empty for the current official evidence set', () => {
+  assert.deepEqual(buildEnforcementCaseRegister(COUNTRY_RECORDS), [])
+  assert.deepEqual(filterEnforcementCases([], DEFAULT_ENFORCEMENT_CASE_FILTERS), [])
+})
+
+test('EU-wide empty case register stays separate from official source monitoring', () => {
+  const cases = buildEnforcementCaseRegister(COUNTRY_RECORDS)
+  const monitors = buildEnforcementMonitors(COUNTRY_RECORDS, DATA_AS_OF)
+
+  assert.deepEqual(cases, [])
+  assert.ok(monitors.length > 0)
+  assert.ok(monitors.every((monitor) => !cases.some((item) => item.id === monitor.sourceId)))
+})
+
+test('EU-wide case register flattens, sorts, filters, and does not mutate country cases', () => {
+  const makeCase = (overrides: Partial<EnforcementCase>): EnforcementCase => ({
+    id: 'case-default',
+    countryId: 'de',
+    authorityName: 'BNetzA',
+    decisionDate: '2026-01-01',
+    entity: 'Example Mobility GmbH',
+    issue: 'device_access',
+    measure: '行政罚款',
+    amountEur: 1000,
+    status: 'final',
+    sourceUrls: ['https://example.test/case'],
+    evidence: {
+      sourceUrls: ['https://example.test/case'],
+      lastVerifiedAt: DATA_AS_OF,
+      evidenceStatus: 'verified',
+    },
+    ...overrides,
+  })
+  const cases = [
+    makeCase({ id: 'case-z', decisionDate: '2026-02-01' }),
+    makeCase({ id: 'case-old', decisionDate: '2025-12-01', countryId: 'fr', authorityName: 'CNIL', issue: 'third_party_sharing', status: 'appeal' }),
+    makeCase({ id: 'case-a', decisionDate: '2026-02-01', authorityName: 'ACM', issue: 'second_hand_transfer', status: 'under_review' }),
+  ]
+  const records = [
+    { ...COUNTRY_RECORDS[0], enforcementCases: [cases[0], cases[1]] },
+    { ...COUNTRY_RECORDS[1], enforcementCases: [cases[2]] },
+  ]
+
+  assert.deepEqual(buildEnforcementCaseRegister(records).map((item) => item.id), ['case-a', 'case-z', 'case-old'])
+  assert.deepEqual(filterEnforcementCases(cases, { ...DEFAULT_ENFORCEMENT_CASE_FILTERS, countryId: 'de' }).map((item) => item.id), ['case-z', 'case-a'])
+  assert.deepEqual(filterEnforcementCases(cases, { ...DEFAULT_ENFORCEMENT_CASE_FILTERS, authorityName: 'CNIL' }).map((item) => item.id), ['case-old'])
+  assert.deepEqual(filterEnforcementCases(cases, { ...DEFAULT_ENFORCEMENT_CASE_FILTERS, issue: 'second_hand_transfer' }).map((item) => item.id), ['case-a'])
+  assert.deepEqual(filterEnforcementCases(cases, { ...DEFAULT_ENFORCEMENT_CASE_FILTERS, status: 'appeal' }).map((item) => item.id), ['case-old'])
+  assert.deepEqual(cases.map((item) => item.id), ['case-z', 'case-old', 'case-a'])
+})
+
+test('JSON and Markdown exports include monitors as a layer separate from actual cases', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
+  const json = JSON.parse(buildJsonExport(germany, [])) as { enforcementMonitors: Array<{ sourceId: string }>; enforcementCases: unknown[] }
+  const markdown = buildMarkdownExport(germany, [])
+
+  assert.ok(json.enforcementMonitors.some((monitor) => monitor.sourceId === 'bnetza-complaint-portal'))
+  assert.deepEqual(json.enforcementCases, [])
+  assert.match(markdown, /## 官方来源监测/)
+  assert.match(markdown, /bnetza-complaint-portal|BNetzA/)
+})
+
+test('review queue assigns deterministic priority, due dates, target fields, and source links', () => {
+  const germany = COUNTRY_RECORDS.find((item) => item.id === GERMANY_ID)!
+  const france = COUNTRY_RECORDS.find((item) => item.id === 'fr')!
+  const bulgaria = COUNTRY_RECORDS.find((item) => item.id === 'bg')!
+  const items = buildReviewQueue([
+    { ...germany, lastVerifiedAt: '2026-08-01' },
+    { ...france, lastVerifiedAt: '2026-10-01' },
+    bulgaria,
+  ], DATA_AS_OF)
+
+  const germanyItem = items.find((item) => item.countryId === 'de')!
+  const franceItem = items.find((item) => item.countryId === 'fr')!
+  const bulgariaItem = items.find((item) => item.countryId === 'bg')!
+
+  assert.equal(germanyItem.priority, 'low')
+  assert.equal(germanyItem.nextReviewAt, '2026-09-30')
+  assert.equal(germanyItem.due, true)
+  assert.ok(germanyItem.targetFields.includes('实际处罚决定'))
+  assert.ok(germanyItem.targetFields.includes('联网硬件争议映射'))
+  assert.ok(germanyItem.sourceUrls.includes('https://www.bundesnetzagentur.de/DE/Fachthemen/Digitales/DataAct/start.html'))
+
+  assert.equal(franceItem.priority, 'high')
+  assert.equal(franceItem.nextReviewAt, '2026-10-31')
+  assert.equal(franceItem.due, true)
+  assert.ok(franceItem.targetFields.includes('主管机关'))
+  assert.ok(franceItem.targetFields.includes('国内法定罚则'))
+
+  assert.equal(bulgariaItem.priority, 'medium')
+  assert.equal(bulgariaItem.nextReviewAt, '2027-02-18')
+  assert.equal(bulgariaItem.due, false)
+
+  assert.equal(filterReviewQueue(items, { countryId: 'fr', priority: 'all', due: 'all' }).length, 1)
+  assert.equal(filterReviewQueue(items, { countryId: 'all', priority: 'high', due: 'due' }).length, 1)
+  assert.equal(filterReviewQueue(items, { countryId: 'all', priority: 'all', due: 'not-due' }).length, 1)
+})
+
+test('JSON and Markdown exports include the selected country review queue', () => {
+  const france = COUNTRY_RECORDS.find((item) => item.id === 'fr')!
+  const json = JSON.parse(buildJsonExport(france, [])) as { reviewQueue: Array<{ countryId: string; targetFields: string[] }> }
+  const markdown = buildMarkdownExport(france, [])
+
+  assert.equal(json.reviewQueue.length, 1)
+  assert.equal(json.reviewQueue[0].countryId, 'fr')
+  assert.ok(json.reviewQueue[0].targetFields.includes('主管机关'))
+  assert.match(markdown, /## 维护复核队列/)
+})
+
+test('source freshness distinguishes current, review, stale, unknown, and future dates', () => {
+  assert.equal(getSourceFreshness('2026-11-19', '2026-11-20').status, 'current')
+  assert.equal(getSourceFreshness('2026-09-01', '2026-11-20').status, 'review')
+  assert.equal(getSourceFreshness('2026-05-01', '2026-11-20').status, 'stale')
+  assert.equal(getSourceFreshness(undefined, '2026-11-20').status, 'unknown')
+  assert.equal(getSourceFreshness('not-a-date', '2026-11-20').status, 'unknown')
+  assert.equal(getSourceFreshness('2026-11-21', '2026-11-20').status, 'unknown')
+  assert.match(getSourceFreshness('2026-11-21', '2026-11-20').note, /未来/)
+})
+
+test('change log entries are country-filterable and retain official source traceability', () => {
+  assert.ok(CHANGE_LOG.length >= 8)
+  assert.ok(CHANGE_LOG.every((entry) => COUNTRY_RECORDS.some((country) => country.id === entry.countryId)))
+  assert.ok(CHANGE_LOG.every((entry) => entry.sourceUrls.length > 0 && entry.date && entry.evidenceStatus))
+  assert.ok(filterChangeLog(CHANGE_LOG, { countryId: 'fr', kind: 'all' }).every((entry) => entry.countryId === 'fr'))
+  assert.ok(filterChangeLog(CHANGE_LOG, { countryId: 'all', kind: 'review' }).every((entry) => entry.kind === 'review'))
+  assert.ok(filterChangeLog(CHANGE_LOG, { countryId: 'all', kind: 'new' }).length > 0)
+})
+
+test('queue exports do not inherit Germany-specific legal claims', () => {
+  const france = COUNTRY_RECORDS.find((item) => item.id === 'fr')!
+  const markdown = buildMarkdownExport(france, [])
+
+  assert.match(markdown, /# 法国 France · Data Act enforcement tracker/)
+  assert.doesNotMatch(markdown, /France Germany/)
+  assert.doesNotMatch(markdown, /DADG §15/)
+  assert.match(markdown, /## 法定罚款档位/)
+})
