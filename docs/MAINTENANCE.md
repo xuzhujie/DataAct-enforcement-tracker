@@ -29,6 +29,8 @@ npm run report:maintenance -- --source-health source-health.json --output mainte
 
 `report:maintenance` builds a second machine-readable artifact: it summarizes coverage, field-level evidence gaps, actual case count, due review items, and any source-health failures. Its `asOf` value defaults to the current UTC date for review scheduling; use `--as-of YYYY-MM-DD` to reproduce a historical report. This review date is separate from the registry evidence snapshot date. The command is a reporting step only; it never writes legal facts back into the registry.
 
+The maintenance report also exposes `issueLenses` for the three hardware-facing dispute lenses: device data access, third-party sharing, and second-hand transfer / device succession. Each lens reports `verified`, `pending`, `not_located`, `not_applicable`, and `needsFollowUpCountryIds`. The Maintenance page surfaces the same counts so issue-lens gaps remain visible separately from authority, complaint-route, penalty-schedule, and actual-enforcement evidence.
+
 For human intake, `.github/ISSUE_TEMPLATE/data-act-evidence-refresh.yml` provides a structured evidence-refresh form. It requires a country, affected field, evidence status, official source URL(s), factual summary, verification date, and confirmation that the source is primary. The form is an intake mechanism only; a maintainer still reviews the source and changes the registry manually.
 
 ## Weekly monitoring

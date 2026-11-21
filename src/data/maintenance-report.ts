@@ -3,7 +3,7 @@ import { getCoverageMetrics } from './metrics'
 import { buildReviewQueue } from './review-queue'
 import { buildSourceManifest, type RegistryValidationIssue } from './registry-validation'
 import type { SourceHealthReport } from './source-health'
-import type { CountryRecord, ReviewQueueItem } from './types'
+import type { CountryRecord, IssueType, ReviewQueueItem } from './types'
 import { getCountryEvidenceStatus, type CountryEvidenceField } from '../lib/field-status'
 
 export const MAINTENANCE_EVIDENCE_FIELDS: CountryEvidenceField[] = [
@@ -12,6 +12,8 @@ export const MAINTENANCE_EVIDENCE_FIELDS: CountryEvidenceField[] = [
   'penalty_schedule',
   'published_penalty',
 ]
+
+export const MAINTENANCE_ISSUE_TYPES: IssueType[] = ['device_access', 'third_party_sharing', 'second_hand_transfer']
 
 export interface MaintenanceStatusCounts {
   verified: number
@@ -23,6 +25,8 @@ export interface MaintenanceStatusCounts {
 export interface MaintenanceEvidenceSummary extends MaintenanceStatusCounts {
   needsFollowUpCountryIds: string[]
 }
+
+export type MaintenanceIssueSummary = MaintenanceEvidenceSummary
 
 export interface MaintenanceSourceFailure {
   url: string
@@ -57,6 +61,7 @@ export interface MaintenanceReport {
     }
   }
   evidence: Record<CountryEvidenceField, MaintenanceEvidenceSummary>
+  issueLenses: Record<IssueType, MaintenanceIssueSummary>
   reviewQueue: {
     total: number
     dueCount: number
@@ -87,6 +92,20 @@ function buildEvidenceSummary(records: CountryRecord[], field: CountryEvidenceFi
 
   for (const record of records) {
     const status = getCountryEvidenceStatus(record, field)
+    counts[status] += 1
+    if (status !== 'verified' && status !== 'not_applicable') needsFollowUpCountryIds.push(record.id)
+  }
+
+  return { ...counts, needsFollowUpCountryIds }
+}
+
+function buildIssueSummary(records: CountryRecord[], issueType: IssueType): MaintenanceIssueSummary {
+  const counts = emptyStatusCounts()
+  const needsFollowUpCountryIds: string[] = []
+
+  for (const record of records) {
+    const issue = record.issues.find((candidate) => candidate.issue === issueType)
+    const status = issue?.status ?? 'not_located'
     counts[status] += 1
     if (status !== 'verified' && status !== 'not_applicable') needsFollowUpCountryIds.push(record.id)
   }
@@ -127,6 +146,9 @@ export function buildMaintenanceReport(
   const evidence = Object.fromEntries(
     MAINTENANCE_EVIDENCE_FIELDS.map((field) => [field, buildEvidenceSummary(records, field)]),
   ) as Record<CountryEvidenceField, MaintenanceEvidenceSummary>
+  const issueLenses = Object.fromEntries(
+    MAINTENANCE_ISSUE_TYPES.map((issueType) => [issueType, buildIssueSummary(records, issueType)]),
+  ) as Record<IssueType, MaintenanceIssueSummary>
 
   return {
     schemaVersion: 1,
@@ -144,6 +166,7 @@ export function buildMaintenanceReport(
       },
     },
     evidence,
+    issueLenses,
     reviewQueue: {
       total: reviewQueue.length,
       dueCount: dueItems.length,

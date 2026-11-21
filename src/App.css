@@ -418,6 +418,14 @@
 .maintenance-filters label span { color: #8290a3; font-size: 9px; font-weight: 700; }
 .maintenance-filters select { min-height: 31px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; color: #42536b; background: #fbfcfe; font-size: 10px; font-weight: 650; }
 .maintenance-filters__count { margin-left: auto; padding-bottom: 8px; color: #8794a6; font-size: 10px; white-space: nowrap; }
+.maintenance-issue-summary { padding: 15px 18px; border-bottom: 1px solid #edf1f6; background: #fbfcfe; }
+.maintenance-issue-summary__heading h3 { margin: 0; color: var(--ink); font-size: 14px; }
+.maintenance-issue-summary__heading p { margin: 4px 0 0; color: #536780; font-size: 10px; line-height: 1.5; }
+.maintenance-issue-summary__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.maintenance-issue-summary__card { display: grid; gap: 7px; padding: 11px; border: 1px solid #e1e8f1; border-radius: 7px; background: #fff; }
+.maintenance-issue-summary__card > strong { color: #365273; font-size: 11px; }
+.maintenance-issue-summary__card > div { display: flex; align-items: center; justify-content: space-between; color: #8290a3; font-size: 9px; }
+.maintenance-issue-summary__card b { color: var(--ink); font-size: 12px; }
 .review-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .review-item { display: grid; gap: 8px; padding: 15px 18px; border-bottom: 1px solid #edf1f6; }
 .review-item:last-child { border-bottom: 0; }
@@ -490,6 +498,7 @@
   .maintenance-filters label { min-width: 0; }
   .maintenance-filters__label, .maintenance-filters__count { padding-bottom: 0; }
   .maintenance-filters__count { margin-left: 0; }
+  .maintenance-issue-summary__grid { grid-template-columns: 1fr; }
   .review-item__heading, .review-item__footer { align-items: flex-start; flex-direction: column; }
   .panel-heading { padding: 15px 14px 11px; }
   .panel-heading h2 { font-size: 16px; }

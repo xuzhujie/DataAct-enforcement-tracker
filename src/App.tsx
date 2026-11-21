@@ -17,8 +17,8 @@ import TopNav from './components/TopNav'
 import type { AppTab, CountryFilterState, IssueType } from './data/types'
 import { CHANGE_LOG } from './data/changelog'
 import { COUNTRY_RECORDS, GERMANY_ID } from './data/registry'
+import { buildMaintenanceReport } from './data/maintenance-report'
 import { buildEnforcementMonitors } from './data/monitoring'
-import { buildReviewQueue } from './data/review-queue'
 import { getCountryMetrics, getCoverageMetrics } from './data/metrics'
 import { DEFAULT_COUNTRY_FILTERS, filterCountries } from './lib/view-model'
 import { getCurrentIsoDate } from './lib/freshness'
@@ -37,7 +37,8 @@ export default function App() {
   )
   const filteredCountries = useMemo(() => filterCountries(COUNTRY_RECORDS, registryFilters), [registryFilters])
   const coverageMetrics = useMemo(() => getCoverageMetrics(COUNTRY_RECORDS), [])
-  const reviewQueue = buildReviewQueue(COUNTRY_RECORDS, getCurrentIsoDate())
+  const maintenanceReport = useMemo(() => buildMaintenanceReport(COUNTRY_RECORDS, getCurrentIsoDate()), [])
+  const reviewQueue = maintenanceReport.reviewQueue.items
 
   function toggleIssue(issue: IssueType) {
     setActiveIssues((current) => current.includes(issue) ? current.filter((item) => item !== issue) : [...current, issue])
@@ -100,7 +101,7 @@ export default function App() {
         )}
         {activeTab === 'timeline' && <TimelineView events={selectedCountry.timeline} />}
         {activeTab === 'change-log' && <ChangeLogView entries={CHANGE_LOG} countries={COUNTRY_RECORDS} />}
-        {activeTab === 'maintenance' && <MaintenanceView items={reviewQueue} />}
+        {activeTab === 'maintenance' && <MaintenanceView items={reviewQueue} issueLenses={maintenanceReport.issueLenses} />}
       </main>
     </AppShell>
   )

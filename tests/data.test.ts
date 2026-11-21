@@ -844,6 +844,15 @@ test('maintenance report aggregates evidence gaps, review due items, and source 
   assert.equal(report.registry.coverage.partialCount, 21)
   assert.equal(report.registry.actualEnforcementCaseCount, 0)
   assert.equal(report.registry.validation.passed, true)
+  assert.deepEqual(report.issueLenses.device_access, {
+    verified: 6,
+    pending: 21,
+    not_located: 0,
+    not_applicable: 0,
+    needsFollowUpCountryIds: ['at', 'be', 'bg', 'hr', 'cy', 'cz', 'ee', 'fr', 'gr', 'hu', 'ie', 'it', 'lv', 'lu', 'pl', 'pt', 'ro', 'sk', 'si', 'es', 'se'],
+  })
+  assert.equal(report.issueLenses.third_party_sharing.verified, 6)
+  assert.equal(report.issueLenses.second_hand_transfer.pending, 27)
   assert.deepEqual(report.evidence.authority, {
     verified: 17,
     pending: 10,

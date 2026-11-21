@@ -1,6 +1,8 @@
 import { ArrowUpRight, ClipboardList, Filter } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import type { ReviewPriority, ReviewQueueFilterState, ReviewQueueItem } from '../data/types'
+import type { MaintenanceIssueSummary } from '../data/maintenance-report'
+import { formatIssueLabel } from '../lib/format'
+import type { IssueType, ReviewPriority, ReviewQueueFilterState, ReviewQueueItem } from '../data/types'
 import { filterReviewQueue } from '../data/review-queue'
 import { formatDate } from '../lib/format'
 
@@ -16,7 +18,9 @@ const dueLabels = {
   'not-due': '未到期',
 } as const
 
-export default function MaintenanceView({ items }: { items: ReviewQueueItem[] }) {
+const issueTypes: IssueType[] = ['device_access', 'third_party_sharing', 'second_hand_transfer']
+
+export default function MaintenanceView({ items, issueLenses }: { items: ReviewQueueItem[]; issueLenses: Record<IssueType, MaintenanceIssueSummary> }) {
   const [filters, setFilters] = useState<ReviewQueueFilterState>({ countryId: 'all', priority: 'all', due: 'all' })
   const filteredItems = useMemo(() => filterReviewQueue(items, filters), [filters, items])
   const countryOptions = useMemo(
@@ -63,6 +67,27 @@ export default function MaintenanceView({ items }: { items: ReviewQueueItem[] })
         </label>
         <span className="maintenance-filters__count">显示 {filteredItems.length} / {items.length}</span>
       </div>
+      <section className="maintenance-issue-summary" aria-labelledby="maintenance-issue-summary-title">
+        <div className="maintenance-issue-summary__heading">
+          <div>
+            <h3 id="maintenance-issue-summary-title">联网硬件争议核验</h3>
+            <p>三类争议与国家维护任务分开统计；待核验不等于不存在争议。</p>
+          </div>
+        </div>
+        <div className="maintenance-issue-summary__grid">
+          {issueTypes.map((issueType) => {
+            const summary = issueLenses[issueType]
+            return (
+              <article className="maintenance-issue-summary__card" key={issueType}>
+                <strong>{formatIssueLabel(issueType)}</strong>
+                <div><span>已核验</span><b>{summary.verified}</b></div>
+                <div><span>待核验</span><b>{summary.pending}</b></div>
+                <div><span>未定位</span><b>{summary.not_located}</b></div>
+              </article>
+            )
+          })}
+        </div>
+      </section>
       {filteredItems.length === 0 ? (
         <div className="empty-state">当前筛选没有复核任务。</div>
       ) : (

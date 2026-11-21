@@ -7,6 +7,15 @@ export interface ChangeLogFilterState {
 
 export const CHANGE_LOG: ChangeLogEntry[] = [
   {
+    id: '2026-11-21-maintenance-issue-lens-summary',
+    date: '2026-11-21',
+    countryId: 'eu',
+    kind: 'changed',
+    summary: '维护报告和 Maintenance 页面新增三类联网硬件争议核验汇总：设备数据访问、第三方共享、二手转让/设备继受分别统计 verified、pending、not_located，并保留待跟进国家 ID，避免把争议核验缺口混入主管机关或罚则字段。',
+    sourceUrls: ['https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R2854'],
+    evidenceStatus: 'verified',
+  },
+  {
     id: '2026-11-21-all-country-issue-matrix-view',
     date: '2026-11-21',
     countryId: 'eu',
